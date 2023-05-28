@@ -41,14 +41,16 @@ public class Player extends Entity {
 
     public void getPlayerImage() {
         try {
-            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_left_1.png")));
-            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_1.png")));
-            left3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_2.png")));
-            left4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_3.png")));
-            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_right_1.png")));
-            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_1.png")));
-            right3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_2.png")));
-            right4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_3.png")));
+            spriteArr = new BufferedImage[8];
+
+            spriteArr[0] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_left_1.png")));
+            spriteArr[1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_1.png")));
+            spriteArr[2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_2.png")));
+            spriteArr[3] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_3.png")));
+            spriteArr[4] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_right_1.png")));
+            spriteArr[5] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_1.png")));
+            spriteArr[6] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_2.png")));
+            spriteArr[7] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_3.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,30 +99,30 @@ public class Player extends Entity {
         switch (direction) {
             case "right" -> {
                 if (spriteNum == 1) {
-                    image = right1;
+                    image = spriteArr[4];
                 }
                 if (spriteNum == 2) {
-                    image = right2;
+                    image = spriteArr[5];
                 }
                 if (spriteNum == 3) {
-                    image = right3;
+                    image = spriteArr[6];
                 }
                 if (spriteNum == 4) {
-                    image = right4;
+                    image = spriteArr[7];
                 }
             }
             case "left" -> {
                 if (spriteNum == 1) {
-                    image = left1;
+                    image = spriteArr[0];
                 }
                 if (spriteNum == 2) {
-                    image = left2;
+                    image = spriteArr[1];
                 }
                 if (spriteNum == 3) {
-                    image = left3;
+                    image = spriteArr[2];
                 }
                 if (spriteNum == 4) {
-                    image = left4;
+                    image = spriteArr[4];
                 }
             }
             default -> {
