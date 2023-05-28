@@ -154,10 +154,8 @@ public class Player extends Entity {
         if (bottomOffset > worldHeight - worldY) {
             y = screenHeight - (worldHeight - worldY);
         }
-        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
 
-//        g2.setColor(Color.WHITE);
-//        g2.fillRect(x, y, gp.tileSize, gp.tileSize);
+        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
 
         Graphics2D rotatedG2 = (Graphics2D) g2.create();
         rotatedG2.setColor(Color.GREEN);
