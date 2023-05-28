@@ -128,7 +128,7 @@ public class Player extends Entity {
             }
         }
 
-        g2.drawImage(image,screenX, screenY, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image,worldX, worldY, gp.tileSize, gp.tileSize, null);
 
 //        g2.setColor(Color.WHITE);
 //        g2.fillRect(x, y, gp.tileSize, gp.tileSize);
