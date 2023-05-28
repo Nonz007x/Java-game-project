@@ -64,6 +64,9 @@ public class TileManager {
         }
     }
 
+    public int getX() {
+
+    }
     public void render(Graphics2D g2) {
         // Rendering
 
