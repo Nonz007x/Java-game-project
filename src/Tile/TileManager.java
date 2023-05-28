@@ -64,9 +64,6 @@ public class TileManager {
         }
     }
 
-    public int getX() {
-
-    }
     public void render(Graphics2D g2) {
         // Rendering
 
@@ -83,9 +80,9 @@ public class TileManager {
             int worldY = worldRow * tileSize;
             int screenY = worldY - playerWorldY + playerScreenY;
 
-            if (playerWorldY <= tileSize * 5.5) {
-                screenY = (int) (worldY - tileSize * 5.5 + playerScreenY);
-            }
+//            if (playerWorldY <= tileSize * 5.5) {
+//                screenY = (int) (worldY - tileSize * 5.5 + playerScreenY);
+//            }
 
             for (int worldCol = 0; worldCol < gp.maxWorldCol; worldCol++) {
                 int tileNum = mapTileNum[worldRow][worldCol];
