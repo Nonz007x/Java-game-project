@@ -1,6 +1,5 @@
 package Entity;
 
-import Entity.Entity;
 import Main.GamePanel;
 import Main.KeyHandler;
 import Main.MouseHandler;
@@ -24,8 +23,8 @@ public class Player extends Entity {
         this.keyH = keyH;
         this.mouseH = mouseH;
 
-        screenX = gp.screenWidth / 2 - (gp.tileSize/2);
-        screenY = gp.screenHeight / 2 - (gp.tileSize/2);
+        screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
         setDefaultValues();
         getPlayerImage();
@@ -83,7 +82,7 @@ public class Player extends Entity {
             spriteCounter += keyH.shiftPressed ? 2 : 1;
 
             if (spriteCounter > 10) {
-                spriteNum = spriteNum > 3 ? 2: ++spriteNum;
+                spriteNum = spriteNum > 3 ? 2 : ++spriteNum;
                 spriteCounter = 0;
             }
         } else {
@@ -128,7 +127,32 @@ public class Player extends Entity {
             }
         }
 
-        g2.drawImage(image,screenX, screenY, gp.tileSize, gp.tileSize, null);
+        int x = screenX;
+        int y = screenY;
+
+        int worldWidth = gp.worldWidth;
+        int worldHeight = gp.worldHeight;
+
+        int screenWidth = gp.screenWidth;
+        int screenHeight = gp.screenHeight;
+
+        if (screenX > worldX) {
+            x = worldX;
+        }
+        if (screenY > worldY) {
+            y = worldY;
+        }
+
+        int rightOffset = screenWidth - screenX;
+        if (rightOffset > worldWidth - worldX) {
+            x = screenWidth - (worldWidth - worldX);
+        }
+
+        int bottomOffset = screenHeight - screenY;
+        if (bottomOffset > worldHeight - worldY) {
+            y = screenHeight - (worldHeight - worldY);
+        }
+        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
 
 //        g2.setColor(Color.WHITE);
 //        g2.fillRect(x, y, gp.tileSize, gp.tileSize);
