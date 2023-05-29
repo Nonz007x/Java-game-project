@@ -1,6 +1,6 @@
 package Tile;
 
-import Main.GamePanel;
+import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,8 +13,8 @@ import java.util.Objects;
 public class TileManager {
 
     GamePanel gp;
-    Tile[] tile;
-    int[][] mapTileNum;
+    public Tile[] tile;
+    public int[][] mapTileNum;
 
     public TileManager(GamePanel gp) {
 
@@ -35,6 +35,7 @@ public class TileManager {
             tile[1] = new Tile() {{
                 image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/tiles/missing_texture.png")));
             }};
+            tile[1].collision = true;
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,27 +1,34 @@
-package Entity;
+package entity;
 
-import Main.GamePanel;
-import Main.KeyHandler;
-import Main.MouseHandler;
+import main.GamePanel;
+import main.KeyHandler;
+import main.MouseHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Player extends Entity {
+    private int playerScreenPosX;
+    private int playerScreenPosY;
     GamePanel gp;
-    KeyHandler keyH;
+    public KeyHandler keyH;
     MouseHandler mouseH;
     public final int screenX;
     public final int screenY;
 
-    public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
+    public Set<String> collisionDirections = new HashSet<>();
 
+    public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
         this.gp = gp;
         this.keyH = keyH;
         this.mouseH = mouseH;
+
+        hitBox = new Rectangle(15, 18, 24, 33);
 
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
         screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
@@ -32,13 +39,21 @@ public class Player extends Entity {
 
     public void setDefaultValues() {
 
-        worldX = gp.tileSize * -1;
-        worldY = (int) (gp.tileSize * 5.5);
-        defaultSpeed = 4;
-        speed = defaultSpeed;
+        worldX = 48;
+        worldY = 48;
+        baseSpeed = 4;
+        speed = baseSpeed;
+        facing = "right";
         direction = "right";
     }
 
+    private void sprint() {
+        speed = 8;
+    }
+
+    private void resetSpeed() {
+        speed = 4;
+    }
     public void getPlayerImage() {
         try {
             spriteArr = new BufferedImage[8];
@@ -60,27 +75,61 @@ public class Player extends Entity {
         if (mouseH.isClicked) {
             System.out.println("Mouse Clicked!");
         }
-        if (mouseH.mouseX >= gp.screenWidth / 2) {
-            direction = "right";
+        if (mouseH.mouseX >= playerScreenPosX) {
+            facing = "right";
         } else {
-            direction = "left";
+            facing = "left";
         }
 
-        if (keyH.upPressed) {
-            worldY -= speed;
-        }
-        if (keyH.downPressed) {
-            worldY += speed;
-        }
-        if (keyH.leftPressed) {
-            worldX -= speed;
-        }
-        if (keyH.rightPressed) {
-            worldX += speed;
-        }
+
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
-            int sprintSpeed = 8;
-            speed = keyH.shiftPressed ? sprintSpeed : defaultSpeed;
+
+            if (keyH.upPressed) {
+                collisionDirections.add("up");
+                worldY -= speed;
+            }
+            if (keyH.downPressed) {
+                collisionDirections.add("down");
+                worldY += speed;
+            }
+            if (keyH.leftPressed) {
+                collisionDirections.add("left");
+                worldX -= speed;
+            }
+            if (keyH.rightPressed) {
+                collisionDirections.add("right");
+                worldX += speed;
+            }
+            //CHECK COLLISION
+            collisionOn = false;
+
+
+            gp.collisionDetector.checkTile(this);
+
+            if (collisionOn) {
+                if (collisionDirections.contains("up")) {
+                    worldY += speed;
+                }
+                if (collisionDirections.contains("down")) {
+                    worldY -= speed;
+                }
+                if (collisionDirections.contains("left")) {
+                    worldX += speed;
+                }
+                if (collisionDirections.contains("right")) {
+                    worldX -= speed;
+                }
+            }
+            collisionDirections.remove("up");
+            collisionDirections.remove("down");
+            collisionDirections.remove("left");
+            collisionDirections.remove("right");
+
+            if (keyH.shiftPressed) {
+                sprint();
+            } else {
+                resetSpeed();
+            }
             spriteCounter += keyH.shiftPressed ? 2 : 1;
 
             if (spriteCounter > 10) {
@@ -96,7 +145,7 @@ public class Player extends Entity {
     public void render(Graphics2D g2) {
 
         BufferedImage image = null;
-        switch (direction) {
+        switch (facing) {
             case "right" -> {
                 if (spriteNum == 1) {
                     image = spriteArr[4];
@@ -122,15 +171,15 @@ public class Player extends Entity {
                     image = spriteArr[2];
                 }
                 if (spriteNum == 4) {
-                    image = spriteArr[4];
+                    image = spriteArr[3];
                 }
             }
             default -> {
             }
         }
 
-        int x = screenX;
-        int y = screenY;
+        playerScreenPosX = screenX;
+        playerScreenPosY = screenY;
 
         int worldWidth = gp.worldWidth;
         int worldHeight = gp.worldHeight;
@@ -139,23 +188,23 @@ public class Player extends Entity {
         int screenHeight = gp.screenHeight;
 
         if (screenX > worldX) {
-            x = worldX;
+            playerScreenPosX = worldX;
         }
         if (screenY > worldY) {
-            y = worldY;
+            playerScreenPosY = worldY;
         }
 
         int rightOffset = screenWidth - screenX;
         if (rightOffset > worldWidth - worldX) {
-            x = screenWidth - (worldWidth - worldX);
+            playerScreenPosX = screenWidth - (worldWidth - worldX);
         }
 
         int bottomOffset = screenHeight - screenY;
         if (bottomOffset > worldHeight - worldY) {
-            y = screenHeight - (worldHeight - worldY);
+            playerScreenPosY = screenHeight - (worldHeight - worldY);
         }
 
-        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, playerScreenPosX, playerScreenPosY, gp.tileSize, gp.tileSize, null);
 
         Graphics2D rotatedG2 = (Graphics2D) g2.create();
         rotatedG2.setColor(Color.GREEN);

@@ -1,6 +1,6 @@
-package Main;
+package main;
 
-import Entity.Player;
+import entity.Player;
 import Tile.TileManager;
 
 import javax.swing.*;
@@ -26,6 +26,7 @@ public class GamePanel extends JPanel implements Runnable {
     int FPS = 60;
 
     TileManager tileM = new TileManager(this);
+    public CollisionDetector collisionDetector = new CollisionDetector(this);
     KeyHandler keyH = new KeyHandler();
     MouseHandler mouseH = new MouseHandler(this);
     Thread gameThread;
