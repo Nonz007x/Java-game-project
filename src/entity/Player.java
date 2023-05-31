@@ -13,10 +13,10 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Player extends Entity {
-    private int playerScreenPosX;
-    private int playerScreenPosY;
-    GamePanel gp;
+    public int playerScreenPosX;
+    public int playerScreenPosY;
     public KeyHandler keyH;
+    GamePanel gp;
     MouseHandler mouseH;
     public final int screenX;
     public final int screenY;
@@ -52,7 +52,7 @@ public class Player extends Entity {
     }
 
     private void resetSpeed() {
-        speed = 4;
+        speed = baseSpeed;
     }
     public void getPlayerImage() {
         try {
@@ -83,27 +83,29 @@ public class Player extends Entity {
 
 
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
-
-            if (keyH.upPressed) {
+            boolean ghosting = true;
+            if (keyH.upPressed && !keyH.downPressed) {
+                ghosting = false;
                 collisionDirections.add("up");
                 worldY -= speed;
             }
-            if (keyH.downPressed) {
+            if (keyH.downPressed && !keyH.upPressed) {
+                ghosting = false;
                 collisionDirections.add("down");
                 worldY += speed;
             }
-            if (keyH.leftPressed) {
+            if (keyH.leftPressed && !keyH.rightPressed) {
+                ghosting = false;
                 collisionDirections.add("left");
                 worldX -= speed;
             }
-            if (keyH.rightPressed) {
+            if (keyH.rightPressed && !keyH.leftPressed) {
+                ghosting = false;
                 collisionDirections.add("right");
                 worldX += speed;
             }
             //CHECK COLLISION
             collisionOn = false;
-
-
             gp.collisionDetector.checkTile(this);
 
             if (collisionOn) {
@@ -120,20 +122,21 @@ public class Player extends Entity {
                     worldX -= speed;
                 }
             }
-            collisionDirections.remove("up");
-            collisionDirections.remove("down");
-            collisionDirections.remove("left");
-            collisionDirections.remove("right");
+
+            collisionDirections.clear();
 
             if (keyH.shiftPressed) {
                 sprint();
             } else {
                 resetSpeed();
             }
-            spriteCounter += keyH.shiftPressed ? 2 : 1;
-
-            if (spriteCounter > 10) {
-                spriteNum = spriteNum > 3 ? 2 : ++spriteNum;
+            spriteCounter = keyH.shiftPressed ? spriteCounter + 2 : spriteCounter + 1;
+            if(ghosting) {
+                spriteNum = 1;
+                spriteCounter = 10;
+            }
+            else if (spriteCounter > 10) {
+                spriteNum = spriteNum > 3 ? 2 : spriteNum + 1;
                 spriteCounter = 0;
             }
         } else {
@@ -150,13 +153,13 @@ public class Player extends Entity {
                 if (spriteNum == 1) {
                     image = spriteArr[4];
                 }
-                if (spriteNum == 2) {
+                else if (spriteNum == 2) {
                     image = spriteArr[5];
                 }
-                if (spriteNum == 3) {
+                else if (spriteNum == 3) {
                     image = spriteArr[6];
                 }
-                if (spriteNum == 4) {
+                else if (spriteNum == 4) {
                     image = spriteArr[7];
                 }
             }
@@ -164,13 +167,13 @@ public class Player extends Entity {
                 if (spriteNum == 1) {
                     image = spriteArr[0];
                 }
-                if (spriteNum == 2) {
+                else if (spriteNum == 2) {
                     image = spriteArr[1];
                 }
-                if (spriteNum == 3) {
+                else if (spriteNum == 3) {
                     image = spriteArr[2];
                 }
-                if (spriteNum == 4) {
+                else if (spriteNum == 4) {
                     image = spriteArr[3];
                 }
             }
