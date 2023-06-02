@@ -14,7 +14,7 @@ public class MouseHandler implements MouseMotionListener, MouseListener {
 
     public MouseHandler(GamePanel gp) {
         timer = new Timer(100, e -> {
-
+//            getMousePos();
         });
         timer.setRepeats(true);
         this.gp = gp;
@@ -46,12 +46,12 @@ public class MouseHandler implements MouseMotionListener, MouseListener {
     }
 
     public void stopTracking() {
-        // Stop the timer
         timer.stop();
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MouseHandler implements MouseMotionListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        isClicked = false;
+//        isClicked = false;
     }
 
     @Override

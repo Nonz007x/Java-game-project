@@ -26,35 +26,35 @@ public class CollisionDetector {
 
         int tileNum1, tileNum2;
         if (gp.player.keyH.upPressed) {
-            entityTopRow = (entityTopWorldY) / tileSize;
-            tileNum1 = gp.tileM.mapTileNum[entityTopRow][entityLeftCol];
-            tileNum2 = gp.tileM.mapTileNum[entityTopRow][entityRightCol];
-            if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
-                entity.collisionOn = true;
+            tileNum1 = gp.tileM.getTile(entityTopRow,entityLeftCol);
+            tileNum2 = gp.tileM.getTile(entityTopRow,entityRightCol);
+            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)) {
+                entity.addCollisionDirection("TOP");
+                System.out.println("Add TOP");
             }
         }
         if (gp.player.keyH.downPressed) {
-            entityBottomRow = (entityBottomWorldY) / tileSize;
-            tileNum1 = gp.tileM.mapTileNum[entityBottomRow][entityLeftCol];
-            tileNum2 = gp.tileM.mapTileNum[entityBottomRow][entityRightCol];
-            if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
-                entity.collisionOn = true;
+            tileNum1 = gp.tileM.getTile(entityBottomRow,entityLeftCol);
+            tileNum2 = gp.tileM.getTile(entityBottomRow,entityRightCol);
+            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)) {
+                entity.addCollisionDirection("BOTTOM");
+                System.out.println("Add BOTTOM");
             }
         }
         if (gp.player.keyH.leftPressed) {
-            entityLeftCol = (entityLeftWorldX) / tileSize;
-            tileNum1 = gp.tileM.mapTileNum[entityTopRow][entityLeftCol];
-            tileNum2 = gp.tileM.mapTileNum[entityBottomRow][entityLeftCol];
-            if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
-                entity.collisionOn = true;
+            tileNum1 = gp.tileM.getTile(entityTopRow,entityLeftCol);
+            tileNum2 = gp.tileM.getTile(entityBottomRow,entityLeftCol);
+            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)) {
+                entity.addCollisionDirection("LEFT");
+                System.out.println("Add LEFT");
             }
         }
         if (gp.player.keyH.rightPressed) {
-            entityRightCol = (entityRightWorldX) / tileSize;
-            tileNum1 = gp.tileM.mapTileNum[entityTopRow][entityRightCol];
-            tileNum2 = gp.tileM.mapTileNum[entityBottomRow][entityRightCol];
-            if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
-                entity.collisionOn = true;
+            tileNum1 = gp.tileM.getTile(entityTopRow,entityRightCol);
+            tileNum2 = gp.tileM.getTile(entityBottomRow,entityRightCol);
+            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)) {
+                entity.addCollisionDirection("RIGHT");
+                System.out.println("Add RIGHT");
             }
         }
     }

@@ -2,6 +2,8 @@ package entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Entity {
     public int worldX, worldY;
@@ -15,5 +17,10 @@ public class Entity {
     protected int spriteNum = 1;
     public Rectangle hitBox;
     public boolean collisionOn = false;
+    public Set<String> collisionDirections = new HashSet<>();
+
+    public void addCollisionDirection(String direction) {
+       collisionDirections.add(direction);
+    }
 
 }

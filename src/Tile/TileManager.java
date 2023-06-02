@@ -117,4 +117,12 @@ public class TileManager {
             }
         }
     }
+
+    public int getTile(int row, int col) {
+        return mapTileNum[row][col];
+    }
+
+    public boolean isCollision(int tileNumber) {
+        return tile[tileNumber].collision;
+    }
 }

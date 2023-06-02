@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int maxWorldRow = 50;
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
-    // Frames per second
+
     int FPS = 60;
 
     TileManager tileM = new TileManager(this);
@@ -31,6 +31,10 @@ public class GamePanel extends JPanel implements Runnable {
     MouseHandler mouseH = new MouseHandler(this);
     Thread gameThread;
     public Player player = new Player(this, keyH, mouseH);
+
+    // DEBUG
+    boolean showFps = false;
+
     public GamePanel() {
 
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
@@ -70,13 +74,19 @@ public class GamePanel extends JPanel implements Runnable {
                 delta--;
                 frameCount++;
                 if (timer >= 1000) {
-                    System.out.println("FPS: " + frameCount);
+                    if(showFps) {
+                        printFps(frameCount);
+                    }
                     frameCount = 0;
                     timer = 0;
                 }
             }
 
         }
+    }
+
+    private void printFps(int frameCount) {
+        System.out.println("FPS: " + frameCount);
     }
 
     public void update(){
@@ -92,10 +102,6 @@ public class GamePanel extends JPanel implements Runnable {
         tileM.render(g2);
         player.render(g2);
 
-        if (mouseH.isClicked) {
-            g2.setColor(Color.RED);
-            g2.fillRect(player.screenX,player.screenY,tileSize,tileSize);
-        }
         g2.dispose();
     }
 }
