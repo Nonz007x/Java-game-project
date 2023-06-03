@@ -4,6 +4,7 @@ import entity.Entity;
 
 public class CollisionDetector {
     GamePanel gp;
+    static int cs = 0;
 
 
     public CollisionDetector(GamePanel gp) {
@@ -19,44 +20,36 @@ public class CollisionDetector {
         int entityTopWorldY = entity.worldY + entity.hitBox.y;
         int entityBottomWorldY = entity.worldY + entity.hitBox.y + entity.hitBox.height;
 
+        int playerX = entity.worldX + entity.hitBox.x + entity.hitBox.width / 2;
+        int playerY = entity.worldY + entity.hitBox.y + entity.hitBox.height / 2;
+
+        int playerTileX = (playerX / tileSize);
+        int playerTileY = (playerY / tileSize);
+
+
         int entityLeftCol = entityLeftWorldX / tileSize;
         int entityRightCol = entityRightWorldX / tileSize;
         int entityTopRow = entityTopWorldY / tileSize;
         int entityBottomRow = entityBottomWorldY / tileSize;
 
-        int tileNum1, tileNum2;
-        if (gp.player.keyH.upPressed) {
-            tileNum1 = gp.tileM.getTile(entityTopRow,entityLeftCol);
-            tileNum2 = gp.tileM.getTile(entityTopRow,entityRightCol);
-            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)) {
-                entity.addCollisionDirection("TOP");
-                System.out.println("Add TOP");
-            }
+
+        if (gp.tileM.isCollision(gp.tileM.getTile(entityTopRow, playerTileX)) || gp.tileM.isCollision(gp.tileM.getTile(entityTopRow, playerTileX))) {
+            entity.addCollisionDirection("TOP");
+//            System.out.println("Collision TOP!");
         }
-        if (gp.player.keyH.downPressed) {
-            tileNum1 = gp.tileM.getTile(entityBottomRow,entityLeftCol);
-            tileNum2 = gp.tileM.getTile(entityBottomRow,entityRightCol);
-            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)) {
-                entity.addCollisionDirection("BOTTOM");
-                System.out.println("Add BOTTOM");
-            }
+        if (gp.tileM.isCollision(gp.tileM.getTile(entityBottomRow, playerTileX)) || gp.tileM.isCollision(gp.tileM.getTile(entityBottomRow, playerTileX))) {
+            entity.addCollisionDirection("BOTTOM");
+//            System.out.println("Collision BOTTOM!");
         }
-        if (gp.player.keyH.leftPressed) {
-            tileNum1 = gp.tileM.getTile(entityTopRow,entityLeftCol);
-            tileNum2 = gp.tileM.getTile(entityBottomRow,entityLeftCol);
-            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)) {
-                entity.addCollisionDirection("LEFT");
-                System.out.println("Add LEFT");
-            }
+        if (gp.tileM.isCollision(gp.tileM.getTile(playerTileY, entityLeftCol)) || gp.tileM.isCollision(gp.tileM.getTile(playerTileY, entityLeftCol))) {
+            entity.addCollisionDirection("LEFT");
+//            System.out.println("Collision LEFT!");
         }
-        if (gp.player.keyH.rightPressed) {
-            tileNum1 = gp.tileM.getTile(entityTopRow,entityRightCol);
-            tileNum2 = gp.tileM.getTile(entityBottomRow,entityRightCol);
-            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)) {
-                entity.addCollisionDirection("RIGHT");
-                System.out.println("Add RIGHT");
-            }
+        if (gp.tileM.isCollision(gp.tileM.getTile(playerTileY, entityRightCol)) || gp.tileM.isCollision(gp.tileM.getTile(playerTileY, entityRightCol))) {
+            entity.addCollisionDirection("RIGHT");
+//            System.out.println("Collision RIGHT!");
         }
+
     }
 }
 

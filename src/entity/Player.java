@@ -106,20 +106,24 @@ public class Player extends Entity {
             }
             //CHECK COLLISION
             gp.collisionDetector.checkTile(this);
-//            System.out.println(collisionDirections);
+//            System.out.println(collisionDirections.size());
+            if (collisionDirections.size() < 4) {
+                if (collisionDirections.contains("TOP")) {
+                    worldY += speed;
+                }
+                if (collisionDirections.contains("BOTTOM")) {
+                    worldY -= speed;
+                }
+                if (collisionDirections.contains("LEFT")) {
+                    worldX += speed;
+                }
+                if (collisionDirections.contains("RIGHT")) {
+                    worldX -= speed;
+                }
+            } else {
 
-            if (collisionDirections.contains("TOP")) {
-                worldY += speed;
             }
-            if (collisionDirections.contains("BOTTOM")) {
-                worldY -= speed;
-            }
-            if (collisionDirections.contains("LEFT")) {
-                worldX += speed;
-            }
-            if (collisionDirections.contains("RIGHT")) {
-                worldX -= speed;
-            }
+
             collisionDirections.clear();
 
             if (keyH.shiftPressed) {
@@ -215,5 +219,6 @@ public class Player extends Entity {
 
         g2.setColor(Color.RED);
         g2.fillRect(mouseH.mouseX, mouseH.mouseY, 4, 4);
+
     }
 }
