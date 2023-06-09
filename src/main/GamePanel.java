@@ -23,6 +23,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
 
+    // TICK
+    private final int ticksPerSecond = 60 ;
     int FPS = 60;
 
     TileManager tileM = new TileManager(this);
@@ -33,7 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, keyH, mouseH);
 
     // DEBUG
-    boolean showFps = false;
+    boolean showFps = true;
 
     public GamePanel() {
 
@@ -54,34 +56,25 @@ public class GamePanel extends JPanel implements Runnable {
     @Override
     public void run(){
 
-        double delay = 1000.0 /FPS;
         double delta = 0;
+        double elapsedTime;
         long lastTime = System.currentTimeMillis();
         long currentTime;
-        long timer = 0;
-        int frameCount = 0;
 
         mouseH.startTracking();
         while(gameThread != null) {
             currentTime = System.currentTimeMillis();
-            delta += (currentTime - lastTime) / delay;
-            timer += currentTime - lastTime;
+            elapsedTime = currentTime - lastTime;
             lastTime = currentTime;
 
-            if(delta >= 1) {
+            delta += elapsedTime;
+
+            double tickDuration = 1000.0 / ticksPerSecond;
+            if (delta >= tickDuration) {
                 update();
                 repaint();
-                delta--;
-                frameCount++;
-                if (timer >= 1000) {
-                    if(showFps) {
-                        printFps(frameCount);
-                    }
-                    frameCount = 0;
-                    timer = 0;
-                }
+                delta -= tickDuration;
             }
-
         }
     }
 
@@ -99,8 +92,14 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
 
+        long drawStart = System.nanoTime();
+
         tileM.render(g2);
         player.render(g2);
+
+        long drawEnd = System.nanoTime();
+        long drawTime = drawEnd - drawStart;
+        System.out.println(drawTime);
 
         g2.dispose();
     }

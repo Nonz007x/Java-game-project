@@ -16,7 +16,6 @@ public class Entity {
     protected int spriteCounter = 0;
     protected int spriteNum = 1;
     public Rectangle hitBox;
-    public boolean collisionOn = false;
     public Set<String> collisionDirections = new HashSet<>();
 
     public void addCollisionDirection(String direction) {

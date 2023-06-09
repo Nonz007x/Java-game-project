@@ -3,14 +3,16 @@ package entity;
 import main.GamePanel;
 import main.KeyHandler;
 import main.MouseHandler;
+import main.UtilityTools;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Player extends Entity {
     public int playerScreenPosX;
@@ -20,7 +22,6 @@ public class Player extends Entity {
     MouseHandler mouseH;
     public final int screenX;
     public final int screenY;
-
 
 
     public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
@@ -54,21 +55,42 @@ public class Player extends Entity {
     private void resetSpeed() {
         speed = baseSpeed;
     }
+
     public void getPlayerImage() {
         try {
             spriteArr = new BufferedImage[8];
 
-            spriteArr[0] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_left_1.png")));
-            spriteArr[1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_1.png")));
-            spriteArr[2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_2.png")));
-            spriteArr[3] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_left_3.png")));
-            spriteArr[4] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_right_1.png")));
-            spriteArr[5] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_1.png")));
-            spriteArr[6] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_2.png")));
-            spriteArr[7] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/traveler_run_right_3.png")));
+            spriteArr[0] = initializePlayer("traveler_left_1");
+            spriteArr[1] = initializePlayer("traveler_run_left_1");
+            spriteArr[2] = initializePlayer("traveler_run_left_2");
+            spriteArr[3] = initializePlayer("traveler_run_left_3");
+            spriteArr[4] = initializePlayer("traveler_right_1");
+            spriteArr[5] = initializePlayer("traveler_run_right_1");
+            spriteArr[6] = initializePlayer("traveler_run_right_2");
+            spriteArr[7] = initializePlayer("traveler_run_right_3");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private BufferedImage initializePlayer(String imagePath) throws IOException {
+
+        UtilityTools utilityTools = new UtilityTools();
+
+        // Load the image resource
+        String resourcePath = "/resources/player/" + imagePath + ".png";
+        InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
+
+        if (resourceStream == null) {
+            throw new FileNotFoundException("Missing texture resource: " + resourcePath);
+        }
+
+        BufferedImage image = ImageIO.read(resourceStream);
+
+        // Scale the image
+
+        return utilityTools.scaleImage(image, gp.tileSize, gp.tileSize);
     }
 
     public void update() {
@@ -105,24 +127,22 @@ public class Player extends Entity {
                 worldX += speed;
             }
             //CHECK COLLISION
-            gp.collisionDetector.checkTile(this);
-//            System.out.println(collisionDirections.size());
-            if (collisionDirections.size() < 4) {
-                if (collisionDirections.contains("TOP")) {
-                    worldY += speed;
-                }
-                if (collisionDirections.contains("BOTTOM")) {
-                    worldY -= speed;
-                }
-                if (collisionDirections.contains("LEFT")) {
-                    worldX += speed;
-                }
-                if (collisionDirections.contains("RIGHT")) {
-                    worldX -= speed;
-                }
-            } else {
 
+            gp.collisionDetector.checkTile(this);
+
+            if (collisionDirections.contains("TOP")) {
+                worldY += speed;
             }
+            if (collisionDirections.contains("BOTTOM")) {
+                worldY -= speed;
+            }
+            if (collisionDirections.contains("LEFT")) {
+                worldX += speed;
+            }
+            if (collisionDirections.contains("RIGHT")) {
+                worldX -= speed;
+            }
+
 
             collisionDirections.clear();
 
@@ -132,11 +152,10 @@ public class Player extends Entity {
                 resetSpeed();
             }
             spriteCounter = keyH.shiftPressed ? spriteCounter + 2 : spriteCounter + 1;
-            if(ghosting) {
+            if (ghosting) {
                 spriteNum = 1;
                 spriteCounter = 10;
-            }
-            else if (spriteCounter > 10) {
+            } else if (spriteCounter > 10) {
                 spriteNum = spriteNum > 3 ? 2 : spriteNum + 1;
                 spriteCounter = 0;
             }
@@ -149,38 +168,23 @@ public class Player extends Entity {
     public void render(Graphics2D g2) {
 
         BufferedImage image = null;
-        switch (facing) {
-            case "right" -> {
-                if (spriteNum == 1) {
-                    image = spriteArr[4];
-                }
-                else if (spriteNum == 2) {
-                    image = spriteArr[5];
-                }
-                else if (spriteNum == 3) {
-                    image = spriteArr[6];
-                }
-                else if (spriteNum == 4) {
-                    image = spriteArr[7];
-                }
-            }
-            case "left" -> {
-                if (spriteNum == 1) {
-                    image = spriteArr[0];
-                }
-                else if (spriteNum == 2) {
-                    image = spriteArr[1];
-                }
-                else if (spriteNum == 3) {
-                    image = spriteArr[2];
-                }
-                else if (spriteNum == 4) {
-                    image = spriteArr[3];
-                }
-            }
-            default -> {
-            }
+        Map<String, Integer> spriteMapping = new HashMap<>();
+        spriteMapping.put("left_1", 0);
+        spriteMapping.put("left_2", 1);
+        spriteMapping.put("left_3", 2);
+        spriteMapping.put("left_4", 3);
+        spriteMapping.put("right_1", 4);
+        spriteMapping.put("right_2", 5);
+        spriteMapping.put("right_3", 6);
+        spriteMapping.put("right_4", 7);
+
+        String spriteKey = facing + "_" + spriteNum;
+
+        if (spriteMapping.containsKey(spriteKey)) {
+            int spriteIndex = spriteMapping.get(spriteKey);
+            image = spriteArr[spriteIndex];
         }
+
 
         playerScreenPosX = screenX;
         playerScreenPosY = screenY;
@@ -208,14 +212,14 @@ public class Player extends Entity {
             playerScreenPosY = screenHeight - (worldHeight - worldY);
         }
 
-        g2.drawImage(image, playerScreenPosX, playerScreenPosY, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, playerScreenPosX, playerScreenPosY, null);
 
-        Graphics2D rotatedG2 = (Graphics2D) g2.create();
-        rotatedG2.setColor(Color.GREEN);
-        rotatedG2.translate(screenX + 30, screenY + 30);
-        rotatedG2.rotate(mouseH.rotationAngleRad);
-        rotatedG2.fillRect(-6, -6, 12, 12);
-        rotatedG2.dispose();
+//        Graphics2D rotatedG2 = (Graphics2D) g2.create();
+//        rotatedG2.setColor(Color.GREEN);
+//        rotatedG2.translate(screenX + 30, screenY + 30);
+//        rotatedG2.rotate(mouseH.rotationAngleRad);
+//        rotatedG2.fillRect(-6, -6, 12, 12);
+//        rotatedG2.dispose();
 
         g2.setColor(Color.RED);
         g2.fillRect(mouseH.mouseX, mouseH.mouseY, 4, 4);

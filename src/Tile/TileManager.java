@@ -1,14 +1,12 @@
 package Tile;
 
 import main.GamePanel;
+import main.UtilityTools;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Objects;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 public class TileManager {
 
@@ -23,28 +21,53 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldRow][gp.maxWorldCol];
 
         getTileImage();
-        loadMap("/res/maps/map01.txt");
+        loadMap("/resources/maps/map01.txt");
     }
 
     public void getTileImage() {
-
         try {
-            tile[0] = new Tile() {{
-                image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/tiles/Grass16x16.png")));
-            }};
-            tile[1] = new Tile() {{
-                image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/tiles/missing_texture.png")));
-            }};
-            tile[1].collision = true;
+
+            initializeTile(0, "Grass16x16", false);
+            initializeTile(1, "missing_texture", true);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private void initializeTile(int index , String imagePath, boolean collision) throws IOException {
+
+        UtilityTools utilityTools = new UtilityTools();
+        try {
+            Tile newTile = new Tile();
+
+            // Load the image resource
+            String resourcePath = "/resources/tiles/" + imagePath + ".png";
+            InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
+
+            if (resourceStream == null) {
+                throw new FileNotFoundException("Missing texture resource: " + resourcePath);
+            }
+
+            BufferedImage image = ImageIO.read(resourceStream);
+
+            // Scale the image
+            BufferedImage scaledImage = utilityTools.scaleImage(image, gp.tileSize, gp.tileSize);
+
+            newTile.setImage(scaledImage);
+            newTile.setCollision(collision);
+
+            tile[index] = newTile;
+
+        } catch (IOException e) {
+            throw new IOException("Failed to load image: " + imagePath, e);
+        }
+
+    }
     public void loadMap(String filePath) {
 
         try {
+
             InputStream is = getClass().getResourceAsStream(filePath);
             assert is != null;
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -112,17 +135,13 @@ public class TileManager {
                         screenX < screenWidth &&
                         screenY > -tileSize &&
                         screenY < screenHeight) {
-                    g2.drawImage(tile[tileNum].image, screenX, screenY, tileSize, tileSize, null);
+                    g2.drawImage(tile[tileNum].image, screenX, screenY, null);
                 }
             }
         }
     }
 
-    public int getTile(int row, int col) {
+    public int getTileNum(int row, int col) {
         return mapTileNum[row][col];
-    }
-
-    public boolean isCollision(int tileNumber) {
-        return tile[tileNumber].collision;
     }
 }
