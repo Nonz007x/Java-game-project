@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Player extends Entity {
     public int playerScreenPosX;
@@ -22,6 +23,8 @@ public class Player extends Entity {
     MouseHandler mouseH;
     public final int screenX;
     public final int screenY;
+
+    private String facing;
 
 
     public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
@@ -43,17 +46,17 @@ public class Player extends Entity {
         worldX = 48;
         worldY = 48;
         baseSpeed = 4;
-        speed = baseSpeed;
+        setSpeed(baseSpeed);
         facing = "right";
         direction = "right";
     }
 
     private void sprint() {
-        speed = 8;
+        setSpeed(baseSpeed*2);
     }
 
     private void resetSpeed() {
-        speed = baseSpeed;
+        setSpeed(baseSpeed);
     }
 
     public void getPlayerImage() {
@@ -89,13 +92,12 @@ public class Player extends Entity {
         BufferedImage image = ImageIO.read(resourceStream);
 
         // Scale the image
-
         return utilityTools.scaleImage(image, gp.tileSize, gp.tileSize);
     }
 
     public void update() {
         if (mouseH.isClicked) {
-//            System.out.println("ScreenX: " + screenX + "ScreenY: " + playerScreenPosY);
+
             worldX += mouseH.mouseX - playerScreenPosX;
             worldY += mouseH.mouseY - playerScreenPosY;
 
@@ -110,39 +112,38 @@ public class Player extends Entity {
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             boolean ghosting = true;
 
-            if (keyH.upPressed && !keyH.downPressed) {
-                ghosting = false;
-                worldY -= speed;
-            }
-            if (keyH.downPressed && !keyH.upPressed) {
-                ghosting = false;
-                worldY += speed;
-            }
-            if (keyH.leftPressed && !keyH.rightPressed) {
-                ghosting = false;
-                worldX -= speed;
-            }
-            if (keyH.rightPressed && !keyH.leftPressed) {
-                ghosting = false;
-                worldX += speed;
-            }
             //CHECK COLLISION
-
             gp.collisionDetector.checkTile(this);
 
             if (collisionDirections.contains("TOP")) {
-                worldY += speed;
+                velocityY(speed);;
             }
             if (collisionDirections.contains("BOTTOM")) {
-                worldY -= speed;
+                velocityY(-speed);
             }
             if (collisionDirections.contains("LEFT")) {
-                worldX += speed;
+                velocityX(speed);
             }
             if (collisionDirections.contains("RIGHT")) {
-                worldX -= speed;
+                velocityX(-speed);
             }
 
+            if (keyH.upPressed && !keyH.downPressed) {
+                ghosting = false;
+                velocityY(-speed);
+            }
+            if (keyH.downPressed && !keyH.upPressed) {
+                ghosting = false;
+                velocityY(speed);
+            }
+            if (keyH.leftPressed && !keyH.rightPressed) {
+                ghosting = false;
+                velocityX(-speed);
+            }
+            if (keyH.rightPressed && !keyH.leftPressed) {
+                ghosting = false;
+                velocityX(speed);
+            }
 
             collisionDirections.clear();
 

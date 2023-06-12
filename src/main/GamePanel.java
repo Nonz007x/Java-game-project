@@ -2,6 +2,8 @@ package main;
 
 import entity.Player;
 import Tile.TileManager;
+import entity.enemies.Enemy;
+import entity.enemies.Slime;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
     public CollisionDetector collisionDetector = new CollisionDetector(this);
     KeyHandler keyH = new KeyHandler();
     MouseHandler mouseH = new MouseHandler(this);
-    Thread gameThread;
+    private Thread gameThread;
     public Player player = new Player(this, keyH, mouseH);
 
     // DEBUG
@@ -84,7 +86,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update(){
         player.update();
-
     }
     @Override
     public void paintComponent(Graphics g){
