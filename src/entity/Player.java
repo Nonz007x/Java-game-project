@@ -43,20 +43,11 @@ public class Player extends Entity {
 
     public void setDefaultValues() {
 
-        worldX = 48;
-        worldY = 48;
-        baseSpeed = 4;
-        setSpeed(baseSpeed);
+        worldX = 96;
+        worldY = 96;
+        setSpeed(4);
         facing = "right";
         direction = "right";
-    }
-
-    private void sprint() {
-        setSpeed(baseSpeed*2);
-    }
-
-    private void resetSpeed() {
-        setSpeed(baseSpeed);
     }
 
     public void getPlayerImage() {
@@ -96,6 +87,7 @@ public class Player extends Entity {
     }
 
     public void update() {
+        gp.collisionDetector.checkTile(this);
         if (mouseH.isClicked) {
 
             worldX += mouseH.mouseX - playerScreenPosX;
@@ -108,52 +100,54 @@ public class Player extends Entity {
         } else {
             facing = "left";
         }
+        checkUserInput();
+    }
 
+    public void checkUserInput() {
+        velocityX = 0;
+        velocityY = 0;
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
-            boolean ghosting = true;
 
             //CHECK COLLISION
-            gp.collisionDetector.checkTile(this);
-
-            if (collisionDirections.contains("TOP")) {
-                velocityY(speed);;
-            }
-            if (collisionDirections.contains("BOTTOM")) {
-                velocityY(-speed);
-            }
-            if (collisionDirections.contains("LEFT")) {
-                velocityX(speed);
-            }
-            if (collisionDirections.contains("RIGHT")) {
-                velocityX(-speed);
-            }
 
             if (keyH.upPressed && !keyH.downPressed) {
-                ghosting = false;
-                velocityY(-speed);
+                velocityY = -1;
             }
             if (keyH.downPressed && !keyH.upPressed) {
-                ghosting = false;
-                velocityY(speed);
+                velocityY = 1;
             }
             if (keyH.leftPressed && !keyH.rightPressed) {
-                ghosting = false;
-                velocityX(-speed);
+                velocityX = -1;
             }
             if (keyH.rightPressed && !keyH.leftPressed) {
-                ghosting = false;
-                velocityX(speed);
+                velocityX = 1;
             }
 
-            collisionDirections.clear();
+            if (collisionDirections.contains("TOP")) {
+                velocityY += 1;
+            }
+
+            if (collisionDirections.contains("LEFT")) {
+                velocityX += 1 ;
+            }
+
+            if (collisionDirections.contains("RIGHT")) {
+                velocityX -= 1 ;
+            }
+
+            if (collisionDirections.contains("BOTTOM")) {
+                velocityY -= 1 ;
+            }
 
             if (keyH.shiftPressed) {
-                sprint();
-            } else {
-                resetSpeed();
+                velocityX *= 2;
+                velocityY *= 2;
             }
+            updatePosition(velocityX * speed, velocityY * speed);
+            collisionDirections.clear();
+
             spriteCounter = keyH.shiftPressed ? spriteCounter + 2 : spriteCounter + 1;
-            if (ghosting) {
+            if (velocityY == 0 && velocityX == 0) {
                 spriteNum = 1;
                 spriteCounter = 10;
             } else if (spriteCounter > 10) {
@@ -164,6 +158,7 @@ public class Player extends Entity {
             spriteNum = 1;
             spriteCounter = 10;
         }
+
     }
 
     public void render(Graphics2D g2) {
@@ -215,12 +210,12 @@ public class Player extends Entity {
 
         g2.drawImage(image, playerScreenPosX, playerScreenPosY, null);
 
-//        Graphics2D rotatedG2 = (Graphics2D) g2.create();
-//        rotatedG2.setColor(Color.GREEN);
-//        rotatedG2.translate(screenX + 30, screenY + 30);
-//        rotatedG2.rotate(mouseH.rotationAngleRad);
-//        rotatedG2.fillRect(-6, -6, 12, 12);
-//        rotatedG2.dispose();
+        Graphics2D rotatedG2 = (Graphics2D) g2.create();
+        rotatedG2.setColor(Color.GREEN);
+        rotatedG2.translate(playerScreenPosX + 30, playerScreenPosY + 30);
+        rotatedG2.rotate(mouseH.rotationAngleRad);
+        rotatedG2.fillRect(0, 0, 12, 12);
+        rotatedG2.dispose();
 
         g2.setColor(Color.RED);
         g2.fillRect(mouseH.mouseX, mouseH.mouseY, 4, 4);

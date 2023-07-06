@@ -6,10 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Entity {
-    public int prevX;
-    public int prevY;
+    public int prevX, prevY;
     public int worldX, worldY;
-    public int baseSpeed;
+    public int velocityX, velocityY;
     public int speed;
     protected BufferedImage[] spriteArr;
     public String direction;
@@ -26,20 +25,11 @@ public abstract class Entity {
     }
 
     public void updatePosition (int newX, int newY) {
-        int oldX = getX();
-        int oldY = getY();
+        prevX = getX();
+        prevY =  getY();
 
-        prevX = oldX;
-        prevY = oldY;
-
-        setX(newX);
-        setY(newY);
-    }
-    public void velocityX (int x) {
-        worldX += x;
-    }
-    public void velocityY (int y) {
-        worldY += y;
+        worldX += newX;
+        worldY += newY;
     }
     public int getX() {
         return worldX;

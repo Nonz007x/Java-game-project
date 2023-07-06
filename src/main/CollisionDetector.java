@@ -3,6 +3,8 @@ package main;
 import Tile.TileManager;
 import entity.Entity;
 
+import java.awt.*;
+
 public class CollisionDetector {
     private GamePanel gp;
 
@@ -13,33 +15,48 @@ public class CollisionDetector {
     public void checkTile(Entity entity) {
         TileManager tileManager = gp.tileM;
         int tileSize = gp.tileSize;
+        Rectangle hitBox = entity.hitBox;
+        int entityWorldX = entity.worldX;
+        int entityWorldY = entity.worldY;
 
-        int entityLeftWorldX = entity.worldX + entity.hitBox.x;
-        int entityRightWorldX = entity.worldX + entity.hitBox.x + entity.hitBox.width;
-        int entityTopWorldY = entity.worldY + entity.hitBox.y;
-        int entityBottomWorldY = entity.worldY + entity.hitBox.y + entity.hitBox.height;
+        int entityLeftWorldX = entityWorldX + hitBox.x;
+        int entityRightWorldX = entityLeftWorldX + hitBox.width;
+        int entityTopWorldY = entityWorldY + hitBox.y;
+        int entityBottomWorldY = entityTopWorldY + hitBox.height;
 
-        int entityX = entity.worldX + entity.hitBox.x + entity.hitBox.width / 2;
-        int entityY = entity.worldY + entity.hitBox.y + entity.hitBox.height / 2;
+        int entityX = entityLeftWorldX + hitBox.width / 2;
+        int entityY = entityTopWorldY + hitBox.height / 2;
 
         int entityTileX = entityX / tileSize;
         int entityTileY = entityY / tileSize;
-
         int entityLeftCol = entityLeftWorldX / tileSize;
         int entityRightCol = entityRightWorldX / tileSize;
         int entityTopRow = entityTopWorldY / tileSize;
         int entityBottomRow = entityBottomWorldY / tileSize;
 
-        checkCollision(tileManager, entity, entityTopRow, entityTileX, "TOP");
-        checkCollision(tileManager, entity, entityBottomRow, entityTileX, "BOTTOM");
-        checkCollision(tileManager, entity, entityTileY, entityLeftCol, "LEFT");
-        checkCollision(tileManager, entity, entityTileY, entityRightCol, "RIGHT");
-    }
-
-    private void checkCollision(TileManager tileManager, Entity entity, int row, int col, String direction) {
-        int tileNum = tileManager.getTileNum(row, col);
+        // Check collision for top row tile
+        int tileNum = tileManager.getTileNum(entityTopRow, entityTileX);
         if (tileManager.tile[tileNum].isCollision()) {
-            entity.addCollisionDirection(direction);
+            entity.addCollisionDirection("TOP");
+        }
+
+        // Check collision for bottom row tile
+        tileNum = tileManager.getTileNum(entityBottomRow, entityTileX);
+        if (tileManager.tile[tileNum].isCollision()) {
+            entity.addCollisionDirection("BOTTOM");
+        }
+
+        // Check collision for left column tile
+        tileNum = tileManager.getTileNum(entityTileY, entityLeftCol);
+        if (tileManager.tile[tileNum].isCollision()) {
+            entity.addCollisionDirection("LEFT");
+        }
+
+        // Check collision for right column tile
+        tileNum = tileManager.getTileNum(entityTileY, entityRightCol);
+        if (tileManager.tile[tileNum].isCollision()) {
+            entity.addCollisionDirection("RIGHT");
+
         }
     }
 }

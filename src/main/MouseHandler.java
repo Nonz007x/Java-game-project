@@ -29,7 +29,7 @@ public class MouseHandler implements MouseMotionListener, MouseListener {
         // Update the mouse position while dragging
         mouseX = e.getX();
         mouseY = e.getY();
-        rotationAngleRad = Math.atan2(mouseY - gp.screenHeight / 2, mouseX - gp.screenWidth / 2);
+        rotationAngleRad = Math.atan2(mouseY - gp.player.playerScreenPosY - 30, mouseX - gp.player.playerScreenPosX - 30);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class MouseHandler implements MouseMotionListener, MouseListener {
         // Update the mouse position while moving
         mouseX = e.getX();
         mouseY = e.getY();
-        rotationAngleRad = Math.atan2(mouseY - gp.screenHeight / 2, mouseX - gp.screenWidth / 2);
+        rotationAngleRad = Math.atan2(mouseY - gp.player.playerScreenPosY - 30, mouseX - gp.player.playerScreenPosX - 30);
     }
 
     public void startTracking() {
