@@ -1,27 +1,34 @@
-package Tile;
+package tile;
 
+import entity.Player;
 import main.GamePanel;
 import main.UtilityTools;
+import utils.LoadSave;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Arrays;
 
 public class TileManager {
 
     GamePanel gp;
+    Player player;
     public Tile[] tile;
-    public int[][] mapTileNum;
+    private final int[][] mapTileNum;
 
-    public TileManager(GamePanel gp) {
+    public TileManager(GamePanel gp, Player player) {
 
         this.gp = gp;
+        this.player = player;
         tile = new Tile[10];
         mapTileNum = new int[gp.maxWorldRow][gp.maxWorldCol];
+        System.out.println(Arrays.toString(LoadSave.getAllLevels()));
 
         getTileImage();
-        loadMap("/resources/maps/map01.txt");
+        // FIX THIS
+        loadMap("/res/maps/1.txt");
     }
 
     public void getTileImage() {
@@ -42,7 +49,7 @@ public class TileManager {
             Tile newTile = new Tile();
 
             // Load the image resource
-            String resourcePath = "/resources/tiles/" + imagePath + ".png";
+            String resourcePath = "/res/tiles/" + imagePath + ".png";
             InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
 
             if (resourceStream == null) {
@@ -94,51 +101,55 @@ public class TileManager {
         int worldWidth = gp.worldWidth;
         int worldHeight = gp.worldHeight;
 
-        int playerScreenX = gp.player.screenX;
-        int playerScreenY = gp.player.screenY;
-        int playerWorldX = gp.player.worldX;
-        int playerWorldY = gp.player.worldY;
+        int playerScreenX = player.screenX;
+        int playerScreenY = player.screenY;
+        int playerWorldX = player.getX();
+        int playerWorldY = player.getY();
 
         int tileSize = gp.tileSize;
         int screenWidth = gp.screenWidth;
         int screenHeight = gp.screenHeight;
 
         for (int worldRow = 0; worldRow < gp.maxWorldRow; worldRow++) {
-            int worldY = worldRow * tileSize;
-            int screenY = worldY - playerWorldY + playerScreenY;
+            int tileY = worldRow * tileSize;
+            int screenY = tileY - playerWorldY + playerScreenY;
 
             for (int worldCol = 0; worldCol < gp.maxWorldCol; worldCol++) {
                 int tileNum = mapTileNum[worldRow][worldCol];
 
-                int worldX = worldCol * tileSize;
-                int screenX = worldX - playerWorldX + playerScreenX;
+                int tileX = worldCol * tileSize;
+                int screenX = tileX - playerWorldX + playerScreenX;
 
                 // Stop camera at the edge
-                if (playerScreenX > playerWorldX) {
-                    screenX = worldX;
-                }
-                if (playerScreenY > playerWorldY) {
-                    screenY = worldY;
-                }
+                if (playerScreenX > playerWorldX)
+                    screenX = tileX;
+
+                if (playerScreenY > playerWorldY)
+                    screenY = tileY;
+
 
                 int rightOffset = screenWidth - playerScreenX;
-                if (rightOffset > worldWidth - playerWorldX) {
-                    screenX = screenWidth - (worldWidth - worldX);
-                }
+                if (rightOffset > worldWidth - playerWorldX)
+                    screenX = screenWidth - (worldWidth - tileX);
+
 
                 int bottomOffset = screenHeight - playerScreenY;
-                if (bottomOffset > worldHeight - playerWorldY) {
-                    screenY = screenHeight - (worldHeight - worldY);
-                }
+                if (bottomOffset > worldHeight - playerWorldY)
+                    screenY = screenHeight - (worldHeight - tileY);
 
-                if (screenX > -tileSize &&
-                        screenX < screenWidth &&
-                        screenY > -tileSize &&
-                        screenY < screenHeight) {
+
+                if (isTileVisible(screenX, screenY, screenWidth, screenHeight, tileSize)) {
                     g2.drawImage(tile[tileNum].image, screenX, screenY, null);
                 }
             }
         }
+    }
+
+    private boolean isTileVisible(int screenX, int screenY, int screenWidth, int screenHeight, int tileSize) {
+        return screenX > -tileSize &&
+                screenX < screenWidth &&
+                screenY > -tileSize &&
+                screenY < screenHeight;
     }
 
     public int getTileNum(int row, int col) {

@@ -8,12 +8,9 @@ import java.util.Set;
 public abstract class Entity {
     public int prevX, prevY;
     public int worldX, worldY;
-    public int velocityX, velocityY;
+    public float velocityX, velocityY;
     public int speed;
-    protected BufferedImage[] spriteArr;
-    public String direction;
-    protected int spriteCounter = 0;
-    protected int spriteNum = 1;
+    protected int state;
     public Rectangle hitBox;
     public Set<String> collisionDirections = new HashSet<>();
 

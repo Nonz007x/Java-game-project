@@ -1,18 +1,18 @@
 package main;
 
-import Tile.TileManager;
+import tile.TileManager;
 import entity.Entity;
 
 import java.awt.*;
 
 public class CollisionDetector {
-    private GamePanel gp;
+    private static GamePanel gp;
 
     public CollisionDetector(GamePanel gp) {
-        this.gp = gp;
+        CollisionDetector.gp = gp;
     }
 
-    public void checkTile(Entity entity) {
+    public static void checkTile(Entity entity) {
         TileManager tileManager = gp.tileM;
         int tileSize = gp.tileSize;
         Rectangle hitBox = entity.hitBox;
@@ -59,4 +59,12 @@ public class CollisionDetector {
 
         }
     }
+
+//    public static boolean canMoveHere(int x, int y, int width, int height) {
+//
+//    }
+//
+//    private static boolean IsSolid(int x, int y) {
+
+//    }
 }

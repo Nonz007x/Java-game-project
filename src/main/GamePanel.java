@@ -1,9 +1,10 @@
 package main;
 
 import entity.Player;
-import Tile.TileManager;
-import entity.enemies.Enemy;
-import entity.enemies.Slime;
+import inputs.MouseEventHandler;
+import tile.TileManager;
+import inputs.KeyHandler;
+import inputs.MouseEventHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,14 +28,15 @@ public class GamePanel extends JPanel implements Runnable {
 
     // TICK
     private final int ticksPerSecond = 60 ;
+    public double elapsedTime;
     int FPS = 60;
 
-    TileManager tileM = new TileManager(this);
     public CollisionDetector collisionDetector = new CollisionDetector(this);
-    KeyHandler keyH = new KeyHandler();
-    MouseHandler mouseH = new MouseHandler(this);
+    KeyHandler keyH = new KeyHandler(this);
+    MouseEventHandler mouseH = new MouseEventHandler(this);
     private Thread gameThread;
-    public Player player = new Player(this, keyH, mouseH);
+    public Player player = new Player(this);
+    TileManager tileM = new TileManager(this, player);
 
     // DEBUG
     boolean showFps = true;
@@ -59,7 +61,6 @@ public class GamePanel extends JPanel implements Runnable {
     public void run(){
 
         double delta = 0;
-        double elapsedTime;
         long lastTime = System.currentTimeMillis();
         long currentTime;
 
@@ -105,5 +106,17 @@ public class GamePanel extends JPanel implements Runnable {
 */
 
         g2.dispose();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public int getWorldHeight() {
+        return worldHeight;
+    }
+
+    public int getWorldWidth() {
+        return worldWidth;
     }
 }

@@ -1,8 +1,6 @@
 package entity;
 
 import main.GamePanel;
-import main.KeyHandler;
-import main.MouseHandler;
 import main.UtilityTools;
 
 import javax.imageio.ImageIO;
@@ -11,57 +9,95 @@ import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+
+import static utils.Constants.PlayerConstants.*;
 
 public class Player extends Entity {
+    private BufferedImage[][] animations;
+    private int aniTick, aniIndex, aniSpeed = 10;
+    private int flipW = 1;
+    private int flipX = 0;
     public int playerScreenPosX;
     public int playerScreenPosY;
-    public KeyHandler keyH;
-    GamePanel gp;
-    MouseHandler mouseH;
+    private boolean moving = false;
+    private boolean left, right, up, down;
+
+    private boolean mouseClicked;
+
+    private boolean dodgeActive;
+    private int dodgeTick;
+    private int dodgeCooldown;
+
+    private double rotationAngleRad;
     public final int screenX;
     public final int screenY;
+    private int mouseX, mouseY;
 
-    private String facing;
+    GamePanel gp;
 
-
-    public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
+    public Player(GamePanel gp) {
         this.gp = gp;
-        this.keyH = keyH;
-        this.mouseH = mouseH;
 
-        hitBox = new Rectangle(15, 18, 20, 33);
+        this.hitBox = new Rectangle(15, 18, 20, 33);
 
-        screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
-        screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+        this.speed = 4;
 
-        setDefaultValues();
-        getPlayerImage();
+        this.screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        this.screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+
+        this.state = IDLE;
+
+        setSpawn();
+        loadAnimations();
     }
 
-    public void setDefaultValues() {
-
-        worldX = 96;
-        worldY = 96;
-        setSpeed(4);
-        facing = "right";
-        direction = "right";
+    public void setSpawn() {
+        this.worldX = 96;
+        this.worldY = 96;
     }
 
-    public void getPlayerImage() {
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
+    public void setDown(boolean down) {
+        this.down = down;
+    }
+
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public void mouseClicked(boolean mouseClicked) {
+        this.mouseClicked = mouseClicked;
+    }
+
+    public void setMousePosition(int x, int y) {
+        this.mouseX = x;
+        this.mouseY = y;
+    }
+
+    public void setRotationAngleRad(double rad) {
+        this.rotationAngleRad = rad;
+    }
+
+    public void loadAnimations() {
         try {
-            spriteArr = new BufferedImage[8];
+            animations = new BufferedImage[2][4];
+            String[] spriteNames = {
+                    "traveler_right_1",
+                    "traveler_run_right_1",
+                    "traveler_run_right_2",
+                    "traveler_run_right_3"
+            };
 
-            spriteArr[0] = initializePlayer("traveler_left_1");
-            spriteArr[1] = initializePlayer("traveler_run_left_1");
-            spriteArr[2] = initializePlayer("traveler_run_left_2");
-            spriteArr[3] = initializePlayer("traveler_run_left_3");
-            spriteArr[4] = initializePlayer("traveler_right_1");
-            spriteArr[5] = initializePlayer("traveler_run_right_1");
-            spriteArr[6] = initializePlayer("traveler_run_right_2");
-            spriteArr[7] = initializePlayer("traveler_run_right_3");
+            animations[0][0] = initializePlayer(spriteNames[0]);
+            for (int i = 1; i < spriteNames.length; i++)
+                animations[1][i - 1] = initializePlayer(spriteNames[i]);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,11 +105,9 @@ public class Player extends Entity {
     }
 
     private BufferedImage initializePlayer(String imagePath) throws IOException {
-
         UtilityTools utilityTools = new UtilityTools();
 
-        // Load the image resource
-        String resourcePath = "/resources/player/" + imagePath + ".png";
+        String resourcePath = "/res/player/" + imagePath + ".png";
         InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
 
         if (resourceStream == null) {
@@ -82,143 +116,177 @@ public class Player extends Entity {
 
         BufferedImage image = ImageIO.read(resourceStream);
 
-        // Scale the image
         return utilityTools.scaleImage(image, gp.tileSize, gp.tileSize);
     }
 
+
     public void update() {
-        gp.collisionDetector.checkTile(this);
-        if (mouseH.isClicked) {
 
-            worldX += mouseH.mouseX - playerScreenPosX;
-            worldY += mouseH.mouseY - playerScreenPosY;
+        updatePos();
+        updateCamera();
+        setAnimation();
+        updateMouseEvent();
+        updateAnimationTick();
 
-            mouseH.isClicked = false;
+        if (dodgeActive) {
+            dodgeTick++;
+            if (dodgeTick >= 21) {
+                dodgeTick = 0;
+                dodgeActive = false;
+            }
         }
-        if (mouseH.mouseX >= playerScreenPosX) {
-            facing = "right";
-        } else {
-            facing = "left";
-        }
-        checkUserInput();
+        dodgeCooldown--;
     }
 
-    public void checkUserInput() {
+    private void updateMouseEvent() {
+        if (mouseClicked) {
+            int deltaX = mouseX - playerScreenPosX;
+            int deltaY = mouseY - playerScreenPosY;
+
+            worldX += deltaX;
+            worldY += deltaY;
+
+            mouseClicked = false;
+        }
+
+        if (mouseX >= playerScreenPosX + gp.tileSize / 2) {
+            flipW = 1;
+            flipX = 0;
+        } else {
+            flipW = -1;
+            flipX = 48;
+        }
+    }
+
+    private void updatePos() {
+        // checkTile(this);
+        moving = false;
         velocityX = 0;
         velocityY = 0;
-        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+//        if ((!left && !right && !up && !down) || (right && left) || (up && down))
+//            return;
 
-            //CHECK COLLISION
-
-            if (keyH.upPressed && !keyH.downPressed) {
-                velocityY = -1;
-            }
-            if (keyH.downPressed && !keyH.upPressed) {
-                velocityY = 1;
-            }
-            if (keyH.leftPressed && !keyH.rightPressed) {
-                velocityX = -1;
-            }
-            if (keyH.rightPressed && !keyH.leftPressed) {
-                velocityX = 1;
-            }
-
-            if (collisionDirections.contains("TOP")) {
-                velocityY += 1;
-            }
-
-            if (collisionDirections.contains("LEFT")) {
-                velocityX += 1 ;
-            }
-
-            if (collisionDirections.contains("RIGHT")) {
-                velocityX -= 1 ;
-            }
-
-            if (collisionDirections.contains("BOTTOM")) {
-                velocityY -= 1 ;
-            }
-
-            if (keyH.shiftPressed) {
-                velocityX *= 2;
-                velocityY *= 2;
-            }
-            updatePosition(velocityX * speed, velocityY * speed);
-            collisionDirections.clear();
-
-            spriteCounter = keyH.shiftPressed ? spriteCounter + 2 : spriteCounter + 1;
-            if (velocityY == 0 && velocityX == 0) {
-                spriteNum = 1;
-                spriteCounter = 10;
-            } else if (spriteCounter > 10) {
-                spriteNum = spriteNum > 3 ? 2 : spriteNum + 1;
-                spriteCounter = 0;
-            }
-        } else {
-            spriteNum = 1;
-            spriteCounter = 10;
+        if (up && !collisionDirections.contains("TOP")) {
+            velocityY = -speed;
+        }
+        if (down && !collisionDirections.contains("BOTTOM")) {
+            velocityY = speed;
+        }
+        if (left && !collisionDirections.contains("LEFT")) {
+            velocityX = -speed;
+        }
+        if (right && !collisionDirections.contains("RIGHT")) {
+            velocityX = speed;
         }
 
+
+        if (dodgeActive && dodgeCooldown <= 0) {
+            velocityY = (float) -(Math.sin(rotationAngleRad) * 15);
+            velocityX = (float) -(Math.cos(rotationAngleRad) * 15);
+
+            updateXPos(velocityX);
+            updateYPos(velocityY);
+            return;
+        }
+        updateXPos(velocityX);
+        updateYPos(velocityY);
+        collisionDirections.clear();
+        moving = true;
     }
 
-    public void render(Graphics2D g2) {
 
-        BufferedImage image = null;
-        Map<String, Integer> spriteMapping = new HashMap<>();
-        spriteMapping.put("left_1", 0);
-        spriteMapping.put("left_2", 1);
-        spriteMapping.put("left_3", 2);
-        spriteMapping.put("left_4", 3);
-        spriteMapping.put("right_1", 4);
-        spriteMapping.put("right_2", 5);
-        spriteMapping.put("right_3", 6);
-        spriteMapping.put("right_4", 7);
+    private void updateXPos(float velocity) {
+//        if(CanMoveHere()) {
+        worldX += velocity;
+//        }
+    }
 
-        String spriteKey = facing + "_" + spriteNum;
+    private void updateYPos(float velocity) {
+        worldY += velocity;
+    }
 
-        if (spriteMapping.containsKey(spriteKey)) {
-            int spriteIndex = spriteMapping.get(spriteKey);
-            image = spriteArr[spriteIndex];
+    public void dodge() {
+        if (dodgeActive)
+            return;
+        dodgeActive = true;
+        dodgeCooldown = 15;
+    }
+
+    private void setAnimation() {
+        int startAni = state;
+
+        if (moving && (velocityX != 0 || velocityY != 0))
+            state = RUNNING;
+        else
+            state = IDLE;
+
+        if (startAni != state)
+            resetAniTick();
+    }
+
+    private void resetAniTick() {
+        aniTick = 0;
+        aniIndex = 0;
+    }
+
+    private void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= GetSpriteAmount(state)) {
+                aniIndex = 0;
+            }
+
         }
+    }
 
-
-        playerScreenPosX = screenX;
-        playerScreenPosY = screenY;
-
-        int worldWidth = gp.worldWidth;
-        int worldHeight = gp.worldHeight;
+    private void updateCamera() {
+        playerScreenPosX = Math.min(screenX, worldX);
+        playerScreenPosY = Math.min(screenY, worldY);
 
         int screenWidth = gp.screenWidth;
         int screenHeight = gp.screenHeight;
 
-        if (screenX > worldX) {
-            playerScreenPosX = worldX;
-        }
-        if (screenY > worldY) {
-            playerScreenPosY = worldY;
-        }
+        int worldWidth = gp.getWorldWidth();
+        int worldHeight = gp.getWorldHeight();
 
-        int rightOffset = screenWidth - screenX;
-        if (rightOffset > worldWidth - worldX) {
-            playerScreenPosX = screenWidth - (worldWidth - worldX);
-        }
+        int maxRightOffset = worldWidth - worldX;
+        playerScreenPosX = Math.max(playerScreenPosX, screenWidth - maxRightOffset);
 
-        int bottomOffset = screenHeight - screenY;
-        if (bottomOffset > worldHeight - worldY) {
-            playerScreenPosY = screenHeight - (worldHeight - worldY);
-        }
+        int maxBottomOffset = worldHeight - worldY;
+        playerScreenPosY = Math.max(playerScreenPosY, screenHeight - maxBottomOffset);
+    }
 
-        g2.drawImage(image, playerScreenPosX, playerScreenPosY, null);
+
+    public void render(Graphics2D g2) {
+
+        g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, 48 * flipW, 48, null);
 
         Graphics2D rotatedG2 = (Graphics2D) g2.create();
         rotatedG2.setColor(Color.GREEN);
         rotatedG2.translate(playerScreenPosX + 30, playerScreenPosY + 30);
-        rotatedG2.rotate(mouseH.rotationAngleRad);
+        rotatedG2.rotate(rotationAngleRad);
         rotatedG2.fillRect(0, 0, 12, 12);
         rotatedG2.dispose();
 
         g2.setColor(Color.RED);
-        g2.fillRect(mouseH.mouseX, mouseH.mouseY, 4, 4);
+        g2.fillRect(mouseX, mouseY, 4, 4);
+        drawHitbox(g2);
 
+    }
+
+    private void drawHitbox(Graphics2D g) {
+        g.setColor(Color.RED);
+        g.drawRect(playerScreenPosX + hitBox.x, playerScreenPosY + hitBox.y, hitBox.width, hitBox.height);
+
+    }
+
+    public int getPlayerScreenPosX() {
+        return playerScreenPosX;
+    }
+
+    public int getPlayerScreenPosY() {
+        return playerScreenPosY;
     }
 }
