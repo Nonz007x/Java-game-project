@@ -1,12 +1,11 @@
-package main;
+package utils;
 
 import java.awt.*;
+import main.GamePanel;
 import java.awt.image.BufferedImage;
+public class HelpMethods {
 
-public class UtilityTools {
-
-
-    public BufferedImage scaleImage(BufferedImage originalImage, int width, int height) {
+    public static BufferedImage scaleImage(BufferedImage originalImage, int width, int height) {
         if (originalImage == null) {
             throw new IllegalArgumentException("Input image is null");
         }

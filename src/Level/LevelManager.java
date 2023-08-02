@@ -1,34 +1,37 @@
-package tile;
+package Level;
 
 import entity.Player;
+import main.Game;
 import main.GamePanel;
-import main.UtilityTools;
+import utils.HelpMethods;
 import utils.LoadSave;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
+import java.util.ArrayList;
 
-public class TileManager {
-
-    GamePanel gp;
-    Player player;
+public class LevelManager {
+    Game game;
     public Tile[] tile;
-    private final int[][] mapTileNum;
+    private ArrayList<Level> levels;
 
-    public TileManager(GamePanel gp, Player player) {
+    private int lvlIndex = 0;
 
-        this.gp = gp;
-        this.player = player;
+    public LevelManager(Game game) {
+        this.game = game;
         tile = new Tile[10];
-        mapTileNum = new int[gp.maxWorldRow][gp.maxWorldCol];
-        System.out.println(Arrays.toString(LoadSave.getAllLevels()));
 
+        levels = new ArrayList<>();
         getTileImage();
-        // FIX THIS
-        loadMap("/res/maps/1.txt");
+        buildAllLevels();
+    }
+
+    private void buildAllLevels() {
+        String[] allLevels = LoadSave.GetAllLevels();
+        for (String path : allLevels)
+            levels.add(new Level(path));
     }
 
     public void getTileImage() {
@@ -43,8 +46,6 @@ public class TileManager {
     }
 
     private void initializeTile(int index , String imagePath, boolean collision) throws IOException {
-
-        UtilityTools utilityTools = new UtilityTools();
         try {
             Tile newTile = new Tile();
 
@@ -59,7 +60,7 @@ public class TileManager {
             BufferedImage image = ImageIO.read(resourceStream);
 
             // Scale the image
-            BufferedImage scaledImage = utilityTools.scaleImage(image, gp.tileSize, gp.tileSize);
+            BufferedImage scaledImage = HelpMethods.scaleImage(image, GamePanel.tileSize, GamePanel.tileSize);
 
             newTile.setImage(scaledImage);
             newTile.setCollision(collision);
@@ -71,51 +72,27 @@ public class TileManager {
         }
 
     }
-    public void loadMap(String filePath) {
-
-        try {
-
-            InputStream is = getClass().getResourceAsStream(filePath);
-            assert is != null;
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-
-            for (int row = 0; row < gp.maxWorldRow; row++) {
-                String line = br.readLine();
-                String[] numbers = line.split(" ");
-
-                for (int col = 0; col < gp.maxWorldCol; col++) {
-                    int num = Integer.parseInt(numbers[col]);
-                    mapTileNum[row][col] = num;
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void render(Graphics2D g2) {
-        // Rendering
 
-        int worldWidth = gp.worldWidth;
-        int worldHeight = gp.worldHeight;
+        int worldWidth = GamePanel.worldWidth;
+        int worldHeight = GamePanel.worldHeight;
 
-        int playerScreenX = player.screenX;
-        int playerScreenY = player.screenY;
-        int playerWorldX = player.getX();
-        int playerWorldY = player.getY();
+        int playerScreenX = game.getPlaying().getPlayer().getScreenX();
+        int playerScreenY = game.getPlaying().getPlayer().getScreenY();
+        int playerWorldX = game.getPlaying().getPlayer().getX();
+        int playerWorldY = game.getPlaying().getPlayer().getY();
 
-        int tileSize = gp.tileSize;
-        int screenWidth = gp.screenWidth;
-        int screenHeight = gp.screenHeight;
+        int tileSize = GamePanel.tileSize;
+        int screenWidth = GamePanel.screenWidth;
+        int screenHeight = GamePanel.screenHeight;
 
-        for (int worldRow = 0; worldRow < gp.maxWorldRow; worldRow++) {
+        for (int worldRow = 0; worldRow < levels.get(0).getWorldRow(); worldRow++) {
             int tileY = worldRow * tileSize;
             int screenY = tileY - playerWorldY + playerScreenY;
 
-            for (int worldCol = 0; worldCol < gp.maxWorldCol; worldCol++) {
-                int tileNum = mapTileNum[worldRow][worldCol];
+            for (int worldCol = 0; worldCol < levels.get(0).getWorldCol(); worldCol++) {
+                int tileNum = levels.get(0).getSpriteIndex(worldCol,worldRow);
 
                 int tileX = worldCol * tileSize;
                 int screenX = tileX - playerWorldX + playerScreenX;
@@ -152,7 +129,15 @@ public class TileManager {
                 screenY < screenHeight;
     }
 
-    public int getTileNum(int row, int col) {
-        return mapTileNum[row][col];
+    public Level getCurrentLevel() {
+        return levels.get(lvlIndex);
+    }
+
+    public int getLevelIndex() {
+        return lvlIndex;
+    }
+
+    public void setLevelIndex(int lvlIndex) {
+        this.lvlIndex = lvlIndex;
     }
 }

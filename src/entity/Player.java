@@ -1,10 +1,11 @@
 package entity;
 
 import main.GamePanel;
-import main.UtilityTools;
+import utils.HelpMethods;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,16 +15,14 @@ import static utils.Constants.PlayerConstants.*;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
+    private int[][] lvlData;
     private int aniTick, aniIndex, aniSpeed = 10;
     private int flipW = 1;
     private int flipX = 0;
-    public int playerScreenPosX;
-    public int playerScreenPosY;
+    private int playerScreenPosX;
+    private int playerScreenPosY;
     private boolean moving = false;
     private boolean left, right, up, down;
-
-    private boolean mouseClicked;
-
     private boolean dodgeActive;
     private int dodgeTick;
     private int dodgeCooldown;
@@ -31,23 +30,22 @@ public class Player extends Entity {
     private double rotationAngleRad;
     public final int screenX;
     public final int screenY;
-    private int mouseX, mouseY;
+    private double mouseX, mouseY;
 
-    GamePanel gp;
 
-    public Player(GamePanel gp) {
-        this.gp = gp;
-
+    public Player() {
         this.hitBox = new Rectangle(15, 18, 20, 33);
 
         this.speed = 4;
 
-        this.screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
-        this.screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+        this.screenX = GamePanel.screenWidth / 2 - (GamePanel.tileSize / 2);
+        this.screenY = GamePanel.screenHeight / 2 - (GamePanel.tileSize / 2);
 
         this.state = IDLE;
 
         setSpawn();
+        System.out.println(worldX);
+        System.out.println(worldY);
         loadAnimations();
     }
 
@@ -72,17 +70,10 @@ public class Player extends Entity {
         this.left = left;
     }
 
-    public void mouseClicked(boolean mouseClicked) {
-        this.mouseClicked = mouseClicked;
-    }
-
-    public void setMousePosition(int x, int y) {
-        this.mouseX = x;
-        this.mouseY = y;
-    }
-
-    public void setRotationAngleRad(double rad) {
-        this.rotationAngleRad = rad;
+    public void updateMousePosition(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+        rotationAngleRad = Math.atan2(mouseY - playerScreenPosY - 24, mouseX - playerScreenPosX - 24);
     }
 
     public void loadAnimations() {
@@ -105,7 +96,6 @@ public class Player extends Entity {
     }
 
     private BufferedImage initializePlayer(String imagePath) throws IOException {
-        UtilityTools utilityTools = new UtilityTools();
 
         String resourcePath = "/res/player/" + imagePath + ".png";
         InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
@@ -116,9 +106,8 @@ public class Player extends Entity {
 
         BufferedImage image = ImageIO.read(resourceStream);
 
-        return utilityTools.scaleImage(image, gp.tileSize, gp.tileSize);
+        return HelpMethods.scaleImage(image, GamePanel.tileSize, GamePanel.tileSize);
     }
-
 
     public void update() {
 
@@ -139,17 +128,7 @@ public class Player extends Entity {
     }
 
     private void updateMouseEvent() {
-        if (mouseClicked) {
-            int deltaX = mouseX - playerScreenPosX;
-            int deltaY = mouseY - playerScreenPosY;
-
-            worldX += deltaX;
-            worldY += deltaY;
-
-            mouseClicked = false;
-        }
-
-        if (mouseX >= playerScreenPosX + gp.tileSize / 2) {
+        if (mouseX >= playerScreenPosX + (double) GamePanel.tileSize / 2) {
             flipW = 1;
             flipX = 0;
         } else {
@@ -157,6 +136,15 @@ public class Player extends Entity {
             flipX = 48;
         }
     }
+
+    public void teleport() {
+        int deltaX = (int) Math.round(mouseX - playerScreenPosX);
+        int deltaY = (int) Math.round(mouseY - playerScreenPosY);
+
+        worldX += deltaX;
+        worldY += deltaY;
+    };
+
 
     private void updatePos() {
         // checkTile(this);
@@ -167,6 +155,7 @@ public class Player extends Entity {
 //            return;
 
         if (up && !collisionDirections.contains("TOP")) {
+            System.out.println("TOP!");
             velocityY = -speed;
         }
         if (down && !collisionDirections.contains("BOTTOM")) {
@@ -208,6 +197,7 @@ public class Player extends Entity {
     public void dodge() {
         if (dodgeActive)
             return;
+        System.out.println("Dodged!");
         dodgeActive = true;
         dodgeCooldown = 15;
     }
@@ -241,15 +231,20 @@ public class Player extends Entity {
         }
     }
 
+    public void loadLvlData(int[][] lvlData) {
+        this.lvlData = lvlData;
+    }
+
     private void updateCamera() {
         playerScreenPosX = Math.min(screenX, worldX);
         playerScreenPosY = Math.min(screenY, worldY);
 
-        int screenWidth = gp.screenWidth;
-        int screenHeight = gp.screenHeight;
+        int screenWidth = GamePanel.screenWidth;
+        int screenHeight = GamePanel.screenHeight;
 
-        int worldWidth = gp.getWorldWidth();
-        int worldHeight = gp.getWorldHeight();
+        //GET WORLD WIDTH FROM LEVEL!! gp
+        int worldWidth = 34*48;
+        int worldHeight = 50*48;
 
         int maxRightOffset = worldWidth - worldX;
         playerScreenPosX = Math.max(playerScreenPosX, screenWidth - maxRightOffset);
@@ -271,7 +266,7 @@ public class Player extends Entity {
         rotatedG2.dispose();
 
         g2.setColor(Color.RED);
-        g2.fillRect(mouseX, mouseY, 4, 4);
+        g2.fillRect((int) Math.round(mouseX), (int) Math.round(mouseY), 4, 4);
         drawHitbox(g2);
 
     }
@@ -288,5 +283,13 @@ public class Player extends Entity {
 
     public int getPlayerScreenPosY() {
         return playerScreenPosY;
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
     }
 }

@@ -6,6 +6,8 @@ import main.GamePanel;
 import java.awt.event.*;
 import javax.swing.Timer;
 
+import gamestates.Playing;
+
 
 public class MouseEventHandler implements MouseListener, MouseMotionListener {
     private final GamePanel gamePanel;
@@ -15,13 +17,14 @@ public class MouseEventHandler implements MouseListener, MouseMotionListener {
 
     public MouseEventHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        timer = new Timer(100, e -> {});
+        timer = new Timer(100, e -> {
+        });
         timer.setRepeats(true);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        gamePanel.getPlayer().mouseClicked(true);
+        gamePanel.getGame().getPlaying().mouseClicked(e);
     }
 
     @Override
@@ -46,36 +49,13 @@ public class MouseEventHandler implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        updateMousePosition(e);
+        gamePanel.getGame().getPlaying().mouseDragged(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        updateMousePosition(e);
+        gamePanel.getGame().getPlaying().mouseMoved(e);
     }
 
-    private void updateMousePosition(MouseEvent e) {
-        mouseX = e.getX();
-        mouseY = e.getY();
-        calculateRotationAngle();
-        updatePlayerState();
-    }
-
-    private void calculateRotationAngle() {
-        int playerScreenPosX = gamePanel.getPlayer().getPlayerScreenPosX();
-        int playerScreenPosY = gamePanel.getPlayer().getPlayerScreenPosY();
-        rotationAngleRad = Math.atan2(mouseY - playerScreenPosY - 24, mouseX - playerScreenPosX - 24);
-//        System.out.println(Math.toDegrees(rotationAngleRad));
-    }
-
-    private void updatePlayerState() {
-        Player player = gamePanel.getPlayer();
-        player.setRotationAngleRad(rotationAngleRad);
-        player.setMousePosition(mouseX, mouseY);
-    }
-
-    public void startTracking() {
-        timer.start();
-    }
 
 }
