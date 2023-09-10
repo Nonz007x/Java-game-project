@@ -12,7 +12,8 @@ public abstract class Enemy extends Entity {
         RETREAT
     }
 
-    public Enemy() {
+    public Enemy(int width, int height) {
+        super(width, height);
         EnemyState currentState = EnemyState.IDLE;
     }
 
