@@ -7,17 +7,17 @@ import java.awt.*;
 
 public class Game implements Runnable {
 
-    private GamePanel gamePanel;
+    private final GamePanel gamePanel;
     private Thread gameThread;
     private Playing playing;
 
-    private static final int originTileSize = 16;
-    private static final int tileScale = 3;
-    public static final int tileSize = originTileSize * tileScale; // 48x48
-    public static final int maxScreenCol = 16;
-    public static final int maxScreenRow = 12;
-    public static final int GAME_WIDTH = tileSize * maxScreenCol; // 768
-    public static final int GAME_HEIGHT = tileSize * maxScreenRow; // 576
+    public final static int TILES_DEFAULT_SIZE = 16;
+    private static final int SCALE = 3;
+    public static final int TILE_SIZE = TILES_DEFAULT_SIZE * SCALE; // 48x48
+    public static final int TILE_IN_WIDTH = 16;
+    public static final int TILE_IN_HEIGHT = 12;
+    public static final int GAME_WIDTH = TILE_SIZE * TILE_IN_WIDTH; // 768
+    public static final int GAME_HEIGHT = TILE_SIZE * TILE_IN_HEIGHT; // 576
 
     private static final int FPS_SET = 120;
     private static final int UPS_SET = 60;
@@ -35,10 +35,11 @@ public class Game implements Runnable {
         playing = new Playing(this);
     }
 
-    public void startGameThread() {
+    private void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
+
     @Override
     public void run() {
         double timePerFrame = 1000000000.0 / FPS_SET;
@@ -79,18 +80,23 @@ public class Game implements Runnable {
         }
     }
 
-    private void update() {
-        playing.update();
+    public void update() {
+        switch (Gamestate.state) {
+//            case MENU -> menu.update();
+            case PLAYING -> playing.update();
+//            case OPTIONS -> gameOptions.update();
+//            case CREDITS -> credits.update();
+            case QUIT -> System.exit(0);
+        }
     }
 
     public void render(Graphics g) {
-        playing.draw(g);
-//        switch (Gamestate.state) {
+        switch (Gamestate.state) {
 //            case MENU -> menu.draw(g);
-//            case PLAYING -> playing.draw(g);
+            case PLAYING -> playing.draw(g);
 //            case OPTIONS -> gameOptions.draw(g);
 //            case CREDITS -> credits.draw(g);
-//        }
+        }
     }
 
     public Playing getPlaying() {
