@@ -1,11 +1,7 @@
 package Level;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
 
-import main.GamePanel;
 
 public class Level {
     private int[][] lvlData;

@@ -19,8 +19,9 @@ public class Playing extends State implements Statemethods {
     }
 
     private void initClasses() {
-        player = new Player();
+        player = new Player(48,48,this);
         levelManager = new LevelManager(game);
+        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
     }
 
     @Override
@@ -41,6 +42,7 @@ public class Playing extends State implements Statemethods {
         if (e.getButton() == MouseEvent.BUTTON1) {
             player.teleport();
         } else if (e.getButton() == MouseEvent.BUTTON3) {
+            player.calculateRad();
             player.dodge();
         }
     }
@@ -80,6 +82,9 @@ public class Playing extends State implements Statemethods {
         }
         if (code == KeyEvent.VK_D) {
             player.setRight(true);
+        }
+        if (code == KeyEvent.VK_F) {
+            levelManager.toggleLevel();
         }
     }
 
