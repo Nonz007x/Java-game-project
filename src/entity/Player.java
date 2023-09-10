@@ -1,6 +1,7 @@
 package entity;
 
-import main.GamePanel;
+import gamestates.Playing;
+import main.Game;
 import utils.HelpMethods;
 
 import javax.imageio.ImageIO;
@@ -12,11 +13,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static utils.Constants.PlayerConstants.*;
+import static utils.HelpMethods.*;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
     private int[][] lvlData;
-    private int aniTick, aniIndex, aniSpeed = 10;
+    private int aniTick, aniIndex;
+    private final int aniSpeed = 10;
     private int flipW = 1;
     private int flipX = 0;
     private int playerScreenPosX;
@@ -28,22 +31,19 @@ public class Player extends Entity {
     private int dodgeCooldown;
 
     private double rotationAngleRad;
-    public final int screenX;
-    public final int screenY;
+    private double tempRadian;
+    private final int screenX = Game.GAME_WIDTH / 2 - (Game.TILE_SIZE / 2);
+    private final int screenY =    Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
     private double mouseX, mouseY;
 
 
-    public Player() {
-        this.hitBox = new Rectangle(15, 18, 20, 33);
-
+    public Player(int width, int height, Playing playing) {
+        super(width, height);
         this.speed = 4;
-
-        this.screenX = GamePanel.screenWidth / 2 - (GamePanel.tileSize / 2);
-        this.screenY = GamePanel.screenHeight / 2 - (GamePanel.tileSize / 2);
-
         this.state = IDLE;
 
         setSpawn();
+        initHitbox(15, 18, 20, 33);
         System.out.println(worldX);
         System.out.println(worldY);
         loadAnimations();
@@ -76,6 +76,10 @@ public class Player extends Entity {
         rotationAngleRad = Math.atan2(mouseY - playerScreenPosY - 24, mouseX - playerScreenPosX - 24);
     }
 
+    public void calculateRad() {
+        tempRadian = rotationAngleRad;
+    }
+
     public void loadAnimations() {
         try {
             animations = new BufferedImage[2][4];
@@ -106,7 +110,7 @@ public class Player extends Entity {
 
         BufferedImage image = ImageIO.read(resourceStream);
 
-        return HelpMethods.scaleImage(image, GamePanel.tileSize, GamePanel.tileSize);
+        return HelpMethods.ScaleImage(image, Game.TILE_SIZE, Game.TILE_SIZE);
     }
 
     public void update() {
@@ -128,12 +132,12 @@ public class Player extends Entity {
     }
 
     private void updateMouseEvent() {
-        if (mouseX >= playerScreenPosX + (double) GamePanel.tileSize / 2) {
+        if (mouseX >= playerScreenPosX + (double) Game.TILE_SIZE / 2) {
             flipW = 1;
             flipX = 0;
         } else {
             flipW = -1;
-            flipX = 48;
+            flipX = width;
         }
     }
 
@@ -143,35 +147,38 @@ public class Player extends Entity {
 
         worldX += deltaX;
         worldY += deltaY;
-    };
+    }
 
 
     private void updatePos() {
-        // checkTile(this);
         moving = false;
         velocityX = 0;
         velocityY = 0;
-//        if ((!left && !right && !up && !down) || (right && left) || (up && down))
-//            return;
 
-        if (up && !collisionDirections.contains("TOP")) {
-            System.out.println("TOP!");
-            velocityY = -speed;
-        }
-        if (down && !collisionDirections.contains("BOTTOM")) {
-            velocityY = speed;
-        }
-        if (left && !collisionDirections.contains("LEFT")) {
-            velocityX = -speed;
-        }
-        if (right && !collisionDirections.contains("RIGHT")) {
-            velocityX = speed;
-        }
+        checkCollision();
 
+        if (up && !down && !collisionUp) velocityY = -speed;
+        if (down && !up && !collisionDown) velocityY = speed;
+        if (left && !right && !collisionLeft) velocityX = -speed;
+        if (right && !left && !collisionRight) velocityX = speed;
 
         if (dodgeActive && dodgeCooldown <= 0) {
-            velocityY = (float) -(Math.sin(rotationAngleRad) * 15);
-            velocityX = (float) -(Math.cos(rotationAngleRad) * 15);
+            velocityY = (float) -(Math.sin(tempRadian) * 15);
+            velocityX = (float) -(Math.cos(tempRadian) * 15);
+
+            checkCollision();
+            if (velocityX > 0 && collisionRight) {
+                velocityX = 0;
+            }
+            if (velocityX < 0 && collisionLeft) {
+                velocityX = 0;
+            }
+            if (velocityY < 0 && collisionUp) {
+                velocityY = 0;
+            }
+            if (velocityY > 0 && collisionDown) {
+                velocityY = 0;
+            }
 
             updateXPos(velocityX);
             updateYPos(velocityY);
@@ -179,15 +186,18 @@ public class Player extends Entity {
         }
         updateXPos(velocityX);
         updateYPos(velocityY);
-        collisionDirections.clear();
         moving = true;
     }
 
+    private void checkCollision() {
+        collisionUp = CheckCollisionUp(worldX, (int) (worldY + velocityY), (int) hitbox.width, (int) hitbox.x, (int) hitbox.y, lvlData);
+        collisionDown = CheckCollisionDown(worldX, (int) (worldY + velocityY), (int) hitbox.width, (int) hitbox.height, (int) hitbox.x, (int) hitbox.y, lvlData);
+        collisionLeft = CheckCollisionLeft((int) (worldX + velocityX), worldY, (int) hitbox.height, (int) hitbox.x, (int) hitbox.y, lvlData);
+        collisionRight = CheckCollisionRight((int) (worldX + velocityX), worldY, (int) hitbox.width, (int) hitbox.height, (int) hitbox.x, (int) hitbox.y, lvlData);
+    }
 
     private void updateXPos(float velocity) {
-//        if(CanMoveHere()) {
         worldX += velocity;
-//        }
     }
 
     private void updateYPos(float velocity) {
@@ -197,7 +207,7 @@ public class Player extends Entity {
     public void dodge() {
         if (dodgeActive)
             return;
-        System.out.println("Dodged!");
+
         dodgeActive = true;
         dodgeCooldown = 15;
     }
@@ -239,12 +249,11 @@ public class Player extends Entity {
         playerScreenPosX = Math.min(screenX, worldX);
         playerScreenPosY = Math.min(screenY, worldY);
 
-        int screenWidth = GamePanel.screenWidth;
-        int screenHeight = GamePanel.screenHeight;
+        int screenWidth = Game.GAME_WIDTH;
+        int screenHeight = Game.GAME_HEIGHT;
 
-        //GET WORLD WIDTH FROM LEVEL!! gp
-        int worldWidth = 34*48;
-        int worldHeight = 50*48;
+        int worldWidth = lvlData[0].length * 48;
+        int worldHeight = lvlData.length * 48;
 
         int maxRightOffset = worldWidth - worldX;
         playerScreenPosX = Math.max(playerScreenPosX, screenWidth - maxRightOffset);
@@ -256,7 +265,7 @@ public class Player extends Entity {
 
     public void render(Graphics2D g2) {
 
-        g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, 48 * flipW, 48, null);
+        g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, width * flipW, height, null);
 
         Graphics2D rotatedG2 = (Graphics2D) g2.create();
         rotatedG2.setColor(Color.GREEN);
@@ -273,16 +282,7 @@ public class Player extends Entity {
 
     private void drawHitbox(Graphics2D g) {
         g.setColor(Color.RED);
-        g.drawRect(playerScreenPosX + hitBox.x, playerScreenPosY + hitBox.y, hitBox.width, hitBox.height);
-
-    }
-
-    public int getPlayerScreenPosX() {
-        return playerScreenPosX;
-    }
-
-    public int getPlayerScreenPosY() {
-        return playerScreenPosY;
+        g.drawRect(playerScreenPosX + (int) hitbox.x, playerScreenPosY + (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
     }
 
     public int getScreenX() {

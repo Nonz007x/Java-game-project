@@ -1,50 +1,65 @@
 package entity;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.Set;
+import java.awt.geom.Rectangle2D;
 
 public abstract class Entity {
-    public int prevX, prevY;
-    public int worldX, worldY;
-    public float velocityX, velocityY;
-    public int speed;
+    private int prevX, prevY;
+    protected int width, height;
+    protected int worldX, worldY;
+    protected float velocityX, velocityY;
+    protected int speed;
     protected int state;
-    public Rectangle hitBox;
-    public Set<String> collisionDirections = new HashSet<>();
+    protected Rectangle2D.Float hitbox;
+    protected boolean collisionUp;
+    protected boolean collisionDown;
+    protected boolean collisionLeft;
+    protected boolean collisionRight;
 
-    public void addCollisionDirection(String direction) {
-       collisionDirections.add(direction);
+    public Entity(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
-    public void setSpeed(int speed) {
+
+    public final void setSpeed(int speed) {
         this.speed = speed;
     }
 
-    public void updatePosition (int newX, int newY) {
+    public final void updatePosition (int newX, int newY) {
         prevX = getX();
         prevY =  getY();
 
         worldX += newX;
         worldY += newY;
     }
-    public int getX() {
+    public final int getX() {
         return worldX;
     }
-    public int getY() {
+    public final int getY() {
         return worldY;
     }
 
-    public void setX(int x) {
+    public final void setX(int x) {
         this.worldX = x;
     }
-    public void setY(int y) {
+    public final void setY(int y) {
         this.worldY = y;
     }
-    public int getDeltaX() {
+    public final int getDeltaX() {
         return getX() - prevX;
     }
-    public int getDeltaY() {
+    public final int getDeltaY() {
         return getY() - prevY;
     }
+
+    protected final void initHitbox(float x, float y, float width, float height) {
+        hitbox = new Rectangle2D.Float(x, y, width, height);
+    }
+
+//    protected void drawHitbox(Graphics2D g) {
+//        // For debugging the hitbox
+//        g.setColor(Color.PINK);
+//        g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+//
+//    }
+
 }
