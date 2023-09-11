@@ -13,14 +13,13 @@ public class GameWindow {
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(gamePanel);
 
-        jframe.setTitle("gay shooter");
+        jframe.setTitle("The wold in furture");
 
         jframe.setResizable(false);
         jframe.pack();
         jframe.setLocationRelativeTo(null);
         jframe.setVisible(true);
         jframe.addWindowFocusListener(new WindowFocusListener() {
-//
             @Override
             public void windowLostFocus(WindowEvent e) {
                 // TODO

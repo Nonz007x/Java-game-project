@@ -10,14 +10,14 @@ import static main.Game.GAME_HEIGHT;
 import static main.Game.GAME_WIDTH;
 
 public class GamePanel extends JPanel {
-    Game game;
-    MouseEventHandler mouseH;
+    private static Game game;
+    private static MouseEventHandler mouseH;
 
     public GamePanel(Game game) {
         mouseH = new MouseEventHandler(this);
-        this.game = game;
+        GamePanel.game = game;
         setPanelSize();
-        setBackground(Color.BLACK);
+        setBackground(Color.WHITE);
         addKeyListener(new KeyHandler(this));
         addMouseListener(mouseH);
         addMouseMotionListener(mouseH);
@@ -26,13 +26,12 @@ public class GamePanel extends JPanel {
     }
 
     private void setPanelSize() {
-        Dimension size = new Dimension(GAME_WIDTH,GAME_HEIGHT);
+        Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
         setPreferredSize(size);
     }
 
     @Override
-    public void paintComponent(Graphics g){
-
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         game.render(g);
     }

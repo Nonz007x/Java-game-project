@@ -2,11 +2,11 @@ package inputs;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import gamestates.Gamestate;
 import main.GamePanel;
 
 public class KeyHandler implements KeyListener {
-    public boolean  spacePressed;
-    GamePanel gamePanel;
+    private final GamePanel gamePanel;
 
     public KeyHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -18,11 +18,17 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        gamePanel.getGame().getPlaying().keyPressed(e);
+        switch (Gamestate.state) {
+            case MENU -> gamePanel.getGame().getMenu().keyPressed(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().keyPressed(e);
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        gamePanel.getGame().getPlaying().keyReleased(e);
+        switch (Gamestate.state) {
+            case MENU -> gamePanel.getGame().getMenu().keyReleased(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().keyReleased(e);
+        }
     }
 }

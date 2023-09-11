@@ -2,16 +2,18 @@ package main;
 
 import gamestates.Gamestate;
 import gamestates.Playing;
+import gamestates.Menu;
 
 import java.awt.*;
 
 public class Game implements Runnable {
 
-    private final GamePanel gamePanel;
+    private static GamePanel gamePanel;
     private Thread gameThread;
-    private Playing playing;
+    private static Playing playing;
+    private static Menu menu;
 
-    public final static int TILES_DEFAULT_SIZE = 16;
+    public static final int TILES_DEFAULT_SIZE = 16;
     private static final int SCALE = 3;
     public static final int TILE_SIZE = TILES_DEFAULT_SIZE * SCALE; // 48x48
     public static final int TILE_IN_WIDTH = 16;
@@ -23,7 +25,6 @@ public class Game implements Runnable {
     private static final int UPS_SET = 60;
 
     public Game() {
-        System.out.println("size: " + GAME_WIDTH + " : " + GAME_HEIGHT);
         initClasses();
         gamePanel = new GamePanel(this);
         new GameWindow(gamePanel);
@@ -32,6 +33,7 @@ public class Game implements Runnable {
     }
 
     private void initClasses() {
+        menu = new Menu(this);
         playing = new Playing(this);
     }
 
@@ -82,7 +84,7 @@ public class Game implements Runnable {
 
     public void update() {
         switch (Gamestate.state) {
-//            case MENU -> menu.update();
+            case MENU -> menu.update();
             case PLAYING -> playing.update();
 //            case OPTIONS -> gameOptions.update();
 //            case CREDITS -> credits.update();
@@ -92,7 +94,7 @@ public class Game implements Runnable {
 
     public void render(Graphics g) {
         switch (Gamestate.state) {
-//            case MENU -> menu.draw(g);
+            case MENU -> menu.draw(g);
             case PLAYING -> playing.draw(g);
 //            case OPTIONS -> gameOptions.draw(g);
 //            case CREDITS -> credits.draw(g);
@@ -101,6 +103,10 @@ public class Game implements Runnable {
 
     public Playing getPlaying() {
         return playing;
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
 

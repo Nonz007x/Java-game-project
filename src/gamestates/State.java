@@ -3,9 +3,9 @@ package gamestates;
 import java.awt.event.MouseEvent;
 import main.Game;
 
-public class State {
+public abstract class State {
 
-    protected Game game;
+    protected final Game game;
 
     public State(Game game) {
         this.game = game;
@@ -19,14 +19,13 @@ public class State {
         return game;
     }
 
-//    @SuppressWarnings("incomplete-switch")
-//    public void setGamestate(Gamestate state) {
+    public void setGamestate(Gamestate state) {
 //        switch (state) {
 //            case MENU -> game.getAudioPlayer().playSong(AudioPlayer.MENU_1);
 //            case PLAYING -> game.getAudioPlayer().setLevelSong(game.getPlaying().getLevelManager().getLevelIndex());
 //        }
-//
-//        Gamestate.state = state;
-//    }
+
+        Gamestate.state = state;
+    }
 
 }

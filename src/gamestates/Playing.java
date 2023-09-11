@@ -2,6 +2,7 @@ package gamestates;
 
 import Level.LevelManager;
 import entity.Player;
+import entity.enemies.EnemyManager;
 import main.Game;
 
 import java.awt.*;
@@ -10,21 +11,35 @@ import java.awt.event.MouseEvent;
 
 
 public class Playing extends State implements Statemethods {
-    private Player player;
-    private LevelManager levelManager;
+    private static Player player;
+    private static LevelManager levelManager;
+    private static EnemyManager enemyManager;
+
+    private int maxLvlOffsetX;
+    private int xLvlOffset;
 
     public Playing(Game game) {
         super(game);
         initClasses();
+        enemyManager.loadEnemies(levelManager.getCurrentLevel());
     }
 
     private void initClasses() {
-        player = new Player(48,48,this);
+        player = new Player(48, 48, this);
         levelManager = new LevelManager(game);
+        enemyManager = new EnemyManager(this);
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
     }
 
-    @Override
+    private void checkCloseToBorder() {
+    }
+
+    private void calcLvlOffset() {
+        maxLvlOffsetX = levelManager.getCurrentLevel().getLvlOffset();
+    }
+
+
+        @Override
     public void update() {
         player.update();
     }
@@ -34,6 +49,7 @@ public class Playing extends State implements Statemethods {
         Graphics2D g2 = (Graphics2D) g;
         levelManager.render(g2);
         player.render(g2);
+        enemyManager.draw(g, Game.GAME_WIDTH - player.getPlayerScreenPosX());
         g2.dispose();
     }
 
@@ -85,6 +101,10 @@ public class Playing extends State implements Statemethods {
         }
         if (code == KeyEvent.VK_F) {
             levelManager.toggleLevel();
+            enemyManager.loadEnemies(levelManager.getCurrentLevel());
+        }
+        if (code == KeyEvent.VK_ESCAPE) {
+            setGamestate(Gamestate.MENU);
         }
     }
 
