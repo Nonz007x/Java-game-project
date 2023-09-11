@@ -2,15 +2,11 @@ package entity;
 
 import gamestates.Playing;
 import main.Game;
-import utils.HelpMethods;
+import utils.LoadSave;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 import static utils.Constants.PlayerConstants.*;
 import static utils.HelpMethods.*;
@@ -33,7 +29,7 @@ public class Player extends Entity {
     private double rotationAngleRad;
     private double tempRadian;
     private final int screenX = Game.GAME_WIDTH / 2 - (Game.TILE_SIZE / 2);
-    private final int screenY =    Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
+    private final int screenY = Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
     private double mouseX, mouseY;
 
 
@@ -81,36 +77,13 @@ public class Player extends Entity {
     }
 
     public void loadAnimations() {
-        try {
-            animations = new BufferedImage[2][4];
-            String[] spriteNames = {
-                    "traveler_right_1",
-                    "traveler_run_right_1",
-                    "traveler_run_right_2",
-                    "traveler_run_right_3"
-            };
+        BufferedImage img = LoadSave.GetSprite(LoadSave.PLAYER_SPRITES);
+        animations = new BufferedImage[2][4];
 
-            animations[0][0] = initializePlayer(spriteNames[0]);
-            for (int i = 1; i < spriteNames.length; i++)
-                animations[1][i - 1] = initializePlayer(spriteNames[i]);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private BufferedImage initializePlayer(String imagePath) throws IOException {
-
-        String resourcePath = "/res/player/" + imagePath + ".png";
-        InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
-
-        if (resourceStream == null) {
-            throw new FileNotFoundException("Missing texture resource: " + resourcePath);
-        }
-
-        BufferedImage image = ImageIO.read(resourceStream);
-
-        return HelpMethods.ScaleImage(image, Game.TILE_SIZE, Game.TILE_SIZE);
+        for (int i = 0; i < animations.length; i++)
+            for (int j = 0; j < animations[0].length; j++) {
+                animations[i][j] = img.getSubimage(j * 16, i * 16, 16, 16);
+            }
     }
 
     public void update() {
@@ -291,5 +264,12 @@ public class Player extends Entity {
 
     public int getScreenY() {
         return screenY;
+    }
+
+    public int getPlayerScreenPosX() {
+        return playerScreenPosX;
+    }
+    public int getPlayerScreenPosY() {
+        return playerScreenPosY;
     }
 }
