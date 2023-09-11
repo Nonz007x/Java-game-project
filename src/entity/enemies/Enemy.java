@@ -8,11 +8,10 @@ public abstract class Enemy extends Entity {
         IDLE,
         PATROL,
         CHASE,
-        ATTACK,
-        RETREAT
+        ATTACK
     }
 
-    public Enemy(int width, int height) {
+    public Enemy(int x, int y, int width, int height) {
         super(width, height);
         EnemyState currentState = EnemyState.IDLE;
     }
