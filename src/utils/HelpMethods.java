@@ -5,6 +5,9 @@ import java.awt.*;
 import main.Game;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class HelpMethods {
 
@@ -80,7 +83,32 @@ public class HelpMethods {
     public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
         int value = lvlData[yTile][xTile];
 
-        return value != 0;
+        return value == 283;
+    }
 
+    public static String loadProperty(String property, String filename) {
+        Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        InputStream stream = loader.getResourceAsStream(filename);
+
+        if (stream == null) {
+            System.err.println("Failed to load resource: " + filename);
+            return null;
+        }
+
+        try {
+            prop.load(stream);
+            return prop.getProperty(property);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 }

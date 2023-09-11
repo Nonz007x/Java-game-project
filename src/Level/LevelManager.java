@@ -4,10 +4,8 @@ import main.Game;
 import utils.HelpMethods;
 import utils.LoadSave;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.util.ArrayList;
 
 public class LevelManager {
@@ -19,7 +17,7 @@ public class LevelManager {
 
     public LevelManager(Game game) {
         this.game = game;
-        tiles = new Tile[10];
+        tiles = new Tile[1440];
 
         levels = new ArrayList<>();
         initializeTileImage();
@@ -28,53 +26,28 @@ public class LevelManager {
 
     private void buildAllLevels() {
         String[] allLevels = LoadSave.GetAllLevels();
-        for (String path : allLevels)
+        for (String path : allLevels) {
             levels.add(new Level(path));
+        }
     }
 
     private void initializeTileImage() {
-        try {
-
-            initializeTile(0, "Grass16x16", false);
-            initializeTile(1, "missing_texture", true);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initializeTile(int index , String imagePath, boolean collision) throws IOException  {
-        try {
-            Tile newTile = new Tile();
-
-            // Load the image resource
-            String resourcePath = "/res/tiles/" + imagePath + ".png";
-            InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
-
-            if (resourceStream == null) {
-                throw new FileNotFoundException("Missing texture resource: " + resourcePath);
+        BufferedImage imageSet = LoadSave.GetSprite(LoadSave.LEVEL_SPRITE);
+        int counter = 0;
+        for (int i = 0; i < 36; i++) {
+            for (int j = 0; j < 40; j++) {
+                BufferedImage tileImage = imageSet.getSubimage(16 * j, 16 * i, 16, 16);
+                BufferedImage scaledImage = HelpMethods.ScaleImage(tileImage, Game.TILE_SIZE, Game.TILE_SIZE);
+                tiles[counter] = new Tile(scaledImage, false);
+                counter++;
             }
-
-            BufferedImage image = ImageIO.read(resourceStream);
-
-            // Scale the image
-            BufferedImage scaledImage = HelpMethods.ScaleImage(image, Game.TILE_SIZE, Game.TILE_SIZE);
-
-            newTile.setImage(scaledImage);
-            newTile.setCollision(collision);
-
-            tiles[index] = newTile;
-
-        } catch (IOException e) {
-            throw new IOException("Failed to load image: " + imagePath, e);
         }
-
     }
 
     public void render(Graphics2D g2) {
 
-        int worldWidth = getCurrentLevel().getWorldCol() * 48;
-        int worldHeight = getCurrentLevel().getWorldRow() * 48;
+        int worldWidth = getCurrentLevel().getWorldCol() * Game.TILE_SIZE;
+        int worldHeight = getCurrentLevel().getWorldRow() * Game.TILE_SIZE;
 
         int playerScreenX = game.getPlaying().getPlayer().getScreenX();
         int playerScreenY = game.getPlaying().getPlayer().getScreenY();
@@ -90,7 +63,7 @@ public class LevelManager {
             int screenY = tileY - playerWorldY + playerScreenY;
 
             for (int worldCol = 0; worldCol < getCurrentLevel().getWorldCol(); worldCol++) {
-                int tileNum = getCurrentLevel().getSpriteIndex(worldCol,worldRow);
+                int tileNum = getCurrentLevel().getSpriteIndex(worldCol, worldRow);
 
                 int tileX = worldCol * tileSize;
                 int screenX = tileX - playerWorldX + playerScreenX;
@@ -114,7 +87,7 @@ public class LevelManager {
 
 
                 if (isTileVisible(screenX, screenY, screenWidth, screenHeight, tileSize)) {
-                    g2.drawImage(tiles[tileNum].getImage(), screenX, screenY, null);
+                    g2.drawImage(tiles[tileNum].image(), screenX, screenY, null);
                 }
             }
         }

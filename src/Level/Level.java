@@ -1,14 +1,25 @@
 package Level;
 
-import java.io.*;
+import entity.enemies.GrandPrix;
+import main.Game;
 
+import java.io.*;
+import java.util.ArrayList;
+
+import static utils.HelpMethods.loadProperty;
 
 public class Level {
+    private static int lvlId = 0;
     private int[][] lvlData;
+    private final ArrayList<GrandPrix> grandPrixs = new ArrayList<>();
     private int worldRow, worldCol;
+    private int maxTilesOffset;
+    private int maxLvlOffsetX;
 
     public Level(String path) {
+        lvlId++;
         loadLevel(path);
+        calcLvlOffsets();
     }
 
     private void loadLevel(String filePath) {
@@ -54,8 +65,31 @@ public class Level {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        loadEnemies();
     }
 
+    private void loadEnemies() {
+        int isHaunted = Integer.parseInt(loadProperty("grandprix", "res/maps/level_" + lvlId + ".properties"));
+        System.out.println(isHaunted);
+        if (isHaunted == 1) {
+            System.out.println("create grandprix");
+            grandPrixs.add(new GrandPrix(96, 96));
+        }
+    }
+
+    private void calcLvlOffsets() {
+        maxTilesOffset = getWorldCol() - Game.TILE_IN_WIDTH;
+        maxLvlOffsetX = Game.TILE_SIZE * maxTilesOffset;
+    }
+
+    public ArrayList<GrandPrix> getHauntingGhost() {
+        return grandPrixs;
+    }
+
+    public int getLvlOffset() {
+        return maxLvlOffsetX;
+    };
     public int getSpriteIndex(int x, int y) {
         return lvlData[y][x];
     }
@@ -67,6 +101,7 @@ public class Level {
     public int getWorldRow() {
         return worldRow;
     }
+
     public int getWorldCol() {
         return worldCol;
     }
