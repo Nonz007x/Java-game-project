@@ -15,9 +15,6 @@ public class Playing extends State implements Statemethods {
     private static LevelManager levelManager;
     private static EnemyManager enemyManager;
 
-    private int maxLvlOffsetX;
-    private int xLvlOffset;
-
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -31,15 +28,7 @@ public class Playing extends State implements Statemethods {
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
     }
 
-    private void checkCloseToBorder() {
-    }
-
-    private void calcLvlOffset() {
-        maxLvlOffsetX = levelManager.getCurrentLevel().getLvlOffset();
-    }
-
-
-        @Override
+    @Override
     public void update() {
         player.update();
     }
@@ -48,8 +37,8 @@ public class Playing extends State implements Statemethods {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         levelManager.render(g2);
+        enemyManager.draw(g, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
         player.render(g2);
-        enemyManager.draw(g, Game.GAME_WIDTH - player.getPlayerScreenPosX());
         g2.dispose();
     }
 

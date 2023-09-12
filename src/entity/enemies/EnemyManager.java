@@ -22,8 +22,8 @@ public class EnemyManager {
         this.currentLevel = level;
     }
 
-    public void draw(Graphics g, int xLvlOffset) {
-        drawGrandPrix(g, xLvlOffset);
+    public void draw(Graphics g, int playerX, int playerY, int screenPosX, int screenPosY) {
+        drawGrandPrix(g, playerX, playerY, screenPosX, screenPosY);
     }
 
     private void loadEnemyImgs() {
@@ -31,12 +31,7 @@ public class EnemyManager {
     }
 
     private BufferedImage[][] getImgArr(BufferedImage atlas, int xSize, int ySize, int spriteW, int spriteH) {
-//        BufferedImage[][] tempArr = new BufferedImage[ySize][xSize];
-//        for (int j = 0; j < tempArr.length; j++)
-//            for (int i = 0; i < tempArr[j].length; i++)
-//                tempArr[j][i] = atlas.getSubimage(i * spriteW, j * spriteH, spriteW, spriteH);
-//        return tempArr;
-
+        // TODO
         BufferedImage[][] tempArr = new BufferedImage[ySize][xSize];
         for (int j = 0; j < tempArr.length; j++)
             for (int i = 6; i < 9; i++) {
@@ -45,22 +40,10 @@ public class EnemyManager {
         return tempArr;
     }
 
-    private void drawGrandPrix(Graphics g, int xLvlOffset) {
-        for (GrandPrix gp : currentLevel.getHauntingGhost())
-//            if (hg.isActive()) {
-            g.drawImage(grandPrixArr[2][2], xLvlOffset - 96,
-                    96,
-                    64*2,
-                    64*2,
-                    null);
-//
-//
-//                g.drawImage(hauntingGhostArr[hg.getState()][hg.getAniIndex()], (int) hg.getHitbox().x - xLvlOffset - CRABBY_DRAWOFFSET_X + hg.flipX(),
-//                        (int) hg.getHitbox().y - CRABBY_DRAWOFFSET_Y + (int) hg.getPushDrawOffset(), CRABBY_WIDTH * hg.flipW(), CRABBY_HEIGHT, null);
-
-//				hg.drawHitbox(g, xLvlOffset);
-//				hg.drawAttackBox(g, xLvlOffset);
-//            }
-
+    private void drawGrandPrix(Graphics g, int playerX, int playerY, int screenPosX, int screenPosY) {
+        for (GrandPrix gp : currentLevel.getHauntingGhost()) {
+            g.drawImage(grandPrixArr[2][2], gp.getX() - playerX + screenPosX,
+                    gp.getY() - playerY + screenPosY, gp.getWidth(), gp.getHeight(), null);
+        }
     }
 }

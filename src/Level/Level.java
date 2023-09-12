@@ -5,6 +5,7 @@ import main.Game;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static utils.HelpMethods.loadProperty;
 
@@ -19,7 +20,6 @@ public class Level {
     public Level(String path) {
         lvlId++;
         loadLevel(path);
-        calcLvlOffsets();
     }
 
     private void loadLevel(String filePath) {
@@ -32,7 +32,9 @@ public class Level {
             int colCount = 0;
             String line;
 
-            while ((line = br.readLine()) != null) {
+            //check columns
+            while (!Objects.equals(line = br.readLine(), "end")) {
+                System.out.println(line);
                 String[] numbers = line.split(" ");
                 if (colCount == 0) {
                     colCount = numbers.length;
@@ -46,13 +48,15 @@ public class Level {
             worldCol = colCount;
             lvlData = new int[worldRow][worldCol];
 
+
             br.close();
             is = getClass().getResourceAsStream(filePath);
             assert is != null;
             br = new BufferedReader(new InputStreamReader(is));
 
+            // create map
             rowCount = 0;
-            while ((line = br.readLine()) != null) {
+            while (!Objects.equals(line = br.readLine(), "end")) {
                 String[] numbers = line.split(" ");
                 for (int col = 0; col < numbers.length; col++) {
                     int num = Integer.parseInt(numbers[col]);
@@ -70,10 +74,9 @@ public class Level {
     }
 
     private void loadEnemies() {
+        //TODO
         int isHaunted = Integer.parseInt(loadProperty("grandprix", "res/maps/level_" + lvlId + ".properties"));
-        System.out.println(isHaunted);
         if (isHaunted == 1) {
-            System.out.println("create grandprix");
             grandPrixs.add(new GrandPrix(96, 96));
         }
     }

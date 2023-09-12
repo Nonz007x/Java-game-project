@@ -20,6 +20,13 @@ public abstract class Entity {
         this.height = height;
     }
 
+    public Entity(int x, int y, int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.worldX = x;
+        this.worldY = y;
+    }
+
     public final void setSpeed(int speed) {
         this.speed = speed;
     }
@@ -38,17 +45,19 @@ public abstract class Entity {
         return worldY;
     }
 
+    public final int getWidth() {
+        return width;
+    }
+
+    public final int getHeight() {
+        return height;
+    }
+
     public final void setX(int x) {
         this.worldX = x;
     }
     public final void setY(int y) {
         this.worldY = y;
-    }
-    public final int getDeltaX() {
-        return getX() - prevX;
-    }
-    public final int getDeltaY() {
-        return getY() - prevY;
     }
 
     protected final void initHitbox(float x, float y, float width, float height) {

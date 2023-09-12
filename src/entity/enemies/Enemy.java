@@ -12,7 +12,7 @@ public abstract class Enemy extends Entity {
     }
 
     public Enemy(int x, int y, int width, int height) {
-        super(width, height);
+        super(x, y, width, height);
         EnemyState currentState = EnemyState.IDLE;
     }
 
