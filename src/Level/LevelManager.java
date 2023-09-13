@@ -44,15 +44,10 @@ public class LevelManager {
         }
     }
 
-    public void render(Graphics2D g2) {
+    public void render(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
 
         int worldWidth = getCurrentLevel().getWorldCol() * Game.TILE_SIZE;
         int worldHeight = getCurrentLevel().getWorldRow() * Game.TILE_SIZE;
-
-        int playerScreenX = game.getPlaying().getPlayer().getScreenX();
-        int playerScreenY = game.getPlaying().getPlayer().getScreenY();
-        int playerWorldX = game.getPlaying().getPlayer().getX();
-        int playerWorldY = game.getPlaying().getPlayer().getY();
 
         int tileSize = Game.TILE_SIZE;
         int screenWidth = Game.GAME_WIDTH;
@@ -60,29 +55,29 @@ public class LevelManager {
 
         for (int worldRow = 0; worldRow < getCurrentLevel().getWorldRow(); worldRow++) {
             int tileY = worldRow * tileSize;
-            int screenY = tileY - playerWorldY + playerScreenY;
+            int screenY = tileY - playerY + screenPosY;
 
             for (int worldCol = 0; worldCol < getCurrentLevel().getWorldCol(); worldCol++) {
                 int tileNum = getCurrentLevel().getSpriteIndex(worldCol, worldRow);
 
                 int tileX = worldCol * tileSize;
-                int screenX = tileX - playerWorldX + playerScreenX;
+                int screenX = tileX - playerX + screenPosX;
 
                 // Stop camera at the edge
-                if (playerScreenX > playerWorldX)
+                if (screenPosX > playerX)
                     screenX = tileX;
 
-                if (playerScreenY > playerWorldY)
+                if (screenPosY > playerY)
                     screenY = tileY;
 
 
-                int rightOffset = screenWidth - playerScreenX;
-                if (rightOffset > worldWidth - playerWorldX)
+                int rightOffset = screenWidth - screenPosX;
+                if (rightOffset > worldWidth - playerX)
                     screenX = screenWidth - (worldWidth - tileX);
 
 
-                int bottomOffset = screenHeight - playerScreenY;
-                if (bottomOffset > worldHeight - playerWorldY)
+                int bottomOffset = screenHeight - screenPosY;
+                if (bottomOffset > worldHeight - playerY)
                     screenY = screenHeight - (worldHeight - tileY);
 
 
