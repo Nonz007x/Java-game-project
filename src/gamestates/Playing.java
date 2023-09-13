@@ -36,8 +36,8 @@ public class Playing extends State implements Statemethods {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        levelManager.render(g2);
-        enemyManager.draw(g, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
+        levelManager.render(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
+        enemyManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
         player.render(g2);
         g2.dispose();
     }
