@@ -22,8 +22,8 @@ public class EnemyManager {
         this.currentLevel = level;
     }
 
-    public void draw(Graphics g, int playerX, int playerY, int screenPosX, int screenPosY) {
-        drawGrandPrix(g, playerX, playerY, screenPosX, screenPosY);
+    public void draw(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
+        drawGrandPrix(g2, playerX, playerY, screenPosX, screenPosY);
     }
 
     private void loadEnemyImgs() {
@@ -40,7 +40,7 @@ public class EnemyManager {
         return tempArr;
     }
 
-    private void drawGrandPrix(Graphics g, int playerX, int playerY, int screenPosX, int screenPosY) {
+    private void drawGrandPrix(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
         for (GrandPrix gp : currentLevel.getHauntingGhost()) {
             g.drawImage(grandPrixArr[2][2], gp.getX() - playerX + screenPosX,
                     gp.getY() - playerY + screenPosY, gp.getWidth(), gp.getHeight(), null);
