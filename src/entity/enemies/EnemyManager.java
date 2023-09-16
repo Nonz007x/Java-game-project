@@ -42,7 +42,7 @@ public class EnemyManager {
 
     private void drawGrandPrix(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
         for (GrandPrix gp : currentLevel.getHauntingGhost()) {
-            g.drawImage(grandPrixArr[2][2], gp.getX() - playerX + screenPosX,
+            g2.drawImage(grandPrixArr[2][2], gp.getX() - playerX + screenPosX,
                     gp.getY() - playerY + screenPosY, gp.getWidth(), gp.getHeight(), null);
         }
     }
