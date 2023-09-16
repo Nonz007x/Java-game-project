@@ -18,14 +18,14 @@ public class Playing extends State implements Statemethods {
     public Playing(Game game) {
         super(game);
         initClasses();
-        enemyManager.loadEnemies(levelManager.getCurrentLevel());
+        enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
     }
 
     private void initClasses() {
         player = new Player(48, 48, this);
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
-        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
+        player.loadLvlData(LevelManager.GetCurrentLevel().getLevelData());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class Playing extends State implements Statemethods {
         }
         if (code == KeyEvent.VK_F) {
             levelManager.toggleLevel();
-            enemyManager.loadEnemies(levelManager.getCurrentLevel());
+            enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
         }
         if (code == KeyEvent.VK_ESCAPE) {
             setGamestate(Gamestate.MENU);

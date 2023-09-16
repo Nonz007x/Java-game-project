@@ -11,7 +11,7 @@ import static utils.HelpMethods.loadProperty;
 
 public class Level {
     private static int lvlId = 0;
-    private int[][] lvlData;
+    private int[][][] lvlData;
     private final ArrayList<GrandPrix> grandPrixs = new ArrayList<>();
     private int worldRow, worldCol;
     private int maxTilesOffset;
@@ -34,7 +34,6 @@ public class Level {
 
             //check columns
             while (!Objects.equals(line = br.readLine(), "end")) {
-                System.out.println(line);
                 String[] numbers = line.split(" ");
                 if (colCount == 0) {
                     colCount = numbers.length;
@@ -46,7 +45,7 @@ public class Level {
 
             worldRow = rowCount;
             worldCol = colCount;
-            lvlData = new int[worldRow][worldCol];
+            lvlData = new int[2][worldRow][worldCol];
 
 
             br.close();
@@ -60,25 +59,54 @@ public class Level {
                 String[] numbers = line.split(" ");
                 for (int col = 0; col < numbers.length; col++) {
                     int num = Integer.parseInt(numbers[col]);
-                    lvlData[rowCount][col] = num;
+                    lvlData[0][rowCount][col] = num;
                 }
 
                 rowCount++;
             }
 
+            // create overlay
+            rowCount = 0;
+            while ((line = br.readLine()) != null) {
+                String[] numbers = line.split(" ");
+                for (int col = 0; col < numbers.length; col++) {
+                    int num = Integer.parseInt(numbers[col]);
+                    lvlData[1][rowCount][col] = num;
+                }
+
+                rowCount++;
+            }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        loadEnemies();
+        loadEnemies(filePath);
     }
 
-    private void loadEnemies() {
+    private void loadEnemies(String filePath) {
         //TODO
         int isHaunted = Integer.parseInt(loadProperty("grandprix", "res/maps/level_" + lvlId + ".properties"));
         if (isHaunted == 1) {
-            grandPrixs.add(new GrandPrix(96, 96));
+            grandPrixs.add(new GrandPrix(200, 200));
         }
+
+        try {
+            InputStream is = getClass().getResourceAsStream(filePath);
+            assert is != null;
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            String line;
+
+            for (int i = 0; i < worldRow+1; i++) {
+                br.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private void calcLvlOffsets() {
@@ -94,10 +122,13 @@ public class Level {
         return maxLvlOffsetX;
     };
     public int getSpriteIndex(int x, int y) {
-        return lvlData[y][x];
+        return lvlData[0][y][x];
+    }
+    public int getSpriteIndex(int layer, int x, int y) {
+        return lvlData[layer][y][x];
     }
 
-    public int[][] getLevelData() {
+    public int[][][] getLevelData() {
         return lvlData;
     }
 

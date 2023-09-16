@@ -13,7 +13,7 @@ import static utils.HelpMethods.*;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
-    private int[][] lvlData;
+    private int[][][] lvlData;
     private int aniTick, aniIndex;
     private final int aniSpeed = 10;
     private int flipW = 1;
@@ -214,7 +214,7 @@ public class Player extends Entity {
         }
     }
 
-    public void loadLvlData(int[][] lvlData) {
+    public void loadLvlData(int[][][] lvlData) {
         this.lvlData = lvlData;
     }
 
@@ -225,8 +225,8 @@ public class Player extends Entity {
         int screenWidth = Game.GAME_WIDTH;
         int screenHeight = Game.GAME_HEIGHT;
 
-        int worldWidth = lvlData[0].length * 48;
-        int worldHeight = lvlData.length * 48;
+        int worldWidth = lvlData[0][0].length * 48;
+        int worldHeight = lvlData[0].length * 48;
 
         int maxRightOffset = worldWidth - worldX;
         playerScreenPosX = Math.max(playerScreenPosX, screenWidth - maxRightOffset);

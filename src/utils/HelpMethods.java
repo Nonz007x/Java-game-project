@@ -2,6 +2,8 @@ package utils;
 
 import java.awt.*;
 
+import Level.LevelManager;
+import Level.Tile;
 import main.Game;
 
 import java.awt.image.BufferedImage;
@@ -39,27 +41,35 @@ public class HelpMethods {
         return scaledImage;
     }
 
-    public static boolean CheckCollisionUp(int x, int y, int width, int xOffset, int yOffset, int[][] lvlData) {
+    public static boolean CheckCollisionUp(int x, int y, int width, int xOffset, int yOffset, int[][][] lvlData) {
         return IsSolid(x + xOffset, y + yOffset, lvlData) ||
-                IsSolid(x + width + xOffset, y + yOffset, lvlData);
+                IsSolid(x + width + xOffset, y + yOffset, lvlData) ||
+                IsEdgeSolid(x + xOffset, y + yOffset, lvlData) ||
+                IsEdgeSolid(x + width + xOffset, y + yOffset, lvlData);
     }
 
-    public static boolean CheckCollisionDown(int x, int y, int width, int height, int xOffset, int yOffset, int[][] lvlData) {
+    public static boolean CheckCollisionDown(int x, int y, int width, int height, int xOffset, int yOffset, int[][][] lvlData) {
         return IsSolid(x + xOffset, y + height + yOffset, lvlData) ||
-                IsSolid(x + width + xOffset, y + height + yOffset, lvlData);
+                IsSolid(x + width + xOffset, y + height + yOffset, lvlData) ||
+                IsEdgeSolid(x + xOffset, y + height + yOffset, lvlData) ||
+                IsEdgeSolid(x + width + xOffset, y + height + yOffset, lvlData);
     }
 
-    public static boolean CheckCollisionLeft(int x, int y, int height, int xOffset, int yOffset, int[][] lvlData) {
+    public static boolean CheckCollisionLeft(int x, int y, int height, int xOffset, int yOffset, int[][][] lvlData) {
         return IsSolid(x + xOffset - 4, y + yOffset + 4, lvlData) ||
-                IsSolid(x + xOffset - 4, y + height + yOffset - 4, lvlData);
+                IsSolid(x + xOffset - 4, y + height + yOffset - 4, lvlData) ||
+                IsEdgeSolid(x + xOffset - 4, y + yOffset + 4, lvlData) ||
+                IsEdgeSolid(x + xOffset - 4, y + height + yOffset - 4, lvlData);
     }
 
-    public static boolean CheckCollisionRight(int x, int y, int width, int height, int xOffset, int yOffset, int[][] lvlData) {
+    public static boolean CheckCollisionRight(int x, int y, int width, int height, int xOffset, int yOffset, int[][][] lvlData) {
         return IsSolid(x + width + xOffset + 4, y + yOffset + 4, lvlData) ||
-                IsSolid(x + width + xOffset + 4, y + height + yOffset - 4, lvlData);
+                IsSolid(x + width + xOffset + 4, y + height + yOffset - 4, lvlData) ||
+                IsEdgeSolid(x + width + xOffset + 4, y + yOffset + 4, lvlData) ||
+                IsEdgeSolid(x + width + xOffset + 4, y + height + yOffset - 4, lvlData);
     }
 
-    public static boolean CanMoveHere(int x, int y, int width, int height, int[][] lvlData) {
+    public static boolean CanMoveHere(int x, int y, int width, int height, int[][][] lvlData) {
         if (!IsSolid(x, y, lvlData))
             if (!IsSolid(x + width, y + height, lvlData))
                 if (!IsSolid(x + width, y, lvlData))
@@ -67,9 +77,9 @@ public class HelpMethods {
         return false;
     }
 
-    private static boolean IsSolid(int x, int y, int[][] lvlData) {
-        int maxWidth = lvlData[0].length * Game.TILE_SIZE;
-        int maxHeight = lvlData.length * Game.TILE_SIZE;
+    private static boolean IsSolid(int x, int y, int[][][] lvlData) {
+        int maxWidth = lvlData[0][0].length * Game.TILE_SIZE;
+        int maxHeight = lvlData[0].length * Game.TILE_SIZE;
         if (x < 0 || x >= maxWidth)
             return true;
         if (y < 0 || y >= maxHeight)
@@ -80,10 +90,31 @@ public class HelpMethods {
         return IsTileSolid(xIndex, yIndex, lvlData);
     }
 
-    public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
-        int value = lvlData[yTile][xTile];
+    private static boolean IsEdgeSolid(int x, int y, int[][][] lvlData) {
+        int xIndex = x / Game.TILE_SIZE;
+        int yIndex = y / Game.TILE_SIZE;
 
-        return value == 283;
+        int tileValue = lvlData[0][yIndex][xIndex];
+        Tile tile = LevelManager.GetTileAtIndex(tileValue);
+
+        // Check for different edge types
+        if (tile.hasTopCollision() && y % Game.TILE_SIZE < 4) {
+            return true; // Top edge collision
+        }
+        if (tile.hasLeftCollision() && x % Game.TILE_SIZE < 4) {
+            return true; // Left edge collision
+        }
+        if (tile.hasRightCollision() && x % Game.TILE_SIZE > Game.TILE_SIZE - 4) {
+            return true; // Right edge collision
+        }
+        return tile.hasBottomCollision() && y % Game.TILE_SIZE > Game.TILE_SIZE - 4; // Bottom edge collision
+    }
+
+
+    public static boolean IsTileSolid(int xTile, int yTile, int[][][] lvlData) {
+        int value = lvlData[0][yTile][xTile];
+        Tile tile = LevelManager.GetTileAtIndex(value);
+        return tile.hasFullCollision();
     }
 
     public static String loadProperty(String property, String filename) {

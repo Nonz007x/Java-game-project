@@ -10,35 +10,35 @@ import java.util.ArrayList;
 
 public class LevelManager {
     Game game;
-    private final Tile[] tiles;
-    private final ArrayList<Level> levels;
-
-    private int lvlIndex = 0;
+    private static final Tile[] tiles = new Tile[2400];
+    private static final ArrayList<Level> levels = new ArrayList<Level>();
+    private static int lvlIndex = 0;
 
     public LevelManager(Game game) {
         this.game = game;
-        tiles = new Tile[1440];
 
-        levels = new ArrayList<>();
-        initializeTileImage();
-        buildAllLevels();
+        InitializeTileImage();
+        BuildAllLevels();
     }
 
-    private void buildAllLevels() {
+    private static void BuildAllLevels() {
         String[] allLevels = LoadSave.GetAllLevels();
         for (String path : allLevels) {
             levels.add(new Level(path));
         }
     }
 
-    private void initializeTileImage() {
+    private static void InitializeTileImage() {
         BufferedImage imageSet = LoadSave.GetSprite(LoadSave.LEVEL_SPRITE);
         int counter = 0;
-        for (int i = 0; i < 36; i++) {
+        for (int i = 0; i < 60; i++) {
             for (int j = 0; j < 40; j++) {
                 BufferedImage tileImage = imageSet.getSubimage(16 * j, 16 * i, 16, 16);
                 BufferedImage scaledImage = HelpMethods.ScaleImage(tileImage, Game.TILE_SIZE, Game.TILE_SIZE);
-                tiles[counter] = new Tile(scaledImage, false);
+                if (counter == 364) {
+                    tiles[counter] = new Tile(scaledImage, true, false, false, true);
+                }
+                else tiles[counter] = new Tile(scaledImage, false);
                 counter++;
             }
         }
@@ -46,19 +46,20 @@ public class LevelManager {
 
     public void render(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
 
-        int worldWidth = getCurrentLevel().getWorldCol() * Game.TILE_SIZE;
-        int worldHeight = getCurrentLevel().getWorldRow() * Game.TILE_SIZE;
+        int worldWidth = GetCurrentLevel().getWorldCol() * Game.TILE_SIZE;
+        int worldHeight = GetCurrentLevel().getWorldRow() * Game.TILE_SIZE;
 
         int tileSize = Game.TILE_SIZE;
         int screenWidth = Game.GAME_WIDTH;
         int screenHeight = Game.GAME_HEIGHT;
 
-        for (int worldRow = 0; worldRow < getCurrentLevel().getWorldRow(); worldRow++) {
+        for (int worldRow = 0; worldRow < GetCurrentLevel().getWorldRow(); worldRow++) {
             int tileY = worldRow * tileSize;
             int screenY = tileY - playerY + screenPosY;
 
-            for (int worldCol = 0; worldCol < getCurrentLevel().getWorldCol(); worldCol++) {
-                int tileNum = getCurrentLevel().getSpriteIndex(worldCol, worldRow);
+            for (int worldCol = 0; worldCol < GetCurrentLevel().getWorldCol(); worldCol++) {
+                int tileNum = GetCurrentLevel().getSpriteIndex(worldCol, worldRow);
+                int tileNum2 = GetCurrentLevel().getSpriteIndex(1,worldCol, worldRow);
 
                 int tileX = worldCol * tileSize;
                 int screenX = tileX - playerX + screenPosX;
@@ -81,34 +82,40 @@ public class LevelManager {
                     screenY = screenHeight - (worldHeight - tileY);
 
 
-                if (isTileVisible(screenX, screenY, screenWidth, screenHeight, tileSize)) {
+                if (IsTileVisible(screenX, screenY, screenWidth, screenHeight, tileSize)) {
                     g2.drawImage(tiles[tileNum].image(), screenX, screenY, null);
+                    g2.drawImage(tiles[tileNum2].image(), screenX, screenY, null);
+
                 }
             }
         }
     }
 
-    private boolean isTileVisible(int screenX, int screenY, int screenWidth, int screenHeight, int tileSize) {
+    private static boolean IsTileVisible(int screenX, int screenY, int screenWidth, int screenHeight, int tileSize) {
         return screenX > -tileSize &&
                 screenX < screenWidth &&
                 screenY > -tileSize &&
                 screenY < screenHeight;
     }
 
-    public Level getCurrentLevel() {
+    public static Level GetCurrentLevel() {
         return levels.get(lvlIndex);
     }
 
-    public int getLevelIndex() {
+    public static int GetLevelIndex() {
         return lvlIndex;
     }
 
-    public void setLevelIndex(int lvlIndex) {
-        this.lvlIndex = lvlIndex;
+    public static void SetLevelIndex(int index) {
+        lvlIndex = index;
     }
 
     public void toggleLevel() {
         lvlIndex = (lvlIndex + 1) % levels.size();
-        game.getPlaying().getPlayer().loadLvlData(getCurrentLevel().getLevelData());
+        game.getPlaying().getPlayer().loadLvlData(GetCurrentLevel().getLevelData());
+    }
+
+    public static Tile GetTileAtIndex(int index) {
+        return tiles[index];
     }
 }
