@@ -18,7 +18,7 @@ public class LevelManager {
     private int waterfallAniIndex;
     private BufferedImage[] waterfallSprite;
     private int waterAniIndex;
-    private static final BufferedImage[] levelSprites = new BufferedImage[2400];
+    private static final BufferedImage[] levelSprites = new BufferedImage[2401];
     private static final ArrayList<Level> levels = new ArrayList<>();
     private static int lvlIndex = 0;
 
@@ -39,7 +39,7 @@ public class LevelManager {
 
     private static void InitializeTileImage() {
         BufferedImage imageSet = LoadSave.GetSprite(LoadSave.LEVEL_SPRITE);
-        int counter = 0;
+        int counter = 1;
 
         for (int row = 0;  row < 60;  row++) {
             for (int col = 0; col < 40; col++) {

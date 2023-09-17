@@ -3,6 +3,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
 import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 
 public class GameWindow {
 
@@ -13,7 +14,10 @@ public class GameWindow {
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(gamePanel);
 
-        jframe.setTitle("The wold in furture");
+        jframe.setTitle("Quantum Boolets");
+
+        ImageIcon icon = new ImageIcon("src/res/boomstick.png");
+        jframe.setIconImage(icon.getImage());
 
         jframe.setResizable(false);
         jframe.pack();

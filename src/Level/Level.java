@@ -1,11 +1,12 @@
 package Level;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.enemies.GrandPrix;
 import main.Game;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static utils.HelpMethods.loadProperty;
 
@@ -26,76 +27,40 @@ public class Level {
 
     private void loadLevel(String filePath) {
         try {
+            System.out.println(filePath);
             InputStream is = getClass().getResourceAsStream(filePath);
             assert is != null;
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(is);
 
-            int rowCount = 0;
-            int colCount = 0;
-            String line;
-
-            //check columns
-            while (!Objects.equals(line = br.readLine(), "layer1")) {
-                String[] numbers = line.split(" ");
-                if (colCount == 0) {
-                    colCount = numbers.length;
-                } else if (colCount != numbers.length) {
-                    throw new IllegalArgumentException("Inconsistent number of columns in the level data.");
-                }
-                rowCount++;
-            }
+            // Access JSON properties as needed
+            int rowCount = jsonNode.get("height").asInt();
+            int colCount = jsonNode.get("width").asInt();
+            JsonNode background = jsonNode.get("layers").get(0).get("data");
+            JsonNode foreground = jsonNode.get("layers").get(1).get("data");
+            JsonNode collision = jsonNode.get("layers").get(2).get("data");
 
             worldRow = rowCount;
             worldCol = colCount;
-            lvlData = new int[2][worldRow][worldCol];
-            collisionTile = new int[worldRow][worldCol];
 
+            lvlData = new int[2][rowCount][colCount];
+            collisionTile = new int[rowCount][colCount];
 
-            br.close();
-            is = getClass().getResourceAsStream(filePath);
-            assert is != null;
-            br = new BufferedReader(new InputStreamReader(is));
+            int dataIndex = 0;
 
-            // create map
-            rowCount = 0;
-            while (!Objects.equals(line = br.readLine(), "layer1")) {
-                String[] numbers = line.split(" ");
-                for (int col = 0; col < numbers.length; col++) {
-                    int num = Integer.parseInt(numbers[col]);
-                    lvlData[0][rowCount][col] = num;
+            for (int row = 0; row < rowCount; row++) {
+                for (int col = 0; col < colCount; col++) {
+                    lvlData[0][row][col] = background.get(dataIndex).asInt();
+                    lvlData[1][row][col] = foreground.get(dataIndex).asInt();
+                    collisionTile[row][col] = collision.get(dataIndex).asInt();
+                    dataIndex++;
                 }
-
-                rowCount++;
             }
 
-            // create overlay
-            rowCount = 0;
-            while (!Objects.equals(line = br.readLine(), "layer2")) {
-                String[] numbers = line.split(" ");
-                for (int col = 0; col < numbers.length; col++) {
-                    int num = Integer.parseInt(numbers[col]);
-                    lvlData[1][rowCount][col] = num;
-                }
-
-                rowCount++;
-            }
-
-            // create collision
-            rowCount = 0;
-            while ((line = br.readLine()) != null) {
-                String[] numbers = line.split(" ");
-                for (int col = 0; col < numbers.length; col++) {
-                    int num = Integer.parseInt(numbers[col]);
-                    collisionTile[rowCount][col] = num;
-                }
-
-                rowCount++;
-            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         loadEnemies(filePath);
     }
 
@@ -113,7 +78,7 @@ public class Level {
 
             String line;
 
-            for (int i = 0; i < worldRow+1; i++) {
+            for (int i = 0; i < worldRow + 1; i++) {
                 br.readLine();
             }
         } catch (IOException e) {
@@ -135,9 +100,11 @@ public class Level {
     public int getLvlOffset() {
         return maxLvlOffsetX;
     }
+
     public int getSpriteIndex(int x, int y) {
         return lvlData[0][y][x];
     }
+
     public int getSpriteIndex(int layer, int x, int y) {
         return lvlData[layer][y][x];
     }

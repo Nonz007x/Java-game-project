@@ -26,13 +26,13 @@ public class LoadSave {
         }
 
         assert file != null;
-        File[] files = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+        File[] files = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
 
         assert files != null;
 
         String[] filesSorted = new String[files.length];
         for (int i = 0; i < filesSorted.length; i++) {
-            StringBuilder filePathBuilder = new StringBuilder(PATH).append("level_").append(i + 1).append(".txt");
+            StringBuilder filePathBuilder = new StringBuilder(PATH).append("level_").append(i + 1).append(".json");
             filesSorted[i] = filePathBuilder.toString();
         }
         return filesSorted;
