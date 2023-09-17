@@ -4,6 +4,7 @@ import Level.LevelManager;
 import entity.Player;
 import entity.enemies.EnemyManager;
 import main.Game;
+import main.GameWindow;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -14,6 +15,8 @@ public class Playing extends State implements Statemethods {
     private static Player player;
     private static LevelManager levelManager;
     private static EnemyManager enemyManager;
+
+    private static boolean paused = false;
 
     public Playing(Game game) {
         super(game);
@@ -30,8 +33,10 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void update() {
-        player.update();
-        levelManager.update();
+        if (!paused) {
+            player.update();
+            levelManager.update();
+        }
     }
 
     @Override
@@ -40,16 +45,23 @@ public class Playing extends State implements Statemethods {
         levelManager.render(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
         enemyManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
         player.render(g2);
-        g2.dispose();
+        if (paused) {
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+            g2.setColor(Color.RED);
+            g2.drawString("Pause", Game.GAME_WIDTH / 2, Game.GAME_HEIGHT / 2 );
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            player.teleport();
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
-            player.calculateRad();
-            player.dodge();
+        if (!paused) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                player.teleport();
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
+                player.calculateRad();
+                player.dodge();
+            }
         }
     }
 
@@ -65,12 +77,14 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        player.updateMousePosition(e);
+        if (!paused)
+            player.updateMousePosition(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        player.updateMousePosition(e);
+        if (!paused)
+            player.updateMousePosition(e);
     }
 
     @Override
@@ -94,7 +108,8 @@ public class Playing extends State implements Statemethods {
             enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
         }
         if (code == KeyEvent.VK_ESCAPE) {
-            setGamestate(Gamestate.MENU);
+//            setGamestate(Gamestate.MENU);
+            paused = !paused;
         }
     }
 
