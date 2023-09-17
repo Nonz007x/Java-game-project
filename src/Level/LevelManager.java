@@ -1,17 +1,19 @@
 package Level;
 
 import main.Game;
-import utils.HelpMethods;
 import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import static utils.HelpMethods.ScaleImage;
+
 public class LevelManager {
     Game game;
-    private static final Tile[] tiles = new Tile[2400];
-    private static final ArrayList<Level> levels = new ArrayList<Level>();
+
+    private static final BufferedImage[] levelSprites = new BufferedImage[2400];
+    private static final ArrayList<Level> levels = new ArrayList<>();
     private static int lvlIndex = 0;
 
     public LevelManager(Game game) {
@@ -31,14 +33,12 @@ public class LevelManager {
     private static void InitializeTileImage() {
         BufferedImage imageSet = LoadSave.GetSprite(LoadSave.LEVEL_SPRITE);
         int counter = 0;
-        for (int i = 0; i < 60; i++) {
-            for (int j = 0; j < 40; j++) {
-                BufferedImage tileImage = imageSet.getSubimage(16 * j, 16 * i, 16, 16);
-                BufferedImage scaledImage = HelpMethods.ScaleImage(tileImage, Game.TILE_SIZE, Game.TILE_SIZE);
-                if (counter == 364) {
-                    tiles[counter] = new Tile(scaledImage, true, false, false, true);
-                }
-                else tiles[counter] = new Tile(scaledImage, false);
+
+        for (int row = 0;  row < 60;  row++) {
+            for (int col = 0; col < 40; col++) {
+                BufferedImage tileImage = imageSet.getSubimage(16 * col, 16 *  row, 16, 16);
+                BufferedImage scaledImage = ScaleImage(tileImage, Game.TILE_SIZE, Game.TILE_SIZE);
+                levelSprites[counter] = scaledImage;
                 counter++;
             }
         }
@@ -83,8 +83,8 @@ public class LevelManager {
 
 
                 if (IsTileVisible(screenX, screenY, screenWidth, screenHeight, tileSize)) {
-                    g2.drawImage(tiles[tileNum].image(), screenX, screenY, null);
-                    g2.drawImage(tiles[tileNum2].image(), screenX, screenY, null);
+                    g2.drawImage(levelSprites[tileNum], screenX, screenY, null);
+                    g2.drawImage(levelSprites[tileNum2], screenX, screenY, null);
 
                 }
             }
@@ -112,10 +112,7 @@ public class LevelManager {
 
     public void toggleLevel() {
         lvlIndex = (lvlIndex + 1) % levels.size();
-        game.getPlaying().getPlayer().loadLvlData(GetCurrentLevel().getLevelData());
+        game.getPlaying().getPlayer().loadLvlData(GetCurrentLevel().getCollisionTile());
     }
 
-    public static Tile GetTileAtIndex(int index) {
-        return tiles[index];
-    }
 }

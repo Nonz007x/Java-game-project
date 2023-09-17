@@ -12,6 +12,8 @@ import static utils.HelpMethods.loadProperty;
 public class Level {
     private static int lvlId = 0;
     private int[][][] lvlData;
+    private int[][] collisionTile;
+
     private final ArrayList<GrandPrix> grandPrixs = new ArrayList<>();
     private int worldRow, worldCol;
     private int maxTilesOffset;
@@ -33,7 +35,7 @@ public class Level {
             String line;
 
             //check columns
-            while (!Objects.equals(line = br.readLine(), "end")) {
+            while (!Objects.equals(line = br.readLine(), "layer1")) {
                 String[] numbers = line.split(" ");
                 if (colCount == 0) {
                     colCount = numbers.length;
@@ -46,6 +48,7 @@ public class Level {
             worldRow = rowCount;
             worldCol = colCount;
             lvlData = new int[2][worldRow][worldCol];
+            collisionTile = new int[worldRow][worldCol];
 
 
             br.close();
@@ -55,7 +58,7 @@ public class Level {
 
             // create map
             rowCount = 0;
-            while (!Objects.equals(line = br.readLine(), "end")) {
+            while (!Objects.equals(line = br.readLine(), "layer1")) {
                 String[] numbers = line.split(" ");
                 for (int col = 0; col < numbers.length; col++) {
                     int num = Integer.parseInt(numbers[col]);
@@ -67,7 +70,7 @@ public class Level {
 
             // create overlay
             rowCount = 0;
-            while ((line = br.readLine()) != null) {
+            while (!Objects.equals(line = br.readLine(), "layer2")) {
                 String[] numbers = line.split(" ");
                 for (int col = 0; col < numbers.length; col++) {
                     int num = Integer.parseInt(numbers[col]);
@@ -77,6 +80,17 @@ public class Level {
                 rowCount++;
             }
 
+            // create collision
+            rowCount = 0;
+            while ((line = br.readLine()) != null) {
+                String[] numbers = line.split(" ");
+                for (int col = 0; col < numbers.length; col++) {
+                    int num = Integer.parseInt(numbers[col]);
+                    collisionTile[rowCount][col] = num;
+                }
+
+                rowCount++;
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,7 +134,7 @@ public class Level {
 
     public int getLvlOffset() {
         return maxLvlOffsetX;
-    };
+    }
     public int getSpriteIndex(int x, int y) {
         return lvlData[0][y][x];
     }
@@ -130,6 +144,10 @@ public class Level {
 
     public int[][][] getLevelData() {
         return lvlData;
+    }
+
+    public int[][] getCollisionTile() {
+        return collisionTile;
     }
 
     public int getWorldRow() {

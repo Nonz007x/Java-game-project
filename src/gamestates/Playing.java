@@ -25,7 +25,7 @@ public class Playing extends State implements Statemethods {
         player = new Player(48, 48, this);
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
-        player.loadLvlData(LevelManager.GetCurrentLevel().getLevelData());
+        player.loadLvlData(LevelManager.GetCurrentLevel().getCollisionTile());
     }
 
     @Override
