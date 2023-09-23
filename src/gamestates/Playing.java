@@ -2,9 +2,10 @@ package gamestates;
 
 import Level.LevelManager;
 import entity.Player;
+import entity.enemies.Enemy;
 import entity.enemies.EnemyManager;
 import main.Game;
-import main.GameWindow;
+import ui.PauseOverlay;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -15,6 +16,7 @@ public class Playing extends State implements Statemethods {
     private static Player player;
     private static LevelManager levelManager;
     private static EnemyManager enemyManager;
+    private static PauseOverlay pauseOverlay;
 
     private static boolean paused = false;
 
@@ -29,12 +31,14 @@ public class Playing extends State implements Statemethods {
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
         player.loadLvlData(LevelManager.GetCurrentLevel().getCollisionTile());
+        pauseOverlay = new PauseOverlay(this);
     }
 
     @Override
     public void update() {
         if (!paused) {
             player.update();
+            enemyManager.update(LevelManager.GetCurrentLevel().getCollisionTile(), this);
             levelManager.update();
         }
     }
@@ -48,11 +52,13 @@ public class Playing extends State implements Statemethods {
         if (paused) {
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
-            g2.setColor(Color.RED);
-            g2.drawString("Pause", Game.GAME_WIDTH / 2, Game.GAME_HEIGHT / 2 );
+            pauseOverlay.draw(g);
         }
     }
 
+    public void updateMouse(MouseEvent e) {
+        player.updateMousePosition(e);
+    }
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!paused) {
@@ -77,19 +83,23 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (!paused)
-            player.updateMousePosition(e);
+//        if (!paused)
+            updateMouse(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (!paused)
-            player.updateMousePosition(e);
+//        if (!paused)
+            updateMouse(e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+
+        if (paused) {
+            pauseOverlay.keyPressed(e);
+        }
 
         if (code == KeyEvent.VK_W) {
             player.setUp(true);
@@ -108,7 +118,6 @@ public class Playing extends State implements Statemethods {
             enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
         }
         if (code == KeyEvent.VK_ESCAPE) {
-//            setGamestate(Gamestate.MENU);
             paused = !paused;
         }
     }
@@ -133,5 +142,9 @@ public class Playing extends State implements Statemethods {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public void unpauseGame() {
+        paused = false;
     }
 }
