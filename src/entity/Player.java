@@ -14,10 +14,7 @@ import static utils.HelpMethods.*;
 public class Player extends Entity {
     private BufferedImage[][] animations;
     private int[][] lvlData;
-    private int aniTick, aniIndex;
     private final int aniSpeed = 10;
-    private int flipW = 1;
-    private int flipX = 0;
     private int playerScreenPosX;
     private int playerScreenPosY;
     private boolean moving = false;
@@ -30,7 +27,7 @@ public class Player extends Entity {
     private double tempRadian;
     private final int screenX = Game.GAME_WIDTH / 2 - (Game.TILE_SIZE / 2);
     private final int screenY = Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
-    private double mouseX, mouseY;
+    private Point mouseLocation = new Point(0,0);
 
 
     public Player(int width, int height, Playing playing) {
@@ -67,9 +64,9 @@ public class Player extends Entity {
     }
 
     public void updateMousePosition(MouseEvent e) {
-        mouseX = e.getX();
-        mouseY = e.getY();
-        rotationAngleRad = Math.atan2(mouseY - playerScreenPosY - 24, mouseX - playerScreenPosX - 24);
+        mouseLocation.x = e.getX();
+        mouseLocation.y = e.getY();
+        rotationAngleRad = Math.atan2(mouseLocation.y - playerScreenPosY - 24, mouseLocation.x - playerScreenPosX - 24);
     }
 
     public void calculateRad() {
@@ -105,7 +102,7 @@ public class Player extends Entity {
     }
 
     private void updateMouseEvent() {
-        if (mouseX >= playerScreenPosX + (double) Game.TILE_SIZE / 2) {
+        if (mouseLocation.x >= playerScreenPosX + (double) Game.TILE_SIZE / 2) {
             flipW = 1;
             flipX = 0;
         } else {
@@ -115,13 +112,11 @@ public class Player extends Entity {
     }
 
     public void teleport() {
-        int deltaX = (int) Math.round(mouseX - playerScreenPosX);
-        int deltaY = (int) Math.round(mouseY - playerScreenPosY);
-
-        worldX += deltaX;
-        worldY += deltaY;
+        worldX = mouseLocation.x;
+        worldY = mouseLocation.y;
+        hitbox.x = mouseLocation.x + 15;
+        hitbox.y = mouseLocation.y + 18;
     }
-
 
     private void updatePos() {
         moving = false;
@@ -163,18 +158,10 @@ public class Player extends Entity {
     }
 
     private void checkCollision() {
-        collisionUp = CheckCollisionUp(worldX, (int) (worldY + velocityY), (int) hitbox.width, (int) hitbox.x, (int) hitbox.y, lvlData);
-        collisionDown = CheckCollisionDown(worldX, (int) (worldY + velocityY), (int) hitbox.width, (int) hitbox.height, (int) hitbox.x, (int) hitbox.y, lvlData);
-        collisionLeft = CheckCollisionLeft((int) (worldX + velocityX), worldY, (int) hitbox.height, (int) hitbox.x, (int) hitbox.y, lvlData);
-        collisionRight = CheckCollisionRight((int) (worldX + velocityX), worldY, (int) hitbox.width, (int) hitbox.height, (int) hitbox.x, (int) hitbox.y, lvlData);
-    }
-
-    private void updateXPos(float velocity) {
-        worldX += velocity;
-    }
-
-    private void updateYPos(float velocity) {
-        worldY += velocity;
+        collisionUp = CheckCollisionUp((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, lvlData);
+        collisionDown = CheckCollisionDown((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, (int) hitbox.height, lvlData);
+        collisionLeft = CheckCollisionLeft((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.height, lvlData);
+        collisionRight = CheckCollisionRight((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height, lvlData);
     }
 
     public void dodge() {
@@ -249,14 +236,8 @@ public class Player extends Entity {
         rotatedG2.dispose();
 
         g2.setColor(Color.RED);
-        g2.fillRect((int) Math.round(mouseX), (int) Math.round(mouseY), 4, 4);
+        g2.fillRect(mouseLocation.x, mouseLocation.y, 4, 4);
         drawHitbox(g2);
-
-    }
-
-    private void drawHitbox(Graphics2D g) {
-        g.setColor(Color.RED);
-        g.drawRect(playerScreenPosX + (int) hitbox.x, playerScreenPosY + (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
     }
 
     public int getScreenX() {

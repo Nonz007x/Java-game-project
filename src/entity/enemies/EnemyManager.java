@@ -26,24 +26,35 @@ public class EnemyManager {
         drawGrandPrix(g2, playerX, playerY, screenPosX, screenPosY);
     }
 
+    private void drawGrandPrix(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
+        for (GrandPrix gp : currentLevel.getGrandPrixs()) {
+            g2.drawImage(grandPrixArr[gp.getState()][gp.getAniIndex()], gp.getX() - playerX + screenPosX + gp.getflipX(),
+                    gp.getY() - playerY + screenPosY, gp.getWidth() * gp.getflipW(), gp.getHeight(), null);
+            g2.setColor(Color.PINK);
+            g2.drawRect((int) gp.getHitboxX(),
+                    (int) gp.getHitboxY(),
+                    (int) gp.getHitboxWidth(),
+                    (int) gp.getHitboxHeight());
+        }
+    }
+
     private void loadEnemyImgs() {
-        grandPrixArr = getImgArr(LoadSave.GetSprite(LoadSave.HAUNTING_GHOSTS), 3, 4, 64, 64);
+        grandPrixArr = getImgArr(LoadSave.GetSprite(LoadSave.GRANDPRIX), 3, 3, 64, 64);
     }
 
     private BufferedImage[][] getImgArr(BufferedImage atlas, int xSize, int ySize, int spriteW, int spriteH) {
         // TODO
         BufferedImage[][] tempArr = new BufferedImage[ySize][xSize];
         for (int j = 0; j < tempArr.length; j++)
-            for (int i = 6; i < 9; i++) {
-                tempArr[j][i - 6] = atlas.getSubimage(i * spriteW, j * spriteH, spriteW, spriteH);
+            for (int i = 0; i < tempArr[0].length; i++) {
+                tempArr[j][i] = atlas.getSubimage(i * spriteW, j * spriteH, spriteW, spriteH);
             }
         return tempArr;
     }
 
-    private void drawGrandPrix(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
-        for (GrandPrix gp : currentLevel.getHauntingGhost()) {
-            g2.drawImage(grandPrixArr[2][2], gp.getX() - playerX + screenPosX,
-                    gp.getY() - playerY + screenPosY, gp.getWidth(), gp.getHeight(), null);
+    public void update(int[][] collisionTile, Playing playing) {
+        for (GrandPrix gp : currentLevel.getGrandPrixs()) {
+            gp.update(collisionTile, playing);
         }
     }
 }

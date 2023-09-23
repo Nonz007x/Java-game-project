@@ -5,10 +5,9 @@ import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.nio.Buffer;
+
 import java.util.ArrayList;
 
-import static utils.Constants.PlayerConstants.GetSpriteAmount;
 import static utils.HelpMethods.ScaleImage;
 
 public class LevelManager {
@@ -73,7 +72,7 @@ public class LevelManager {
             int screenY = tileY - playerY + screenPosY;
 
             for (int worldCol = 0; worldCol < GetCurrentLevel().getWorldCol(); worldCol++) {
-                int tileNum = levels.get(lvlIndex).getSpriteIndex(worldCol, worldRow);
+                int tileNum = levels.get(lvlIndex).getSpriteIndex(0, worldCol, worldRow);
                 int tileNum2 = levels.get(lvlIndex).getSpriteIndex(1,worldCol, worldRow);
 
                 int tileX = worldCol * Game.TILE_SIZE;

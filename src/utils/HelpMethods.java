@@ -1,6 +1,7 @@
 package utils;
 
 import java.awt.*;
+
 import main.Game;
 
 import java.awt.image.BufferedImage;
@@ -40,32 +41,32 @@ public class HelpMethods {
         return scaledImage;
     }
 
-    public static boolean CheckCollisionUp(int x, int y, int width, int xOffset, int yOffset, int[][] collisionTile) {
-        return IsSolid(x + xOffset, y + yOffset, collisionTile) ||
-                IsSolid(x + width + xOffset, y + yOffset, collisionTile) ||
-                IsEdgeSolid(x + xOffset, y + yOffset, collisionTile) ||
-                IsEdgeSolid(x + width + xOffset, y + yOffset, collisionTile);
+    public static boolean CheckCollisionUp(int x, int y, int width, int[][] collisionTile) {
+        return IsSolid(x, y, collisionTile) ||
+                IsSolid(x + width, y, collisionTile) ||
+                IsEdgeSolid(x, y, collisionTile) ||
+                IsEdgeSolid(x + width, y, collisionTile);
     }
 
-    public static boolean CheckCollisionDown(int x, int y, int width, int height, int xOffset, int yOffset, int[][] collisionTile) {
-        return IsSolid(x + xOffset, y + height + yOffset, collisionTile) ||
-                IsSolid(x + width + xOffset, y + height + yOffset, collisionTile) ||
-                IsEdgeSolid(x + xOffset, y + height + yOffset, collisionTile) ||
-                IsEdgeSolid(x + width + xOffset, y + height + yOffset, collisionTile);
+    public static boolean CheckCollisionDown(int x, int y, int width, int height, int[][] collisionTile) {
+        return IsSolid(x, y + height, collisionTile) ||
+                IsSolid(x + width, y + height, collisionTile) ||
+                IsEdgeSolid(x, y + height, collisionTile) ||
+                IsEdgeSolid(x + width, y + height, collisionTile);
     }
 
-    public static boolean CheckCollisionLeft(int x, int y, int height, int xOffset, int yOffset, int[][] collisionTile) {
-        return IsSolid(x + xOffset - 4, y + yOffset + 4, collisionTile) ||
-                IsSolid(x + xOffset - 4, y + height + yOffset - 4, collisionTile) ||
-                IsEdgeSolid(x + xOffset - 4, y + yOffset + 4, collisionTile) ||
-                IsEdgeSolid(x + xOffset - 4, y + height + yOffset - 4, collisionTile);
+    public static boolean CheckCollisionLeft(int x, int y, int height, int[][] collisionTile) {
+        return IsSolid(x - 4, y + 4, collisionTile) ||
+                IsSolid(x - 4, y + height - 4, collisionTile) ||
+                IsEdgeSolid(x - 4, y + 4, collisionTile) ||
+                IsEdgeSolid(x - 4, y + height - 4, collisionTile);
     }
 
-    public static boolean CheckCollisionRight(int x, int y, int width, int height, int xOffset, int yOffset, int[][] collisionTile) {
-        return IsSolid(x + width + xOffset + 4, y + yOffset + 4, collisionTile) ||
-                IsSolid(x + width + xOffset + 4, y + height + yOffset - 4, collisionTile) ||
-                IsEdgeSolid(x + width + xOffset + 4, y + yOffset + 4, collisionTile) ||
-                IsEdgeSolid(x + width + xOffset + 4, y + height + yOffset - 4, collisionTile);
+    public static boolean CheckCollisionRight(int x, int y, int width, int height, int[][] collisionTile) {
+        return IsSolid(x + width + 4, y + +4, collisionTile) ||
+                IsSolid(x + width + 4, y + height - 4, collisionTile) ||
+                IsEdgeSolid(x + width + 4, y + 4, collisionTile) ||
+                IsEdgeSolid(x + width + 4, y + height - 4, collisionTile);
     }
 
     public static boolean CanMoveHere(int x, int y, int width, int height, int[][] collisionTile) {

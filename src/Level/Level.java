@@ -33,7 +33,6 @@ public class Level {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(is);
 
-            // Access JSON properties as needed
             int rowCount = jsonNode.get("height").asInt();
             int colCount = jsonNode.get("width").asInt();
             JsonNode background = jsonNode.get("layers").get(0).get("data");
@@ -93,7 +92,7 @@ public class Level {
         maxLvlOffsetX = Game.TILE_SIZE * maxTilesOffset;
     }
 
-    public ArrayList<GrandPrix> getHauntingGhost() {
+    public ArrayList<GrandPrix> getGrandPrixs() {
         return grandPrixs;
     }
 

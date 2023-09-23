@@ -4,6 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Constants {
+
+    public static class Menu {
+        public static int PLAY = 0;
+        public static int OPTIONS = 1;
+        public static int EXIT = 2;
+        public static int MAX_CHOICE = 3;
+
+    }
     public static class Collision {
         public static final int NO_COLLISION = 0;
         public static final int FULL_COLLISION = 1;
@@ -38,12 +46,15 @@ public class Constants {
         public static final int GRANDPRIX_WIDTH_DEFAULT = 64;
         public static final int GRANDPRIX_HEIGHT_DEFAULT = 64;
 
-        public static int GetSpriteAmount(int player_action) {
-            return switch (player_action) {
-                case RUNNING -> 3;
-                case HIT -> 4;
-                default -> 1;
-            };
+        public static int GetSpriteAmount(int enemy_action, int enemy_type) {
+            switch (enemy_type) {
+                case GRANDPRIX -> {
+                    return 3;
+                }
+                default -> {
+                    return -1;
+                }
+            }
         }
 
 
