@@ -2,7 +2,7 @@ package Level;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entity.enemies.GrandPrix;
+import entities.enemies.GrandPrix;
 import main.Game;
 
 import java.io.*;

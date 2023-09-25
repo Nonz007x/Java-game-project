@@ -1,5 +1,6 @@
-package entity.enemies;
+package entities;
 
+import entities.enemies.GrandPrix;
 import gamestates.Playing;
 import Level.Level;
 import utils.LoadSave;

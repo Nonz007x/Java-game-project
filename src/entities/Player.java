@@ -1,4 +1,4 @@
-package entity;
+package entities;
 
 import gamestates.Playing;
 import main.Game;
@@ -131,6 +131,7 @@ public class Player extends Entity {
         if (right && !left && !collisionRight) velocityX = speed;
 
         if (dodgeActive && dodgeCooldown <= 0) {
+            // velocity = direction * dodge speed (15)
             velocityY = (float) -(Math.sin(tempRadian) * 15);
             velocityX = (float) -(Math.cos(tempRadian) * 15);
 
@@ -224,7 +225,7 @@ public class Player extends Entity {
     }
 
 
-    public void render(Graphics2D g2) {
+    public void draw(Graphics2D g2) {
 
         g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, width * flipW, height, null);
 

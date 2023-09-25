@@ -14,7 +14,7 @@ public class Game implements Runnable {
     private static Menu menu;
 
     public static final int TILES_DEFAULT_SIZE = 16;
-    private static final int SCALE = 3;
+    public static final int SCALE = 3;
     public static final int TILE_SIZE = TILES_DEFAULT_SIZE * SCALE; // 48x48
     public static final int TILE_IN_WIDTH = 16;
     public static final int TILE_IN_HEIGHT = 12;
@@ -92,7 +92,7 @@ public class Game implements Runnable {
         }
     }
 
-    public void render(Graphics g) {
+    public void draw(Graphics g) {
         switch (Gamestate.state) {
             case MENU -> menu.draw(g);
             case PLAYING -> playing.draw(g);

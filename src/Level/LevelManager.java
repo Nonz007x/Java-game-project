@@ -62,7 +62,7 @@ public class LevelManager {
         }
     }
 
-    public void render(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
+    public void draw(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
 
         int worldWidth = levels.get(lvlIndex).getWorldCol() * Game.TILE_SIZE;
         int worldHeight = levels.get(lvlIndex).getWorldRow() * Game.TILE_SIZE;

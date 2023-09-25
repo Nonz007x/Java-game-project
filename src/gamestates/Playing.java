@@ -1,10 +1,10 @@
 package gamestates;
 
 import Level.LevelManager;
-import entity.Player;
-import entity.enemies.Enemy;
-import entity.enemies.EnemyManager;
+import entities.Player;
+import entities.EnemyManager;
 import main.Game;
+import objects.ObjectManager;
 import ui.PauseOverlay;
 
 import java.awt.*;
@@ -17,6 +17,7 @@ public class Playing extends State implements Statemethods {
     private static LevelManager levelManager;
     private static EnemyManager enemyManager;
     private static PauseOverlay pauseOverlay;
+    private static ObjectManager objectManager;
 
     private static boolean paused = false;
 
@@ -27,11 +28,12 @@ public class Playing extends State implements Statemethods {
     }
 
     private void initClasses() {
-        player = new Player(48, 48, this);
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
-        player.loadLvlData(LevelManager.GetCurrentLevel().getCollisionTile());
+        objectManager = new ObjectManager(this);
         pauseOverlay = new PauseOverlay(this);
+        player = new Player(48, 48, this);
+        player.loadLvlData(LevelManager.GetCurrentLevel().getCollisionTile());
     }
 
     @Override
@@ -40,15 +42,17 @@ public class Playing extends State implements Statemethods {
             player.update();
             enemyManager.update(LevelManager.GetCurrentLevel().getCollisionTile(), this);
             levelManager.update();
+            objectManager.update(LevelManager.GetCurrentLevel().getCollisionTile(), player);
         }
     }
 
     @Override
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        levelManager.render(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
+        levelManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
         enemyManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
-        player.render(g2);
+        player.draw(g2);
+        objectManager.draw(g2);
         if (paused) {
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
@@ -59,6 +63,7 @@ public class Playing extends State implements Statemethods {
     public void updateMouse(MouseEvent e) {
         player.updateMousePosition(e);
     }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!paused) {
@@ -84,13 +89,13 @@ public class Playing extends State implements Statemethods {
     @Override
     public void mouseDragged(MouseEvent e) {
 //        if (!paused)
-            updateMouse(e);
+        updateMouse(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
 //        if (!paused)
-            updateMouse(e);
+        updateMouse(e);
     }
 
     @Override
@@ -147,4 +152,5 @@ public class Playing extends State implements Statemethods {
     public void unpauseGame() {
         paused = false;
     }
+
 }

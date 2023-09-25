@@ -39,15 +39,27 @@ public class Menu extends State implements Statemethods {
 
     @Override
     public void draw(Graphics g) {
+
         g.setColor(new Color(0, 0, 0, 150));
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+
         g.setColor(Color.WHITE);
+
+        String[] menuItems = {"Play", "Options", "Quit"};
+        int menuItemY = 100;
+
+        for (int i = 0; i < menuItems.length; i++) {
+            if (i == selectedChoice) {
+                g.fillRect(1, menuItemY + 1, 25, 1);
+            }
+
+            g.drawString(menuItems[i], 1, menuItemY);
+            menuItemY += 50;
+        }
+
         g.drawString("Menu", 1, 25);
-        g.drawString("Play", 1, 100);
-        g.drawString("Options", 1, 150);
-        g.drawString("Quit", 1, 200);
-        g.drawString(String.valueOf(selectedChoice), Game.GAME_WIDTH / 2, 125);
     }
+
 
     @Override
     public void mouseClicked(MouseEvent e) {

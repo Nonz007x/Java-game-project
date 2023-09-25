@@ -1,9 +1,11 @@
-package entity;
+package entities;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public abstract class Entity {
+    protected int maxHealth;
+    protected int currentHealth;
     protected int width, height;
     protected int worldX, worldY;
     protected float velocityX, velocityY;
@@ -35,9 +37,11 @@ public abstract class Entity {
     public final void setSpeed(int speed) {
         this.speed = speed;
     }
+
     public final int getX() {
         return worldX;
     }
+
     public final int getY() {
         return worldY;
     }
@@ -53,6 +57,7 @@ public abstract class Entity {
     public final void setX(int x) {
         this.worldX = x;
     }
+
     public final void setY(int y) {
         this.worldY = y;
     }
@@ -76,13 +81,13 @@ public abstract class Entity {
     }
 
     protected void updateXPos(float velocity) {
-        worldX += velocity;
-        hitbox.x += velocity;
+        worldX += (int) velocity;
+        hitbox.x += (int) velocity;
     }
 
     protected void updateYPos(float velocity) {
-        worldY += velocity;
-        hitbox.y += velocity;
+        worldY += (int) velocity;
+        hitbox.y += (int) velocity;
     }
 
     public void drawHitbox(Graphics2D g2) {
@@ -95,6 +100,7 @@ public abstract class Entity {
     public Rectangle2D getHitbox() {
         return hitbox;
     }
+
     public float getHitboxX() {
         return hitbox.x;
     }
@@ -106,6 +112,7 @@ public abstract class Entity {
     public float getHitboxWidth() {
         return hitbox.width;
     }
+
     public float getHitboxHeight() {
         return hitbox.height;
     }

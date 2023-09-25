@@ -1,6 +1,6 @@
-package entity.enemies;
+package entities.enemies;
 
-import gamestates.Gamestate;
+import entities.Enemy;
 import gamestates.Playing;
 
 import static utils.Constants.EnemyConstants.*;
@@ -13,6 +13,7 @@ public class GrandPrix extends Enemy {
         setSpeed(3);
         setDetectionRange(3);
     }
+
 
 
 
@@ -63,7 +64,8 @@ public class GrandPrix extends Enemy {
         }
 
         if (hitbox.intersects(playing.getPlayer().getHitbox())) {
-            Gamestate.state = Gamestate.QUIT;
+//            Gamestate.state = Gamestate.QUIT;
+            System.out.println("KUY");
         }
 
 

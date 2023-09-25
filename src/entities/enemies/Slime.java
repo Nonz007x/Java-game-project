@@ -1,6 +1,6 @@
-package entity.enemies;
+package entities.enemies;
 
-import entity.Player;
+import entities.Player;
 
 public class Slime {
 
