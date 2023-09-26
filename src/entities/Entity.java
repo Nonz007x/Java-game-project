@@ -13,6 +13,7 @@ public abstract class Entity {
 
     protected int flipW = 1;
     protected int flipX = 0;
+    protected final int aniSpeed = 10;
     protected int aniTick, aniIndex;
     protected int state;
 
@@ -67,7 +68,7 @@ public abstract class Entity {
     }
 
     protected final void initHitbox() {
-        hitbox = new Rectangle2D.Float(0, 0, width, height);
+        hitbox = new Rectangle2D.Float(worldX, worldY, width, height);
     }
 
     public int getState() {

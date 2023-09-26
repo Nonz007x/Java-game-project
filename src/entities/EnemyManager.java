@@ -23,19 +23,17 @@ public class EnemyManager {
         this.currentLevel = level;
     }
 
-    public void draw(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
-        drawGrandPrix(g2, playerX, playerY, screenPosX, screenPosY);
+    public void draw(Graphics2D g2, int xOffset, int yOffset) {
+        drawGrandPrix(g2, xOffset, yOffset);
     }
 
-    private void drawGrandPrix(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
+
+    private void drawGrandPrix(Graphics2D g2, int xOffset, int yOffset) {
         for (GrandPrix gp : currentLevel.getGrandPrixs()) {
-            g2.drawImage(grandPrixArr[gp.getState()][gp.getAniIndex()], gp.getX() - playerX + screenPosX + gp.getflipX(),
-                    gp.getY() - playerY + screenPosY, gp.getWidth() * gp.getflipW(), gp.getHeight(), null);
+            g2.drawImage(grandPrixArr[gp.getState()][gp.getAniIndex()], gp.getX() + xOffset + gp.getflipX(),
+                    gp.getY() + yOffset, gp.getWidth() * gp.getflipW(), gp.getHeight(), null);
             g2.setColor(Color.PINK);
-            g2.drawRect((int) gp.getHitboxX(),
-                    (int) gp.getHitboxY(),
-                    (int) gp.getHitboxWidth(),
-                    (int) gp.getHitboxHeight());
+            gp.drawHitbox(g2);
         }
     }
 

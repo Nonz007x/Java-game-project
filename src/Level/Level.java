@@ -2,6 +2,7 @@ package Level;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import entities.Boss;
 import entities.enemies.GrandPrix;
 import main.Game;
 
@@ -16,6 +17,7 @@ public class Level {
     private int[][] collisionTile;
 
     private final ArrayList<GrandPrix> grandPrixs = new ArrayList<>();
+    private final ArrayList<Boss> bosses = new ArrayList<>();
     private int worldRow, worldCol;
     private int maxTilesOffset;
     private int maxLvlOffsetX;
@@ -67,9 +69,9 @@ public class Level {
         //TODO
         int isHaunted = Integer.parseInt(loadProperty("grandprix", "res/maps/level_" + lvlId + ".properties"));
         if (isHaunted == 1) {
-            grandPrixs.add(new GrandPrix(200, 200));
+            grandPrixs.add(new GrandPrix(300, 300));
         }
-
+        bosses.add(new Boss(200, 200, 50, 50));
         try {
             InputStream is = getClass().getResourceAsStream(filePath);
             assert is != null;
@@ -94,6 +96,10 @@ public class Level {
 
     public ArrayList<GrandPrix> getGrandPrixs() {
         return grandPrixs;
+    }
+
+    public ArrayList<Boss> getBosses() {
+        return bosses;
     }
 
     public int getLvlOffset() {

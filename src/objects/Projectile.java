@@ -13,7 +13,7 @@ public class Projectile {
 		this.speed = speed;
 		this.directionX = directionX;
 		this.directionY = directionY;
-		hitbox = new Rectangle2D.Float(x, y, 0, 0);
+		hitbox = new Rectangle2D.Float(x, y, 10, 10);
 	}
 
 	public void updatePos() {

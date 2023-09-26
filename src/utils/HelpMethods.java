@@ -3,6 +3,7 @@ package utils;
 import java.awt.*;
 
 import main.Game;
+import objects.Projectile;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -67,6 +68,10 @@ public class HelpMethods {
                 IsSolid(x + width + 4, y + height - 4, collisionTile) ||
                 IsEdgeSolid(x + width + 4, y + 4, collisionTile) ||
                 IsEdgeSolid(x + width + 4, y + height - 4, collisionTile);
+    }
+
+    public static boolean IsProjectileHittingLevel(Projectile p, int[][] collisiontTile) {
+        return IsSolid((int) (p.getHitbox().x + p.getHitbox().width / 2), (int) (p.getHitbox().y + p.getHitbox().height / 2), collisiontTile);
     }
 
     public static boolean CanMoveHere(int x, int y, int width, int height, int[][] collisionTile) {

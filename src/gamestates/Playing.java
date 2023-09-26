@@ -1,10 +1,12 @@
 package gamestates;
 
 import Level.LevelManager;
+import entities.BossManager;
 import entities.Player;
 import entities.EnemyManager;
 import main.Game;
 import objects.ObjectManager;
+import objects.ProjectileManager;
 import ui.PauseOverlay;
 
 import java.awt.*;
@@ -18,6 +20,10 @@ public class Playing extends State implements Statemethods {
     private static EnemyManager enemyManager;
     private static PauseOverlay pauseOverlay;
     private static ObjectManager objectManager;
+    private static BossManager bossManager;
+    private static ProjectileManager projectileManager;
+
+    private int xOffset, yOffset;
 
     private static boolean paused = false;
 
@@ -25,11 +31,14 @@ public class Playing extends State implements Statemethods {
         super(game);
         initClasses();
         enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
+        bossManager.loadBosses(LevelManager.GetCurrentLevel());
     }
 
     private void initClasses() {
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
+        bossManager = new BossManager(this);
+        projectileManager = new ProjectileManager(this);
         objectManager = new ObjectManager(this);
         pauseOverlay = new PauseOverlay(this);
         player = new Player(48, 48, this);
@@ -40,9 +49,12 @@ public class Playing extends State implements Statemethods {
     public void update() {
         if (!paused) {
             player.update();
+            calcOffsets();
             enemyManager.update(LevelManager.GetCurrentLevel().getCollisionTile(), this);
             levelManager.update();
-            objectManager.update(LevelManager.GetCurrentLevel().getCollisionTile(), player);
+            projectileManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
+            objectManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
+            bossManager.update();
         }
     }
 
@@ -50,14 +62,21 @@ public class Playing extends State implements Statemethods {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         levelManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
-        enemyManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
+        enemyManager.draw(g2, xOffset, yOffset);
         player.draw(g2);
+        bossManager.draw(g2);
         objectManager.draw(g2);
+        projectileManager.draw(g2);
         if (paused) {
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             pauseOverlay.draw(g);
         }
+    }
+
+    private void calcOffsets() {
+        xOffset = player.getPlayerScreenPosX() - player.getX();
+        yOffset = player.getPlayerScreenPosY() - player.getY();
     }
 
     public void updateMouse(MouseEvent e) {
@@ -121,6 +140,8 @@ public class Playing extends State implements Statemethods {
         if (code == KeyEvent.VK_F) {
             levelManager.toggleLevel();
             enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
+            bossManager.loadBosses(LevelManager.GetCurrentLevel());
+            System.out.println("New level loaded!");
         }
         if (code == KeyEvent.VK_ESCAPE) {
             paused = !paused;
@@ -151,6 +172,10 @@ public class Playing extends State implements Statemethods {
 
     public void unpauseGame() {
         paused = false;
+    }
+
+    public ObjectManager getObjectManager() {
+        return objectManager;
     }
 
 }

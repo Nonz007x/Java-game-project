@@ -14,7 +14,6 @@ import static utils.HelpMethods.*;
 public class Player extends Entity {
     private BufferedImage[][] animations;
     private int[][] lvlData;
-    private final int aniSpeed = 10;
     private int playerScreenPosX;
     private int playerScreenPosY;
     private boolean moving = false;
