@@ -13,6 +13,8 @@ import static utils.HelpMethods.*;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
+    private BufferedImage boomstick;
+    private int boomstickFlipY, boomstickFlipH;
     private int[][] lvlData;
     private int playerScreenPosX;
     private int playerScreenPosY;
@@ -26,7 +28,7 @@ public class Player extends Entity {
     private double tempRadian;
     private final int screenX = Game.GAME_WIDTH / 2 - (Game.TILE_SIZE / 2);
     private final int screenY = Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
-    private Point mouseLocation = new Point(0,0);
+    private Point mouseLocation = new Point(0, 0);
 
 
     public Player(int width, int height, Playing playing) {
@@ -36,8 +38,6 @@ public class Player extends Entity {
 
         setSpawn();
         initHitbox(15, 18, 20, 33);
-        System.out.println(worldX);
-        System.out.println(worldY);
         loadAnimations();
     }
 
@@ -74,6 +74,7 @@ public class Player extends Entity {
 
     public void loadAnimations() {
         BufferedImage img = LoadSave.GetSprite(LoadSave.PLAYER_SPRITES);
+        boomstick = LoadSave.GetSprite("boomstick.png");
         animations = new BufferedImage[2][4];
 
         for (int i = 0; i < animations.length; i++)
@@ -92,8 +93,9 @@ public class Player extends Entity {
 
         if (dodgeActive) {
             dodgeTick++;
-            if (dodgeTick >= 21) {
+            if (dodgeTick >= 6) {
                 dodgeTick = 0;
+                dodgeCooldown = 45;
                 dodgeActive = false;
             }
         }
@@ -104,9 +106,13 @@ public class Player extends Entity {
         if (mouseLocation.x >= playerScreenPosX + (double) Game.TILE_SIZE / 2) {
             flipW = 1;
             flipX = 0;
+            boomstickFlipH = 1;
+            boomstickFlipY = 0;
         } else {
             flipW = -1;
             flipX = width;
+            boomstickFlipH = -1;
+            boomstickFlipY = boomstick.getHeight();
         }
     }
 
@@ -129,7 +135,7 @@ public class Player extends Entity {
         if (left && !right && !collisionLeft) velocityX = -speed;
         if (right && !left && !collisionRight) velocityX = speed;
 
-        if (dodgeActive && dodgeCooldown <= 0) {
+        if (dodgeActive) {
             // velocity = direction * dodge speed (15)
             velocityY = (float) -(Math.sin(tempRadian) * 15);
             velocityX = (float) -(Math.cos(tempRadian) * 15);
@@ -167,9 +173,8 @@ public class Player extends Entity {
     public void dodge() {
         if (dodgeActive)
             return;
-
-        dodgeActive = true;
-        dodgeCooldown = 15;
+        if (dodgeCooldown < 0)
+            dodgeActive = true;
     }
 
     private void setAnimation() {
@@ -227,17 +232,18 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
 
         g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, width * flipW, height, null);
-
-        Graphics2D rotatedG2 = (Graphics2D) g2.create();
-        rotatedG2.setColor(Color.GREEN);
-        rotatedG2.translate(playerScreenPosX + 30, playerScreenPosY + 30);
-        rotatedG2.rotate(rotationAngleRad);
-        rotatedG2.fillRect(0, 0, 12, 12);
-        rotatedG2.dispose();
+        drawWeapon(g2);
 
         g2.setColor(Color.RED);
         g2.fillRect(mouseLocation.x, mouseLocation.y, 4, 4);
         drawHitbox(g2);
+    }
+
+    private void drawWeapon(Graphics2D g2) {
+        g2.translate(playerScreenPosX + 25, playerScreenPosY + 40);
+        g2.rotate(rotationAngleRad);
+        g2.drawImage(boomstick, -boomstick.getWidth() / 2, -boomstick.getHeight() / 2 + boomstickFlipY, 40, 16 * boomstickFlipH, null);
+        g2.dispose();
     }
 
     public int getScreenX() {
@@ -251,6 +257,7 @@ public class Player extends Entity {
     public int getPlayerScreenPosX() {
         return playerScreenPosX;
     }
+
     public int getPlayerScreenPosY() {
         return playerScreenPosY;
     }
