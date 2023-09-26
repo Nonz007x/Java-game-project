@@ -4,12 +4,14 @@ import java.awt.geom.Rectangle2D;
 import main.Game;
 public class Projectile {
 	private Rectangle2D.Float hitbox;
+	private final int TICKS_TO_LIVE = 600;
+	private int current_tick;
 	private int speed;
-	private int directionX;
-	private int directionY;
+	private double directionX;
+	private double directionY;
 	private boolean active = true;
 
-	public Projectile(int x, int y, int speed, int directionX, int directionY) {
+	public Projectile(int x, int y, int speed, double directionX, double directionY) {
 		this.speed = speed;
 		this.directionX = directionX;
 		this.directionY = directionY;
@@ -36,6 +38,11 @@ public class Projectile {
 
 	public boolean isActive() {
 		return active;
+	}
+
+	public boolean isWithinTickLimit() {
+		current_tick++;
+		return current_tick < TICKS_TO_LIVE;
 	}
 
 }

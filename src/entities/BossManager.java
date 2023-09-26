@@ -19,7 +19,7 @@ public class BossManager {
 
     public void update() {
         for (Boss boss : currentLevel.getBosses()) {
-            boss.update();
+            boss.update(currentLevel.getCollisionTile(), playing);
         }
     }
 
@@ -28,5 +28,4 @@ public class BossManager {
             boss.drawHitbox(g);
         }
     }
-
 }

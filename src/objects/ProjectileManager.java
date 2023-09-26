@@ -13,18 +13,19 @@ public class ProjectileManager {
     private static ArrayList<Projectile> projectiles = new ArrayList<>();
 
     public ProjectileManager(Playing playing) {
-        this.playing = playing;
+        ProjectileManager.playing = playing;
     }
 
     public void update(int[][] collisionTile) {
         for (Projectile p : projectiles) {
-            if (p.isActive()) {
-                p.updatePos();
-                if (p.getHitbox().intersects(playing.getPlayer().getHitbox())) {
-                    p.setActive(false);
-                } else if (IsProjectileHittingLevel(p, collisionTile)) {
-                    p.setActive(false);
-                }
+            if (!p.isActive() || !p.isWithinTickLimit()) {
+                p.setActive(false);
+                continue;
+            }
+
+            p.updatePos();
+            if (p.getHitbox().intersects(playing.getPlayer().getHitbox()) || IsProjectileHittingLevel(p, collisionTile)) {
+                p.setActive(false);
             }
         }
     }
@@ -39,7 +40,7 @@ public class ProjectileManager {
         return projectiles;
     }
 
-    public static void addProjectile(int x, int y, int speed, int directionX, int directionY) {
+    public static void addProjectile(int x, int y, int speed, double directionX, double directionY) {
         projectiles.add(new Projectile(x, y, speed, directionX, directionY));
     }
 }

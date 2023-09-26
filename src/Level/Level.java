@@ -29,7 +29,6 @@ public class Level {
 
     private void loadLevel(String filePath) {
         try {
-            System.out.println(filePath);
             InputStream is = getClass().getResourceAsStream(filePath);
             assert is != null;
             ObjectMapper objectMapper = new ObjectMapper();
@@ -57,8 +56,6 @@ public class Level {
                     dataIndex++;
                 }
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,7 +68,7 @@ public class Level {
         if (isHaunted == 1) {
             grandPrixs.add(new GrandPrix(300, 300));
         }
-        bosses.add(new Boss(200, 200, 50, 50));
+        bosses.add(new Boss(1, 100, 50, 50));
         try {
             InputStream is = getClass().getResourceAsStream(filePath);
             assert is != null;
