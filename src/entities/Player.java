@@ -6,6 +6,7 @@ import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import static utils.Constants.PlayerConstants.*;
@@ -13,8 +14,12 @@ import static utils.HelpMethods.*;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
+    private BufferedImage[][] gunFlashes;
     private BufferedImage boomstick;
+    private int gunFlashAniIndex;
     private int boomstickFlipY, boomstickFlipH;
+    private int sgFlashFlipY, sgFlashFlipH;
+    private int gunFlashTick;
     private int[][] lvlData;
     private int playerScreenPosX;
     private int playerScreenPosY;
@@ -73,47 +78,41 @@ public class Player extends Entity {
     }
 
     public void loadAnimations() {
-        BufferedImage img = LoadSave.GetSprite(LoadSave.PLAYER_SPRITES);
+        BufferedImage playerSprites = LoadSave.GetSprite(LoadSave.PLAYER_SPRITES);
+        BufferedImage shotgunFlashSprites = LoadSave.GetSprite("shotgun_flashes.png");
+
         boomstick = LoadSave.GetSprite("boomstick.png");
         animations = new BufferedImage[2][4];
+        gunFlashes = new BufferedImage[2][7];
+
+        for (int i = 0; i < gunFlashes[0].length; i++) {
+            gunFlashes[0][i] = shotgunFlashSprites.getSubimage(i * 16, 0, 16, 16);
+        }
 
         for (int i = 0; i < animations.length; i++)
             for (int j = 0; j < animations[0].length; j++) {
-                animations[i][j] = img.getSubimage(j * 16, i * 16, 16, 16);
+                animations[i][j] = playerSprites.getSubimage(j * 16, i * 16, 16, 16);
             }
     }
 
     public void update() {
-
         updatePos();
         updateCamera();
         setAnimation();
         updateMouseEvent();
         updateAnimationTick();
-
-        if (dodgeActive) {
-            dodgeTick++;
-            if (dodgeTick >= 6) {
-                dodgeTick = 0;
-                dodgeCooldown = 45;
-                dodgeActive = false;
-            }
-        }
-        dodgeCooldown--;
+        updataDodge();
     }
 
     private void updateMouseEvent() {
-        if (mouseLocation.x >= playerScreenPosX + (double) Game.TILE_SIZE / 2) {
-            flipW = 1;
-            flipX = 0;
-            boomstickFlipH = 1;
-            boomstickFlipY = 0;
-        } else {
-            flipW = -1;
-            flipX = width;
-            boomstickFlipH = -1;
-            boomstickFlipY = boomstick.getHeight();
-        }
+        final int halfTileSize = Game.TILE_SIZE / 2;
+
+        flipW = (mouseLocation.x >= playerScreenPosX + halfTileSize) ? 1 : -1;
+        flipX = (flipW == 1) ? 0 : width;
+        boomstickFlipH = (flipW == 1) ? 1 : -1;
+        boomstickFlipY = (flipW == 1) ? 0 : boomstick.getHeight();
+        sgFlashFlipH = (flipW == 1) ? 1 : -1;
+        sgFlashFlipY = (flipW == 1) ? 0 : 58;
     }
 
     public void teleport() {
@@ -171,10 +170,20 @@ public class Player extends Entity {
     }
 
     public void dodge() {
-        if (dodgeActive)
-            return;
-        if (dodgeCooldown < 0)
+        if (!dodgeActive && dodgeCooldown < 0)
             dodgeActive = true;
+    }
+
+    private void updataDodge() {
+        if (dodgeActive) {
+            dodgeTick++;
+            if (dodgeTick >= 6) {
+                dodgeTick = 0;
+                dodgeCooldown = 45;
+                dodgeActive = false;
+            }
+        }
+        dodgeCooldown--;
     }
 
     private void setAnimation() {
@@ -196,13 +205,16 @@ public class Player extends Entity {
 
     private void updateAnimationTick() {
         aniTick++;
+        if (dodgeActive || gunFlashAniIndex < 7) {
+            gunFlashTick++;
+            if (gunFlashTick >= 5) {
+                gunFlashTick = 0;
+                gunFlashAniIndex = (gunFlashAniIndex + 1) % 7;
+            }
+        }
         if (aniTick >= aniSpeed) {
             aniTick = 0;
-            aniIndex++;
-            if (aniIndex >= GetSpriteAmount(state)) {
-                aniIndex = 0;
-            }
-
+            aniIndex = (aniIndex + 1) % GetSpriteAmount(state);
         }
     }
 
@@ -233,17 +245,28 @@ public class Player extends Entity {
 
         g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, width * flipW, height, null);
         drawWeapon(g2);
-
         g2.setColor(Color.RED);
         g2.fillRect(mouseLocation.x, mouseLocation.y, 4, 4);
         drawHitbox(g2);
+
+    }
+
+    public void drawHitbox(Graphics2D g) {
+        g.setColor(Color.RED);
+        g.drawRect(playerScreenPosX + 15, playerScreenPosY + 18, (int) hitbox.width, (int) hitbox.height);
     }
 
     private void drawWeapon(Graphics2D g2) {
+
+        AffineTransform originalTransform = g2.getTransform();
+
         g2.translate(playerScreenPosX + 25, playerScreenPosY + 40);
         g2.rotate(rotationAngleRad);
         g2.drawImage(boomstick, -boomstick.getWidth() / 2, -boomstick.getHeight() / 2 + boomstickFlipY, 40, 16 * boomstickFlipH, null);
-        g2.dispose();
+        g2.drawImage(gunFlashes[0][gunFlashAniIndex], 20, sgFlashFlipY - 29, 48, 48 * sgFlashFlipH, null);
+
+        g2.setTransform(originalTransform);
+
     }
 
     public int getScreenX() {
