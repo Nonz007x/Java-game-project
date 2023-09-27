@@ -33,7 +33,7 @@ public class EnemyManager {
             g2.drawImage(grandPrixArr[gp.getState()][gp.getAniIndex()], gp.getX() + xOffset + gp.getflipX(),
                     gp.getY() + yOffset, gp.getWidth() * gp.getflipW(), gp.getHeight(), null);
             g2.setColor(Color.PINK);
-            gp.drawHitbox(g2);
+            gp.drawHitbox(g2, xOffset, yOffset);
         }
     }
 

@@ -30,10 +30,10 @@ public class ProjectileManager {
         }
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, int xOffset, int yOffset) {
         for (Projectile p : projectiles)
             if (p.isActive())
-                g.fillRect((int) p.getHitbox().x, (int) p.getHitbox().y, 10, 10);
+                g.fillRect((int) p.getHitbox().x + xOffset, (int) p.getHitbox().y + yOffset, 10, 10);
     }
 
     public static ArrayList<Projectile> getProjectiles() {
