@@ -5,9 +5,9 @@ import objects.ProjectileManager;
 import static utils.HelpMethods.*;
 import gamestates.Playing;
 
-public class Boss extends Entity {
+public class Boss extends Enemy {
 
-    private int counter = 0;
+    protected int counter = 0;
 
     public Boss(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -39,11 +39,7 @@ public class Boss extends Entity {
         }
     }
 
-    public void shootProjectile(int x, int y, int speed, double directionX, double directionY) {
-        ProjectileManager.addProjectile(x, y, speed, directionX, directionY);
-    }
-
-    public void aimAtPlayer(Playing playing) {
+    protected void aimAtPlayer(Playing playing) {
         int playerX = (int) playing.getPlayer().getHitbox().getX();
         int playerY = (int) playing.getPlayer().getHitbox().getY();
 
@@ -56,13 +52,8 @@ public class Boss extends Entity {
         double directionY = deltaY / distance;
 
         shootProjectile(worldX + 20, worldY + 20, 10, directionX,  directionY);
-
-    }
-    private void checkCollision(int[][] collisionTile) {
-        collisionUp = CheckCollisionUp((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, collisionTile);
-        collisionDown = CheckCollisionDown((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, (int) hitbox.height, collisionTile);
-        collisionLeft = CheckCollisionLeft((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.height, collisionTile);
-        collisionRight = CheckCollisionRight((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height, collisionTile);
     }
 
+    // TODO load boss images from file
+    protected void loadBossImage(){}
 }

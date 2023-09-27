@@ -6,6 +6,7 @@ import gamestates.Playing;
 import java.awt.*;
 
 public class BossManager {
+    private static int bossDefeated;
     private Level currentLevel;
     private Playing playing;
 
@@ -23,9 +24,10 @@ public class BossManager {
         }
     }
 
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g, int xOffset, int yOffset) {
         for (Boss boss : currentLevel.getBosses()) {
-            boss.drawHitbox(g);
+//            boss.draw(g, xOffset, yOffset);
+            boss.drawHitbox(g, xOffset, yOffset);
         }
     }
 }

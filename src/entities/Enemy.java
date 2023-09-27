@@ -1,6 +1,7 @@
 package entities;
 
 import main.Game;
+import objects.ProjectileManager;
 
 import static utils.Constants.EnemyConstants.GetSpriteAmount;
 import static utils.Constants.EnemyConstants.*;
@@ -34,6 +35,10 @@ public abstract class Enemy extends Entity {
 
     public int getAniIndex() {
         return aniIndex;
+    }
+
+    public void shootProjectile(int x, int y, int speed, double directionX, double directionY) {
+        ProjectileManager.addProjectile(x, y, speed, directionX, directionY);
     }
 
     public int getflipX() {

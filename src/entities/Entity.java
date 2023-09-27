@@ -3,6 +3,9 @@ package entities;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
+import static utils.HelpMethods.*;
+import static utils.HelpMethods.CheckCollisionRight;
+
 public abstract class Entity {
     protected int maxHealth;
     protected int currentHealth;
@@ -91,10 +94,17 @@ public abstract class Entity {
         hitbox.y += (int) velocity;
     }
 
-    public void drawHitbox(Graphics2D g2) {
+    protected void checkCollision(int[][] collisionTile) {
+        collisionUp = CheckCollisionUp((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, collisionTile);
+        collisionDown = CheckCollisionDown((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, (int) hitbox.height, collisionTile);
+        collisionLeft = CheckCollisionLeft((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.height, collisionTile);
+        collisionRight = CheckCollisionRight((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height, collisionTile);
+    }
+
+    public void drawHitbox(Graphics2D g2, int xOffset, int yOffset) {
         // For debugging the hitbox
         g2.setColor(Color.PINK);
-        g2.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+        g2.drawRect((int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height);
 
     }
 
