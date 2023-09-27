@@ -68,21 +68,7 @@ public class Level {
         if (isHaunted == 1) {
             grandPrixs.add(new GrandPrix(300, 300));
         }
-        bosses.add(new Boss(1, 100, 50, 50));
-        try {
-            InputStream is = getClass().getResourceAsStream(filePath);
-            assert is != null;
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-            String line;
-
-            for (int i = 0; i < worldRow + 1; i++) {
-                br.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        bosses.add(new Boss(10, 100, 50, 50));
 
     }
 

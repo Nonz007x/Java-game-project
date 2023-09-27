@@ -14,9 +14,6 @@ public class GrandPrix extends Enemy {
         setDetectionRange(3);
     }
 
-
-
-
     public void update(int[][] collisionTile, Playing playing) {
         updateAnimationTick();
         updateBehavior(collisionTile, playing);
@@ -65,7 +62,6 @@ public class GrandPrix extends Enemy {
 
         if (hitbox.intersects(playing.getPlayer().getHitbox())) {
 //            Gamestate.state = Gamestate.QUIT;
-            System.out.println("KUY");
         }
 
 
