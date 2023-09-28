@@ -2,7 +2,6 @@ package entities;
 
 import gamestates.Playing;
 import main.Game;
-import utils.Drawable;
 import utils.LoadSave;
 
 import java.awt.*;
@@ -13,8 +12,7 @@ import java.awt.image.BufferedImage;
 import static utils.Constants.PlayerConstants.*;
 import static utils.HelpMethods.*;
 
-public class Player extends Entity implements Drawable {
-    private BufferedImage[][] animations;
+public class Player extends Entity {
     private BufferedImage[][] gunFlashes;
     private BufferedImage boomstick;
     private int gunFlashAniIndex;
@@ -83,17 +81,8 @@ public class Player extends Entity implements Drawable {
         BufferedImage shotgunFlashSprites = LoadSave.GetSprite("shotgun_flashes.png");
 
         boomstick = LoadSave.GetSprite("boomstick.png");
-        animations = new BufferedImage[2][4];
-        gunFlashes = new BufferedImage[2][7];
-
-        for (int i = 0; i < gunFlashes[0].length; i++) {
-            gunFlashes[0][i] = shotgunFlashSprites.getSubimage(i * 16, 0, 16, 16);
-        }
-
-        for (int i = 0; i < animations.length; i++)
-            for (int j = 0; j < animations[0].length; j++) {
-                animations[i][j] = playerSprites.getSubimage(j * 16, i * 16, 16, 16);
-            }
+        gunFlashes = loadImages(shotgunFlashSprites, 7, 1, 16, 16);
+        animations = loadImages(playerSprites, 4, 2, 16, 16);
     }
 
     public void update() {

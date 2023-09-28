@@ -74,11 +74,11 @@ public class Crabulon extends Boss {
         int spriteWidth = 312;
         int spriteHeight = 196;
 
-        bossAnimation = new BufferedImage[stateSize][animationSize];
+        animations = new BufferedImage[stateSize][animationSize];
 
         for (int i = 0; i < stateSize; i++)
             for (int j = 0; j < animationSize; j++) {
-                bossAnimation[i][j] = sprites.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth, spriteHeight);
+                animations[i][j] = sprites.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth, spriteHeight);
             }
     }
 

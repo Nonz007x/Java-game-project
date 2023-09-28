@@ -2,6 +2,7 @@ package entities.enemies;
 
 import entities.Enemy;
 import gamestates.Playing;
+import utils.LoadSave;
 
 import static utils.Constants.EnemyConstants.*;
 
@@ -9,6 +10,7 @@ public class GrandPrix extends Enemy {
 
     public GrandPrix(int x, int y) {
         super(x, y, GRANDPRIX_WIDTH_DEFAULT, GRANDPRIX_HEIGHT_DEFAULT);
+        animations = loadImages(LoadSave.GetSprite(LoadSave.GRANDPRIX), 3, 3, 64, 64);
         initHitbox(5, 10, GRANDPRIX_WIDTH_DEFAULT - 5, GRANDPRIX_HEIGHT_DEFAULT - 10);
         setSpeed(3);
         setDetectionRange(3);
@@ -23,6 +25,8 @@ public class GrandPrix extends Enemy {
         int playerX = playing.getPlayer().getX();
         int playerY = playing.getPlayer().getY();
 
+        checkCollision(collisionTile);
+
         if (isPlayerInRange(playing.getPlayer())) {
             int deltaX = playerX - worldX;
             int deltaY = playerY - worldY;
@@ -35,6 +39,18 @@ public class GrandPrix extends Enemy {
 
                 velocityX = (int) (speed * directionX);
                 velocityY = (int) (speed * directionY);
+
+                if (velocityX > 0 && collisionRight) {
+                    velocityX = 0;
+                } else if (velocityX < 0 && collisionLeft) {
+                    velocityX = 0;
+                }
+
+                if (velocityY < 0 && collisionUp) {
+                    velocityY = 0;
+                } else if (velocityY > 0 && collisionDown) {
+                    velocityY = 0;
+                }
 
                 updateXPos(velocityX);
                 updateYPos(velocityY);
@@ -91,5 +107,4 @@ public class GrandPrix extends Enemy {
 //            }
 //        }
     }
-
 }
