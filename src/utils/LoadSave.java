@@ -44,18 +44,27 @@ public class LoadSave {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/res/sprites/" + fileName);
         try {
-            img = ImageIO.read(is);
-
+            if (is != null) {
+                img = ImageIO.read(is);
+            } else {
+                InputStream placeholderStream = LoadSave.class.getResourceAsStream("/res/sprites/placeholder.png");
+                if (placeholderStream != null) {
+                    img = ImageIO.read(placeholderStream);
+                } else {
+                    System.err.println("Placeholder image not found.");
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                is.close();
+                if (is != null) {
+                    is.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return img;
     }
-
 }
