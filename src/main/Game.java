@@ -8,6 +8,7 @@ import java.awt.*;
 
 public class Game implements Runnable {
 
+    private static final boolean SHOW_FPS_UPS = true;
     private static GamePanel gamePanel;
     private Thread gameThread;
     private static Playing playing;
@@ -79,6 +80,16 @@ public class Game implements Runnable {
                 deltaF--;
 
             }
+
+            if (SHOW_FPS_UPS)
+                if (System.currentTimeMillis() - lastCheck >= 1000) {
+
+                    lastCheck = System.currentTimeMillis();
+                    System.out.println("FPS: " + frames + " | UPS: " + updates);
+                    frames = 0;
+                    updates = 0;
+
+                }
         }
     }
 
