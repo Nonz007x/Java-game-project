@@ -110,7 +110,7 @@ public class Player extends Entity {
         flipW = (mouseLocation.x >= playerScreenPosX + halfTileSize) ? 1 : -1;
         flipX = (flipW == 1) ? 0 : width;
         boomstickFlipH = (flipW == 1) ? 1 : -1;
-        boomstickFlipY = (flipW == 1) ? 0 : boomstick.getHeight();
+        boomstickFlipY = (flipW == 1) ? 0 : 16;
         sgFlashFlipH = (flipW == 1) ? 1 : -1;
         sgFlashFlipY = (flipW == 1) ? 0 : 58;
     }
@@ -142,14 +142,13 @@ public class Player extends Entity {
             checkCollision();
             if (velocityX > 0 && collisionRight) {
                 velocityX = 0;
-            }
-            if (velocityX < 0 && collisionLeft) {
+            } else if (velocityX < 0 && collisionLeft) {
                 velocityX = 0;
             }
+
             if (velocityY < 0 && collisionUp) {
                 velocityY = 0;
-            }
-            if (velocityY > 0 && collisionDown) {
+            } else if (velocityY > 0 && collisionDown) {
                 velocityY = 0;
             }
 
@@ -189,7 +188,7 @@ public class Player extends Entity {
     private void setAnimation() {
         int startAni = state;
 
-        if (moving && (velocityX != 0 || velocityY != 0))
+        if (velocityX != 0 || velocityY != 0)
             state = RUNNING;
         else
             state = IDLE;
@@ -262,7 +261,7 @@ public class Player extends Entity {
 
         g2.translate(playerScreenPosX + 25, playerScreenPosY + 40);
         g2.rotate(rotationAngleRad);
-        g2.drawImage(boomstick, -boomstick.getWidth() / 2, -boomstick.getHeight() / 2 + boomstickFlipY, 40, 16 * boomstickFlipH, null);
+        g2.drawImage(boomstick, -20, -8 + boomstickFlipY, 40, 16 * boomstickFlipH, null);
         g2.drawImage(gunFlashes[0][gunFlashAniIndex], 20, sgFlashFlipY - 29, 48, 48 * sgFlashFlipH, null);
 
         g2.setTransform(originalTransform);
