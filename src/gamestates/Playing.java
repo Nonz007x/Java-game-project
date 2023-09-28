@@ -63,9 +63,9 @@ public class Playing extends State implements Statemethods {
         Graphics2D g2 = (Graphics2D) g;
         levelManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
         enemyManager.draw(g2, xOffset, yOffset);
-        player.draw(g2);
+        player.draw(g2, 0, 0);
         bossManager.draw(g2, xOffset, yOffset);
-        objectManager.draw(g2);
+        objectManager.draw(g2, xOffset, yOffset);
         projectileManager.draw(g2, xOffset, yOffset);
         if (paused) {
             g2.setColor(new Color(0, 0, 0, 150));

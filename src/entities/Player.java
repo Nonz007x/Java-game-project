@@ -2,6 +2,7 @@ package entities;
 
 import gamestates.Playing;
 import main.Game;
+import utils.Drawable;
 import utils.LoadSave;
 
 import java.awt.*;
@@ -12,7 +13,7 @@ import java.awt.image.BufferedImage;
 import static utils.Constants.PlayerConstants.*;
 import static utils.HelpMethods.*;
 
-public class Player extends Entity {
+public class Player extends Entity implements Drawable {
     private BufferedImage[][] animations;
     private BufferedImage[][] gunFlashes;
     private BufferedImage boomstick;
@@ -240,7 +241,7 @@ public class Player extends Entity {
     }
 
 
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2, int xOffset, int yOffset) {
 
         g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, width * flipW, height, null);
         drawWeapon(g2);
