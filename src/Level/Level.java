@@ -3,6 +3,7 @@ package Level;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Boss;
+import entities.Enemy;
 import entities.bosses.Crabulon;
 import entities.enemies.GrandPrix;
 
@@ -17,7 +18,7 @@ public class Level {
     private int[][][] lvlData;
     private int[][] collisionTile;
 
-    private final ArrayList<GrandPrix> grandPrixs = new ArrayList<>();
+    private final ArrayList<Enemy> grandPrixs = new ArrayList<>();
     private final ArrayList<Boss> bosses = new ArrayList<>();
     private int worldRow, worldCol;
 
@@ -67,11 +68,11 @@ public class Level {
         if (isHaunted == 1) {
             grandPrixs.add(new GrandPrix(300, 300));
         }
-        bosses.add(new Crabulon(10, 100, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT));
 
+        bosses.add(new Crabulon(10, 100, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT));
     }
 
-    public ArrayList<GrandPrix> getGrandPrixs() {
+    public ArrayList<Enemy> getEnemies() {
         return grandPrixs;
     }
 
