@@ -36,4 +36,13 @@ public class BossManager implements Drawable {
             }
         }
     }
+
+    public ArrayList<Boss> getDrawables() {
+        return bosses;
+    }
+
+    @Override
+    public int getY() {
+        return 0;
+    }
 }

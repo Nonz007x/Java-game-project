@@ -1,7 +1,10 @@
 package entities;
 
+import gamestates.Playing;
 import main.Game;
 import objects.ProjectileManager;
+
+import java.awt.*;
 
 import static utils.Constants.EnemyConstants.GetSpriteAmount;
 import static utils.Constants.EnemyConstants.*;
@@ -9,7 +12,7 @@ import static utils.Constants.EnemyConstants.*;
 
 public abstract class Enemy extends Entity {
     protected int enemyType;
-    private int detectionRange;
+    protected int detectionRange;
 
     public Enemy(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -58,4 +61,10 @@ public abstract class Enemy extends Entity {
     protected void setDetectionRange(int range) {
         detectionRange = range;
     }
+
+    public void draw(Graphics2D g2, int xOffset, int yOffset) {
+        g2.drawImage(animations[state][aniIndex], worldX + xOffset + getflipX(), worldY + yOffset, width * getflipW(), height, null);
+    }
+
+    public abstract void update(int[][] collisionTile, Playing playing);
 }

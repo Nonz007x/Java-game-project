@@ -1,12 +1,15 @@
 package entities;
 
+import utils.Drawable;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import static utils.HelpMethods.*;
 import static utils.HelpMethods.CheckCollisionRight;
 
-public abstract class Entity {
+public abstract class Entity implements Drawable {
     protected int maxHealth;
     protected int currentHealth;
     protected int width, height;
@@ -14,6 +17,7 @@ public abstract class Entity {
     protected float velocityX, velocityY;
     protected int speed;
 
+    protected BufferedImage[][] animations;
     protected int flipW = 1;
     protected int flipX = 0;
     protected final int aniSpeed = 10;
@@ -99,6 +103,15 @@ public abstract class Entity {
         collisionDown = CheckCollisionDown((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, (int) hitbox.height, collisionTile);
         collisionLeft = CheckCollisionLeft((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.height, collisionTile);
         collisionRight = CheckCollisionRight((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height, collisionTile);
+    }
+
+    public BufferedImage[][] loadImages(BufferedImage atlas, int xSize, int ySize, int spriteW, int spriteH) {
+        BufferedImage[][] tempArr = new BufferedImage[ySize][xSize];
+        for (int j = 0; j < tempArr.length; j++)
+            for (int i = 0; i < tempArr[0].length; i++) {
+                tempArr[j][i] = atlas.getSubimage(i * spriteW, j * spriteH, spriteW, spriteH);
+            }
+        return tempArr;
     }
 
     public void drawHitbox(Graphics2D g2, int xOffset, int yOffset) {

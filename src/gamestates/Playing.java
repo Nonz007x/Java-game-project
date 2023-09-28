@@ -8,6 +8,11 @@ import main.Game;
 import objects.ObjectManager;
 import objects.ProjectileManager;
 import ui.PauseOverlay;
+import utils.Drawable;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -62,11 +67,25 @@ public class Playing extends State implements Statemethods {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         levelManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
-        enemyManager.draw(g2, xOffset, yOffset);
-        player.draw(g2, 0, 0);
-        bossManager.draw(g2, xOffset, yOffset);
-        objectManager.draw(g2, xOffset, yOffset);
-        projectileManager.draw(g2, xOffset, yOffset);
+        // Create a list to store all drawable objects
+        List<Drawable> drawableObjects = new ArrayList<>();
+
+        // Add all objects you want to draw to the list
+        drawableObjects.add(player);
+        drawableObjects.addAll(enemyManager.getDrawables());
+        drawableObjects.addAll(bossManager.getDrawables());
+        // TODO
+//        drawableObjects.addAll(objectManager.getDrawables(xOffset, yOffset));
+//        drawableObjects.addAll(projectileManager.getDrawables(xOffset, yOffset));
+
+        // Sort the list based on the Y-coordinate of each object
+        drawableObjects.sort(Comparator.comparingDouble(Drawable::getY));
+
+        // Draw the objects in the sorted order
+        for (Drawable drawable : drawableObjects) {
+            drawable.draw(g2, xOffset, yOffset);
+        }
+
         if (paused) {
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
@@ -141,7 +160,6 @@ public class Playing extends State implements Statemethods {
             levelManager.toggleLevel();
             enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
             bossManager.loadBosses(LevelManager.GetCurrentLevel());
-            System.out.println("New level loaded!");
         }
         if (code == KeyEvent.VK_ESCAPE) {
             paused = !paused;

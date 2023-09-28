@@ -2,11 +2,7 @@ package entities;
 
 import gamestates.Playing;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
-public abstract class Boss extends Enemy {
-    protected BufferedImage[][] bossAnimation;
+public abstract class Boss extends Enemy{
     protected int counter = 0;
 
     public Boss(int x, int y, int width, int height) {
@@ -35,10 +31,6 @@ public abstract class Boss extends Enemy {
         }
     }
 
-    public void draw(Graphics2D g2, int xOffset, int yOffset) {
-        g2.drawImage(bossAnimation[state][aniIndex], worldX + xOffset + flipX, worldY + yOffset, width * flipW, height, null);
-    }
-
     protected void aimAtPlayer(Playing playing) {
         int playerX = (int) playing.getPlayer().getHitbox().getX();
         int playerY = (int) playing.getPlayer().getHitbox().getY();
@@ -53,6 +45,4 @@ public abstract class Boss extends Enemy {
 
         shootProjectile(worldX + 20, worldY + 20, 10, directionX, directionY);
     }
-
-    protected void loadBossImages(BufferedImage atlas, int xSize, int ySize, int spriteW, int spriteH) {}
 }
