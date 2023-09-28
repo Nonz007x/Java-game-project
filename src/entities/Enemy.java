@@ -8,7 +8,7 @@ import static utils.Constants.EnemyConstants.*;
 
 
 public abstract class Enemy extends Entity {
-    private int enemyType;
+    protected int enemyType;
     private int detectionRange;
 
     public Enemy(int x, int y, int width, int height) {

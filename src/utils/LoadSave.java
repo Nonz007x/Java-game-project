@@ -13,6 +13,7 @@ public class LoadSave {
     public static final String LEVEL_SPRITE = "overworld.png";
     public static final String HAUNTING_GHOSTS = "hauntingghosts.png";
     public static final String GRANDPRIX = "grand_prix.png";
+    public static final String CRABULON = "crabulon/Crabulon.png";
 
     public static String[] GetAllLevels() {
         String PATH = "/res/maps/";

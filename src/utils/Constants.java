@@ -33,9 +33,15 @@ public class Constants {
 
     }
 
+    public static class BossConstants {
+        public static final int CRABULON_WIDTH_DEFAULT = 316;
+        public static final int CRABULON_HEIGHT_DEFAULT = 196;
+    }
+
     public static class EnemyConstants {
 
         public static final int GRANDPRIX = 0;
+        public static final int CRABULON = 50;
 
         public static final int IDLE = 0;
         public static final int RUNNING = 1;
@@ -50,6 +56,10 @@ public class Constants {
             switch (enemy_type) {
                 case GRANDPRIX -> {
                     return 3;
+                }
+
+                case CRABULON -> {
+                    return 6;
                 }
                 default -> {
                     return -1;

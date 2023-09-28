@@ -3,12 +3,13 @@ package Level;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Boss;
+import entities.bosses.Crabulon;
 import entities.enemies.GrandPrix;
-import main.Game;
 
 import java.io.*;
 import java.util.ArrayList;
 
+import static utils.Constants.BossConstants.*;
 import static utils.HelpMethods.loadProperty;
 
 public class Level {
@@ -19,8 +20,6 @@ public class Level {
     private final ArrayList<GrandPrix> grandPrixs = new ArrayList<>();
     private final ArrayList<Boss> bosses = new ArrayList<>();
     private int worldRow, worldCol;
-    private int maxTilesOffset;
-    private int maxLvlOffsetX;
 
     public Level(String path) {
         lvlId++;
@@ -68,13 +67,8 @@ public class Level {
         if (isHaunted == 1) {
             grandPrixs.add(new GrandPrix(300, 300));
         }
-        bosses.add(new Boss(10, 100, 50, 50));
+        bosses.add(new Crabulon(10, 100, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT));
 
-    }
-
-    private void calcLvlOffsets() {
-        maxTilesOffset = getWorldCol() - Game.TILE_IN_WIDTH;
-        maxLvlOffsetX = Game.TILE_SIZE * maxTilesOffset;
     }
 
     public ArrayList<GrandPrix> getGrandPrixs() {
@@ -83,10 +77,6 @@ public class Level {
 
     public ArrayList<Boss> getBosses() {
         return bosses;
-    }
-
-    public int getLvlOffset() {
-        return maxLvlOffsetX;
     }
 
     public int getSpriteIndex(int x, int y) {
