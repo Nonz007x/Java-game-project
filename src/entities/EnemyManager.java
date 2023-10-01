@@ -29,4 +29,8 @@ public class EnemyManager {
     public ArrayList<Enemy> getDrawables() {
         return enemies;
     }
+
+    public void addEnemy(Enemy e) {
+        enemies.add(e);
+    }
 }

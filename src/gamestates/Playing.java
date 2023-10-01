@@ -4,6 +4,7 @@ import Level.LevelManager;
 import entities.BossManager;
 import entities.Player;
 import entities.EnemyManager;
+import entities.enemies.GrandPrix;
 import main.Game;
 import objects.ObjectManager;
 import objects.ProjectileManager;
@@ -163,6 +164,9 @@ public class Playing extends State implements Statemethods {
         }
         if (code == KeyEvent.VK_ESCAPE) {
             paused = !paused;
+        }
+        if (code == KeyEvent.VK_R) {
+            enemyManager.addEnemy(new GrandPrix(10, 10));
         }
     }
 

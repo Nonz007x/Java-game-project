@@ -4,16 +4,17 @@ import entities.Boss;
 import gamestates.Playing;
 import utils.LoadSave;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static utils.Constants.BossConstants.CRABULON_HEIGHT_DEFAULT;
+import static utils.Constants.BossConstants.CRABULON_WIDTH_DEFAULT;
 import static utils.Constants.PlayerConstants.IDLE;
 import static utils.Constants.PlayerConstants.RUNNING;
 import static utils.LoadSave.CRABULON;
 
 public class Crabulon extends Boss {
-    public Crabulon(int x, int y, int width, int height) {
-        super(x, y, width, height);
+    public Crabulon(int x, int y) {
+        super(x, y, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT);
         initHitbox(32, 8, width - 64, height - 8);
         loadBossImages();
     }

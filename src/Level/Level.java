@@ -5,20 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Boss;
 import entities.Enemy;
 import entities.bosses.Crabulon;
-import entities.enemies.GrandPrix;
+import main.Game;
 
 import java.io.*;
 import java.util.ArrayList;
 
-import static utils.Constants.BossConstants.*;
-import static utils.HelpMethods.loadProperty;
 
 public class Level {
     private static int lvlId = 0;
     private int[][][] lvlData;
     private int[][] collisionTile;
 
-    private final ArrayList<Enemy> grandPrixs = new ArrayList<>();
+    private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<Boss> bosses = new ArrayList<>();
     private int worldRow, worldCol;
 
@@ -30,7 +28,12 @@ public class Level {
     private void loadLevel(String filePath) {
         try {
             InputStream is = getClass().getResourceAsStream(filePath);
-            assert is != null;
+
+            if (is == null) {
+                System.out.println("File : " + filePath + " does not exist.");
+                return;
+            }
+
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(is);
 
@@ -39,12 +42,14 @@ public class Level {
             JsonNode background = jsonNode.get("layers").get(0).get("data");
             JsonNode foreground = jsonNode.get("layers").get(1).get("data");
             JsonNode collision = jsonNode.get("layers").get(2).get("data");
+            JsonNode monster = jsonNode.get("layers").get(3).get("data");
 
             worldRow = rowCount;
             worldCol = colCount;
 
             lvlData = new int[2][rowCount][colCount];
             collisionTile = new int[rowCount][colCount];
+            int[][] tempEnemies = new int[rowCount][colCount];
 
             int dataIndex = 0;
 
@@ -53,27 +58,34 @@ public class Level {
                     lvlData[0][row][col] = background.get(dataIndex).asInt();
                     lvlData[1][row][col] = foreground.get(dataIndex).asInt();
                     collisionTile[row][col] = collision.get(dataIndex).asInt();
+                    tempEnemies[row][col] = monster.get(dataIndex).asInt();
                     dataIndex++;
                 }
             }
+            loadEnemies(tempEnemies);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        loadEnemies(filePath);
     }
 
-    private void loadEnemies(String filePath) {
+    private void loadEnemies(int[][] enemies) {
         //TODO
-        int isHaunted = Integer.parseInt(loadProperty("grandprix", "res/maps/level_" + lvlId + ".properties"));
-        if (isHaunted == 1) {
-            grandPrixs.add(new GrandPrix(300, 300));
-        }
+        if (enemies == null)
+            return;
 
-        bosses.add(new Crabulon(10, 100, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT));
+        for (int y = 0; y < enemies.length; y++) {
+            for (int x = 0; x < enemies[0].length; x++) {
+                if (enemies[y][x] == 1) {
+                    this.bosses.add(new Crabulon(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                }
+            }
+        }
+        // How to read from .properties extension
+//        int isHaunted = Integer.parseInt(loadProperty("grandprix", "res/maps/level_" + lvlId + ".properties"));
     }
 
     public ArrayList<Enemy> getEnemies() {
-        return grandPrixs;
+        return enemies;
     }
 
     public ArrayList<Boss> getBosses() {
