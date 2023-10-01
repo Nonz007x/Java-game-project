@@ -2,11 +2,8 @@ package utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.*;
+import java.util.regex.Pattern;
 
 public class LoadSave {
     public static final String PLAYER_SPRITES = "player_sprites.png";
@@ -16,30 +13,26 @@ public class LoadSave {
     public static final String CRABULON = "crabulon/Crabulon.png";
 
     public static String[] GetAllLevels() {
-        String PATH = "/res/maps/";
-        URL url = LoadSave.class.getResource(PATH);
-        File file = null;
+        String directoryPath = "/maps/";
+        InputStream inputStream = LoadSave.class.getResourceAsStream(directoryPath);
 
-        try {
-            assert url != null;
-            file = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        if (inputStream != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                return reader.lines()
+                        .filter(fileName -> Pattern.matches("level_\\d\\.json$", fileName))
+                        .peek(fileName  -> System.out.println("Found file: " + fileName))
+                        .map(fileName -> "/maps/" + fileName)
+                        .toArray(String[]::new);
+//                return new String[]{"/maps/level_1.json", "/maps/level_2.json", "/maps/level_3.json"};
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.err.println("The specified directory "  + directoryPath + " does not exist.");
         }
 
-        assert file != null;
-        File[] files = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
-
-        assert files != null;
-
-        String[] filesSorted = new String[files.length];
-        for (int i = 0; i < filesSorted.length; i++) {
-            StringBuilder filePathBuilder = new StringBuilder(PATH).append("level_").append(i + 1).append(".json");
-            filesSorted[i] = filePathBuilder.toString();
-        }
-        return filesSorted;
+        return new String[0];
     }
-
 
     public static BufferedImage GetSprite(String fileName) {
         BufferedImage img = null;
