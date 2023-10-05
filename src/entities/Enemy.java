@@ -11,6 +11,7 @@ import static utils.Constants.EnemyConstants.*;
 
 
 public abstract class Enemy extends Entity {
+    protected boolean active = true;
     protected int enemyType;
     protected int detectionRange;
 
@@ -63,8 +64,17 @@ public abstract class Enemy extends Entity {
     }
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
-        g2.drawImage(animations[state][aniIndex], worldX + xOffset + getflipX(), worldY + yOffset, width * getflipW(), height, null);
+        if (active)
+            g2.drawImage(animations[state][aniIndex], worldX + xOffset + getflipX(), worldY + yOffset, width * getflipW(), height, null);
     }
 
     public abstract void update(int[][] collisionTile, Playing playing);
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }
