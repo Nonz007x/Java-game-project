@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class BossManager implements Drawable {
     private Level currentLevel;
-    private ArrayList<Boss> bosses = new ArrayList<>();
+    private static ArrayList<Boss> bosses = new ArrayList<>();
     private Playing playing;
 
     public BossManager(Playing playing) {
@@ -28,6 +28,7 @@ public class BossManager implements Drawable {
         }
     }
 
+    @Override
     public void draw(Graphics2D g, int xOffset, int yOffset) {
         for (Boss boss : bosses) {
             if (boss != null) {

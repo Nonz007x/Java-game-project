@@ -9,7 +9,7 @@ public class EnemyManager {
 
     private Playing playing;
     private Level currentLevel;
-    private ArrayList<Enemy> enemies = new ArrayList<>();
+    private static ArrayList<Enemy> enemies = new ArrayList<>();
 
     public EnemyManager(Playing playing) {
         this.playing = playing;
@@ -21,8 +21,15 @@ public class EnemyManager {
     }
 
     public void update(int[][] collisionTile, Playing playing) {
-        for (Enemy e : enemies) {
-            e.update(collisionTile, playing);
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemy e = enemies.get(i);
+            if (e.isActive()) {
+                e.update(collisionTile, playing);
+                if(e.getHitbox().intersects(playing.getPlayer().hitbox)) {
+                    e.setActive(false);
+                    enemies.remove(i);
+                }
+            }
         }
     }
 
