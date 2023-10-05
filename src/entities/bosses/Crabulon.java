@@ -13,15 +13,19 @@ import static utils.Constants.PlayerConstants.RUNNING;
 import static utils.LoadSave.CRABULON;
 
 public class Crabulon extends Boss {
+    private static BufferedImage[][] CRABULON_IMAGES;
+
+    static {
+        loadBossImages();
+    }
     public Crabulon(int x, int y) {
         super(x, y, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT);
         initHitbox(32, 8, width - 64, height - 8);
-        loadBossImages();
+        animations = CRABULON_IMAGES;
     }
 
     @Override
     public void update(int[][] collisionTile, Playing playing) {
-
         checkCollision(collisionTile);
         if (velocityX > 0 && collisionRight) {
             velocityX = 0;
@@ -66,7 +70,7 @@ public class Crabulon extends Boss {
 
     }
 
-    private void loadBossImages() {
+    private static void loadBossImages() {
         final int stateSize = 3;
         final int animationSize = 6;
 
@@ -75,11 +79,11 @@ public class Crabulon extends Boss {
         int spriteWidth = 312;
         int spriteHeight = 196;
 
-        animations = new BufferedImage[stateSize][animationSize];
+        CRABULON_IMAGES = new BufferedImage[stateSize][animationSize];
 
         for (int i = 0; i < stateSize; i++)
             for (int j = 0; j < animationSize; j++) {
-                animations[i][j] = sprites.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth, spriteHeight);
+                CRABULON_IMAGES[i][j] = sprites.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth, spriteHeight);
             }
     }
 
