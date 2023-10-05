@@ -44,34 +44,26 @@ public class HelpMethods {
 
     public static boolean CheckCollisionUp(int x, int y, int width, int[][] collisionTile) {
         return IsSolid(x, y, collisionTile) ||
-                IsSolid(x + width, y, collisionTile) ||
-                IsEdgeSolid(x, y, collisionTile) ||
-                IsEdgeSolid(x + width, y, collisionTile);
+                IsSolid(x + width, y, collisionTile);
     }
 
     public static boolean CheckCollisionDown(int x, int y, int width, int height, int[][] collisionTile) {
         return IsSolid(x, y + height, collisionTile) ||
-                IsSolid(x + width, y + height, collisionTile) ||
-                IsEdgeSolid(x, y + height, collisionTile) ||
-                IsEdgeSolid(x + width, y + height, collisionTile);
+                IsSolid(x + width, y + height, collisionTile);
     }
 
     public static boolean CheckCollisionLeft(int x, int y, int height, int[][] collisionTile) {
         return IsSolid(x - 4, y + 4, collisionTile) ||
-                IsSolid(x - 4, y + height - 4, collisionTile) ||
-                IsEdgeSolid(x - 4, y + 4, collisionTile) ||
-                IsEdgeSolid(x - 4, y + height - 4, collisionTile);
+                IsSolid(x - 4, y + height - 4, collisionTile);
     }
 
     public static boolean CheckCollisionRight(int x, int y, int width, int height, int[][] collisionTile) {
         return IsSolid(x + width + 4, y + +4, collisionTile) ||
-                IsSolid(x + width + 4, y + height - 4, collisionTile) ||
-                IsEdgeSolid(x + width + 4, y + 4, collisionTile) ||
-                IsEdgeSolid(x + width + 4, y + height - 4, collisionTile);
+                IsSolid(x + width + 4, y + height - 4, collisionTile);
     }
 
-    public static boolean IsProjectileHittingLevel(Projectile p, int[][] collisiontTile) {
-        return IsSolid((int) (p.getHitbox().x + p.getHitbox().width / 2), (int) (p.getHitbox().y + p.getHitbox().height / 2), collisiontTile);
+    public static boolean IsProjectileHittingLevel(Projectile p, int[][] collisionTile) {
+        return IsSolid((int) (p.getHitbox().x + p.getHitbox().width / 2), (int) (p.getHitbox().y + p.getHitbox().height / 2), collisionTile);
     }
 
     public static boolean CanMoveHere(int x, int y, int width, int height, int[][] collisionTile) {

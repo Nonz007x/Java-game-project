@@ -6,6 +6,7 @@ import Level.LevelManager;
 import Level.Level;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class ObjectManager {
     private Playing playing;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Boss;
 import entities.Enemy;
 import entities.bosses.Crabulon;
+import entities.enemies.GrandPrix;
 import main.Game;
 
 import java.io.*;
@@ -75,7 +76,10 @@ public class Level {
 
         for (int y = 0; y < enemies.length; y++) {
             for (int x = 0; x < enemies[0].length; x++) {
-                if (enemies[y][x] == 1) {
+                int coordinate = enemies[y][x];
+                if (coordinate == 1) {
+                    this.enemies.add(new GrandPrix(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                } else if (coordinate == 2) {
                     this.bosses.add(new Crabulon(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                 }
             }

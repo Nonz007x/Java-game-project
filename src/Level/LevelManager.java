@@ -17,15 +17,21 @@ public class LevelManager {
     private int waterfallAniIndex;
     private BufferedImage[] waterfallSprite;
     private int waterAniIndex;
-    private static final BufferedImage[] levelSprites = new BufferedImage[2401];
-    private static final ArrayList<Level> levels = new ArrayList<>();
-    private static int lvlIndex = 0;
+    private static final BufferedImage[] levelSprites;
+    private static final ArrayList<Level> levels;
+    private static int lvlIndex;
 
-    public LevelManager(Game game) {
-        this.game = game;
-
+    static {
+        levelSprites = new BufferedImage[2401];
+        levels = new ArrayList<>();
+        lvlIndex = 0;
         InitializeTileImage();
         BuildAllLevels();
+    }
+
+    public LevelManager(Game game) {
+
+        this.game = game;
         createWaterfall();
     }
 
