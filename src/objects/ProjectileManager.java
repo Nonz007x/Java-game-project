@@ -1,16 +1,16 @@
 package objects;
 
 import gamestates.Playing;
+import objects.projectiles.PlayerProjectile;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-import static utils.HelpMethods.IsProjectileHittingLevel;
 
 public class ProjectileManager {
 
     private static Playing playing;
-    private static ArrayList<Projectile> projectiles = new ArrayList<>();
+    private static final ArrayList<Projectile> projectiles = new ArrayList<>();
 
     public ProjectileManager(Playing playing) {
         ProjectileManager.playing = playing;
@@ -22,18 +22,14 @@ public class ProjectileManager {
                 p.setActive(false);
                 continue;
             }
-
-            p.updatePos();
-            if (p.getHitbox().intersects(playing.getPlayer().getHitbox()) || IsProjectileHittingLevel(p, collisionTile)) {
-                p.setActive(false);
-            }
+            p.update(collisionTile, playing);
         }
     }
 
-    public void draw(Graphics g, int xOffset, int yOffset) {
+    public void draw(Graphics2D g, int xOffset, int yOffset) {
         for (Projectile p : projectiles)
             if (p.isActive())
-                g.fillRect((int) p.getHitbox().x + xOffset, (int) p.getHitbox().y + yOffset, 10, 10);
+                p.draw(g, xOffset, yOffset);
     }
 
     public static ArrayList<Projectile> getProjectiles() {
@@ -42,5 +38,9 @@ public class ProjectileManager {
 
     public static void addProjectile(int x, int y, int speed, double directionX, double directionY) {
         projectiles.add(new Projectile(x, y, speed, directionX, directionY));
+    }
+
+    public static void addPlayerProjectile(int x, int y, int speed, double directionX, double directionY) {
+        projectiles.add(new PlayerProjectile(x, y, speed, directionX, directionY));
     }
 }

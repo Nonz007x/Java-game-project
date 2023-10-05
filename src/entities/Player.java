@@ -2,6 +2,7 @@ package entities;
 
 import gamestates.Playing;
 import main.Game;
+import objects.ProjectileManager;
 import utils.LoadSave;
 
 import java.awt.*;
@@ -13,12 +14,14 @@ import static utils.Constants.PlayerConstants.*;
 import static utils.HelpMethods.*;
 
 public class Player extends Entity {
+
     private BufferedImage[][] gunFlashes;
     private BufferedImage boomstick;
     private int gunFlashAniIndex;
     private int boomstickFlipY, boomstickFlipH;
     private int sgFlashFlipY, sgFlashFlipH;
     private int gunFlashTick;
+    private boolean shooting;
     private int[][] lvlData;
     private int playerScreenPosX;
     private int playerScreenPosY;
@@ -33,7 +36,6 @@ public class Player extends Entity {
     private final int screenX = Game.GAME_WIDTH / 2 - (Game.TILE_SIZE / 2);
     private final int screenY = Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
     private Point mouseLocation = new Point(0, 0);
-
 
     public Player(int width, int height, Playing playing) {
         super(width, height);
@@ -108,8 +110,8 @@ public class Player extends Entity {
     public void teleport() {
         worldX += mouseLocation.x - playerScreenPosX;
         worldY += mouseLocation.y - playerScreenPosY;
-        hitbox.x += mouseLocation.x - playerScreenPosX + 15;
-        hitbox.y += mouseLocation.y - playerScreenPosY + 18;
+        hitbox.x += mouseLocation.x - playerScreenPosX;
+        hitbox.y += mouseLocation.y - playerScreenPosY;
     }
 
     private void updatePos() {
@@ -125,7 +127,7 @@ public class Player extends Entity {
         if (right && !left && !collisionRight) velocityX = speed;
 
         if (dodgeActive) {
-            // velocity = direction * dodge speed (15)
+            // velocity = direction * 15 (dodge speed)
             velocityY = (float) -(Math.sin(tempRadian) * 15);
             velocityX = (float) -(Math.cos(tempRadian) * 15);
 
@@ -175,6 +177,23 @@ public class Player extends Entity {
         dodgeCooldown--;
     }
 
+    public void shoot() {
+        if (shooting)
+            return;
+        shooting = true;
+        float directionX = (float) Math.cos(rotationAngleRad);
+        float directionY = (float) Math.sin(rotationAngleRad);
+
+        float centerX = hitbox.x + hitbox.width / 2;
+        float centerY = hitbox.y + hitbox.height / 2;
+
+        float projectileX = centerX + directionX * 10;
+        float projectileY = centerY + directionY * 10;
+
+        ProjectileManager.addPlayerProjectile((int) projectileX, (int) projectileY, 10, directionX, directionY);
+    }
+
+
     private void setAnimation() {
         int startAni = state;
 
@@ -194,11 +213,15 @@ public class Player extends Entity {
 
     private void updateAnimationTick() {
         aniTick++;
-        if (dodgeActive || gunFlashAniIndex < 7) {
+        if (shooting) {
             gunFlashTick++;
             if (gunFlashTick >= 5) {
                 gunFlashTick = 0;
                 gunFlashAniIndex = (gunFlashAniIndex + 1) % 7;
+
+                if (gunFlashAniIndex == 0) {
+                    shooting = false;
+                }
             }
         }
         if (aniTick >= aniSpeed) {
@@ -252,7 +275,9 @@ public class Player extends Entity {
         g2.translate(playerScreenPosX + 25, playerScreenPosY + 40);
         g2.rotate(rotationAngleRad);
         g2.drawImage(boomstick, -20, -8 + boomstickFlipY, 40, 16 * boomstickFlipH, null);
-        g2.drawImage(gunFlashes[0][gunFlashAniIndex], 20, sgFlashFlipY - 29, 48, 48 * sgFlashFlipH, null);
+        if (shooting) {
+            g2.drawImage(gunFlashes[0][gunFlashAniIndex], 20, sgFlashFlipY - 29, 48, 48 * sgFlashFlipH, null);
+        }
 
         g2.setTransform(originalTransform);
 

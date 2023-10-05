@@ -77,7 +77,6 @@ public class Playing extends State implements Statemethods {
         drawableObjects.addAll(bossManager.getDrawables());
         // TODO
 //        drawableObjects.addAll(objectManager.getDrawables(xOffset, yOffset));
-//        drawableObjects.addAll(projectileManager.getDrawables(xOffset, yOffset));
 
         // Sort the list based on the Y-coordinate of each object
         drawableObjects.sort(Comparator.comparingDouble(Drawable::getY));
@@ -86,7 +85,7 @@ public class Playing extends State implements Statemethods {
         for (Drawable drawable : drawableObjects) {
             drawable.draw(g2, xOffset, yOffset);
         }
-
+        projectileManager.draw(g2, xOffset, yOffset);
         if (paused) {
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
@@ -107,10 +106,8 @@ public class Playing extends State implements Statemethods {
     public void mouseClicked(MouseEvent e) {
         if (!paused) {
             if (e.getButton() == MouseEvent.BUTTON1) {
-                player.teleport();
-            } else if (e.getButton() == MouseEvent.BUTTON3) {
-                player.calculateRad();
-                player.dodge();
+//                player.teleport();
+                player.shoot();
             }
         }
     }
@@ -148,25 +145,37 @@ public class Playing extends State implements Statemethods {
         if (code == KeyEvent.VK_W) {
             player.setUp(true);
         }
+
         if (code == KeyEvent.VK_A) {
             player.setLeft(true);
         }
+
         if (code == KeyEvent.VK_S) {
             player.setDown(true);
         }
+
         if (code == KeyEvent.VK_D) {
             player.setRight(true);
         }
+
         if (code == KeyEvent.VK_F) {
             levelManager.toggleLevel();
             enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
             bossManager.loadBosses(LevelManager.GetCurrentLevel());
         }
+
+        if (code == KeyEvent.VK_SPACE) {
+                player.calculateRad();
+                player.dodge();
+        }
+
         if (code == KeyEvent.VK_ESCAPE) {
             paused = !paused;
         }
+
         if (code == KeyEvent.VK_R) {
             enemyManager.addEnemy(new GrandPrix(10, 10));
+            enemyManager.addEnemy(new GrandPrix(10, 20));
         }
     }
 
