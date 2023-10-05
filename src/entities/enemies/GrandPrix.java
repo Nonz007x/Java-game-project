@@ -4,16 +4,29 @@ import entities.Enemy;
 import gamestates.Playing;
 import utils.LoadSave;
 
+import java.awt.image.BufferedImage;
+
 import static utils.Constants.EnemyConstants.*;
 
 public class GrandPrix extends Enemy {
 
+    private static final BufferedImage[][] grandPrixImages;
+    private static final int DEFAULT_WIDTH = GRANDPRIX_WIDTH_DEFAULT;
+    private static final int DEFAULT_HEIGHT = GRANDPRIX_HEIGHT_DEFAULT;
+    private static final int DEFAULT_SPEED = 3;
+    private static final int DEFAULT_DETECTION_RANGE = 3;
+
+    static {
+        grandPrixImages = loadImages(LoadSave.GetSprite(LoadSave.GRANDPRIX), 3, 3, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
+    // TODO Object pooling
     public GrandPrix(int x, int y) {
-        super(x, y, GRANDPRIX_WIDTH_DEFAULT, GRANDPRIX_HEIGHT_DEFAULT);
-        animations = loadImages(LoadSave.GetSprite(LoadSave.GRANDPRIX), 3, 3, 64, 64);
-        initHitbox(5, 10, GRANDPRIX_WIDTH_DEFAULT - 5, GRANDPRIX_HEIGHT_DEFAULT - 10);
-        setSpeed(3);
-        setDetectionRange(3);
+        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        animations = grandPrixImages;
+        initHitbox(5, 10, DEFAULT_WIDTH - 5, DEFAULT_HEIGHT - 10);
+        setSpeed(DEFAULT_SPEED);
+        setDetectionRange(DEFAULT_DETECTION_RANGE);
     }
 
     public void update(int[][] collisionTile, Playing playing) {
@@ -79,32 +92,5 @@ public class GrandPrix extends Enemy {
         if (hitbox.intersects(playing.getPlayer().getHitbox())) {
 //            Gamestate.state = Gamestate.QUIT;
         }
-
-
-//       move(collisionTile);
-//        switch (state) {
-//            case IDLE -> {
-//                newState(RUNNING);
-//            }
-//            case RUNNING -> {
-//                if (canSeePlayer(lvlData, playing.getPlayer())) {
-//                    turnTowardsPlayer(playing.getPlayer());
-//                    if (isPlayerCloseForAttack(playing.getPlayer()))
-//                        newState(ATTACK);
-//                }
-//                move(lvlData);
-//            }
-//            case ATTACK -> {
-//                if (aniIndex == 0)
-//                    attackChecked = false;
-//                if (aniIndex == 3 && !attackChecked)
-//                    checkPlayerHit(attackBox, playing.getPlayer());
-//            }
-//            case HIT -> {
-//                if (aniIndex <= GetSpriteAmount(enemyType, state) - 2)
-//                    pushBack(pushBackDir, lvlData, 2f);
-//                updatePushBackDrawOffset();
-//            }
-//        }
     }
 }

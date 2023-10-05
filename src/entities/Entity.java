@@ -105,7 +105,7 @@ public abstract class Entity implements Drawable {
         collisionRight = CheckCollisionRight((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height, collisionTile);
     }
 
-    public BufferedImage[][] loadImages(BufferedImage atlas, int xSize, int ySize, int spriteW, int spriteH) {
+    public static BufferedImage[][] loadImages(BufferedImage atlas, int xSize, int ySize, int spriteW, int spriteH) {
         BufferedImage[][] tempArr = new BufferedImage[ySize][xSize];
         for (int j = 0; j < tempArr.length; j++)
             for (int i = 0; i < tempArr[0].length; i++) {
