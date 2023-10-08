@@ -14,6 +14,7 @@ import static utils.LoadSave.CRABULON;
 
 public class Crabulon extends Boss {
     private Point playerPos = new Point();
+    private boolean aiming = false;
     private static BufferedImage[][] CRABULON_IMAGES;
 
     static {
@@ -45,20 +46,23 @@ public class Crabulon extends Boss {
 
         counter++;
 
-        if (counter % 60 == 0) {
-            aimAtPlayer(playing);
+        if (counter == 60) {
+            aiming = true;
             velocityX = 4;
         }
 
-        if (counter % 120 == 0) {
+        if (counter == 120) {
+            aimAtPlayer(playing);
+            aiming = false;
             velocityX = 0;
         }
 
-        if (counter % 180 == 0) {
+        if (counter == 180) {
             velocityX = -4;
         }
 
-        if (counter % 240 == 0) {
+        if (counter == 240) {
+            velocityX = 0;
             counter = 0;
         }
 
@@ -80,25 +84,41 @@ public class Crabulon extends Boss {
     }
 
     private static void loadBossImages() {
-        final int stateSize = 3;
-        final int animationSize = 6;
-
-        BufferedImage sprites = LoadSave.GetSprite(CRABULON);
-
-        int spriteWidth = 312;
-        int spriteHeight = 196;
-
-        CRABULON_IMAGES = new BufferedImage[stateSize][animationSize];
-
-        for (int i = 0; i < stateSize; i++)
-            for (int j = 0; j < animationSize; j++) {
-                CRABULON_IMAGES[i][j] = sprites.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth, spriteHeight);
-            }
+        CRABULON_IMAGES = LoadSave.GetImagesFromSpriteSheet(CRABULON, 312, 196, 3, 6);
     }
 
     @Override
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         super.draw(g2, xOffset, yOffset);
-        g2.drawLine(worldX + xOffset, worldY + yOffset, playerPos.x + xOffset, playerPos.y + yOffset);
+        if (!active)
+            return;
+        if (aiming) {
+            int deltaX = playerPos.x - worldX;
+            int deltaY = playerPos.y - worldY;
+
+            double scaleFactor = 100.0;
+
+            double scaledDeltaX = deltaX * scaleFactor;
+            double scaledDeltaY = deltaY * scaleFactor;
+
+            int newX = worldX + xOffset + (int) scaledDeltaX;
+            int newY = worldY + yOffset + (int) scaledDeltaY;
+
+            g2.drawLine(worldX + xOffset, worldY + yOffset, newX, newY);
+        }
+    }
+
+    private void shootLaser(Playing playing) {
+        int playerX = (int) playing.getPlayer().getHitbox().getX();
+        int playerY = (int) playing.getPlayer().getHitbox().getY();
+
+        int deltaX = playerX - worldX;
+        int deltaY = playerY - worldY;
+
+        double distance = Math.max(0.000000001, Math.sqrt(deltaX * deltaX + deltaY * deltaY));
+
+        double directionX = deltaX / distance;
+        double directionY = deltaY / distance;
+
     }
 }

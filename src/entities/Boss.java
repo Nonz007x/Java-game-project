@@ -4,7 +4,7 @@ import gamestates.Playing;
 import objects.ProjectileManager;
 import objects.projectiles.BouncyBullet;
 
-public abstract class Boss extends Enemy{
+public abstract class Boss extends Enemy {
     protected int counter = 0;
 
     public Boss(int x, int y, int width, int height, int health) {

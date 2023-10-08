@@ -39,6 +39,7 @@ public class ProjectileManager {
         for (Projectile p : projectiles)
             if (p.isActive())
                 p.draw(g, xOffset, yOffset);
+
         for (Projectile p : playerProjectiles)
             if (p.isActive())
                 p.draw(g, xOffset, yOffset);

@@ -2,6 +2,7 @@ package gamestates;
 
 import Level.LevelManager;
 import entities.BossManager;
+import entities.Enemy;
 import entities.Player;
 import entities.EnemyManager;
 import entities.enemies.GrandPrix;
@@ -68,20 +69,17 @@ public class Playing extends State implements Statemethods {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         levelManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
-        // Create a list to store all drawable objects
+
         List<Drawable> drawableObjects = new ArrayList<>();
 
-        // Add all objects you want to draw to the list
         drawableObjects.add(player);
-        drawableObjects.addAll(enemyManager.getDrawables());
-        drawableObjects.addAll(bossManager.getDrawables());
+        drawableObjects.addAll(enemyManager.getEnemies());
+        drawableObjects.addAll(bossManager.getBosses());
         // TODO
 //        drawableObjects.addAll(objectManager.getDrawables(xOffset, yOffset));
 
-        // Sort the list based on the Y-coordinate of each object
         drawableObjects.sort(Comparator.comparingDouble(Drawable::getY));
 
-        // Draw the objects in the sorted order
         for (Drawable drawable : drawableObjects) {
             drawable.draw(g2, xOffset, yOffset);
         }
@@ -202,6 +200,13 @@ public class Playing extends State implements Statemethods {
     }
     public Player getPlayer() {
         return player;
+    }
+
+    public ArrayList<Enemy> getEnemiesAndBosses() {
+        ArrayList<Enemy> enemies = new ArrayList<>();
+        enemies.addAll(enemyManager.getEnemies());
+        enemies.addAll(bossManager.getBosses());
+        return enemies;
     }
 
     public void unpauseGame() {

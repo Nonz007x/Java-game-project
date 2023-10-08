@@ -1,13 +1,12 @@
 package objects;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import entities.Player;
 import gamestates.Playing;
-import main.Game;
-
-import static utils.HelpMethods.IsProjectileHittingLevel;
 
 public class Projectile {
     protected int damage;
@@ -27,7 +26,6 @@ public class Projectile {
         this.directionY = directionY;
         this.damage = damage;
         this.TICKS_TO_LIVE = 600;
-        hitbox = new Rectangle2D.Float(x, y, 50, 50);
     }
 
     public Projectile(int x, int y, int speed, double directionX, double directionY, int damage, int TICKS_TO_LIVE) {
@@ -66,15 +64,30 @@ public class Projectile {
         return damage;
     }
 
+    protected boolean checkPlayerHit(Rectangle2D.Float hitbox, Player player) {
+        return (hitbox.intersects(player.getHitbox()));
+    }
+
+    public boolean checkPlayerHit(Line2D.Float hitbox, Player player) {
+        return (hitbox.intersects(player.getHitbox()));
+    }
+
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {
-            g2.fillRect((int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height);
-//            g2.drawImage(animations[aniIndex], (int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height, null);
+            g2.drawImage(animations[aniIndex], (int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height, null);
+//            g2.fillRect((int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height);
         }
     }
 
     public void update(int[][] collisionTile, Playing playing) {
         current_tick++;
+        if (aniTick >= 6) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= 3) {
+                aniIndex = 0;
+            }
+        }
         updatePos();
     }
 

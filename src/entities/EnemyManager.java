@@ -2,8 +2,6 @@ package entities;
 
 import gamestates.Playing;
 import Level.Level;
-import objects.Projectile;
-import objects.ProjectileManager;
 
 import java.util.ArrayList;
 
@@ -22,32 +20,15 @@ public class EnemyManager {
         enemies = currentLevel.getEnemies();
     }
 
-    // TODO check enemy and projectile collision logic here
     public void update(int[][] collisionTile) {
-        ArrayList<Projectile> playerProjectiles = ProjectileManager.getPlayerProjectiles();
-        for (int i = 0; i < enemies.size(); i++) {
-            Enemy e = enemies.get(i);
+        for (Enemy e : enemies) {
             if (e.isActive()) {
                 e.update(collisionTile, playing);
-                for (int j = 0; j < playerProjectiles.size(); j++) {
-                    Projectile projectile = playerProjectiles.get(j);
-                    if (e.getHitbox().intersects(projectile.getHitbox())) {
-                        e.takeDamage(20);
-                        projectile.setActive(false);
-                        playerProjectiles.remove(j);
-                        break;
-                    }
-                }
-
-                if (e.currentHealth <= 0) {
-                    e.setActive(false);
-                    enemies.remove(i);
-                }
             }
         }
     }
 
-    public ArrayList<Enemy> getDrawables() {
+    public ArrayList<Enemy> getEnemies() {
         return enemies;
     }
 

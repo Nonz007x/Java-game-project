@@ -2,9 +2,10 @@ package entities;
 
 import gamestates.Playing;
 import main.Game;
-import objects.ProjectileManager;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
 import static utils.Constants.EnemyConstants.GetSpriteAmount;
 import static utils.Constants.EnemyConstants.*;
@@ -58,6 +59,20 @@ public abstract class Enemy extends Entity {
 
     protected void setDetectionRange(int range) {
         detectionRange = range;
+    }
+
+    public void takeDamage(int damage) {
+        currentHealth -= damage;
+        if (currentHealth <= 0) {
+            setActive(false);
+        }
+    }
+    protected boolean checkPlayerHit(Rectangle2D hitbox, Player player) {
+        return hitbox.intersects(player.getHitbox());
+    }
+
+    protected boolean checkPlayerHit(Line2D hitbox, Player player) {
+        return hitbox.intersects(player.getHitbox());
     }
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {

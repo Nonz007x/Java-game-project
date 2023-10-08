@@ -25,24 +25,9 @@ public class BossManager implements Drawable {
 
     public void update() {
         for (Boss boss : bosses) {
-            if (!boss.isActive())
-                continue;
-
-            boss.updateAnimationTick();
-            boss.update(currentLevel.getCollisionTile(), playing);
-            ArrayList<Projectile> playerProjectiles = ProjectileManager.getPlayerProjectiles();
-            for (int j = 0; j < playerProjectiles.size(); j++) {
-                Projectile projectile = playerProjectiles.get(j);
-                if (boss.getHitbox().intersects(projectile.getHitbox())) {
-                    boss.takeDamage(20);
-                    projectile.setActive(false);
-                    playerProjectiles.remove(j);
-                    break;
-                }
-            }
-
-            if (boss.currentHealth <= 0) {
-                boss.setActive(false);
+            if (boss.isActive()) {
+                boss.updateAnimationTick();
+                boss.update(currentLevel.getCollisionTile(), playing);
             }
         }
     }
@@ -57,7 +42,7 @@ public class BossManager implements Drawable {
         }
     }
 
-    public ArrayList<Boss> getDrawables() {
+    public ArrayList<Boss> getBosses() {
         return bosses;
     }
 
