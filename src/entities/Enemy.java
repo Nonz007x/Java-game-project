@@ -71,10 +71,22 @@ public abstract class Enemy extends Entity {
         return hitbox.intersects(player.getHitbox());
     }
 
-    protected boolean checkPlayerHit(Line2D hitbox, Player player) {
-        return hitbox.intersects(player.getHitbox());
-    }
+    protected boolean checkPlayerHit(Line2D.Float line, Player player) {
 
+        float lineWidth = 80.0f;
+
+        Polygon thickHitbox = new Polygon();
+        thickHitbox.addPoint((int) (line.getX1() - lineWidth / 2),
+                (int) (line.getY1() + lineWidth / 2));
+        thickHitbox.addPoint((int) (line.getX2() - lineWidth / 2 ),
+                (int) (line.getY2() + lineWidth / 2));
+        thickHitbox.addPoint((int) (line.getX2() + lineWidth / 2),
+                (int) (line.getY2() - lineWidth / 2));
+        thickHitbox.addPoint((int) (line.getX1() + lineWidth / 2),
+                (int) (line.getY1() - lineWidth / 2));
+
+        return thickHitbox.intersects(player.getHitbox());
+    }
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {
            drawHitbox(g2, xOffset, yOffset);

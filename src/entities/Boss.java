@@ -26,6 +26,6 @@ public abstract class Boss extends Enemy {
         double directionX = deltaX / distance;
         double directionY = deltaY / distance;
 
-        ProjectileManager.addProjectile(new BouncyBullet(worldX + 20, worldY + 20, 10, directionX, directionY, 15), false);
+        ProjectileManager.addProjectile(new BouncyBullet(worldX + 20, worldY + 20, 10, directionX, directionY, 15));
     }
 }

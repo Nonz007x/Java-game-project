@@ -5,6 +5,7 @@ import gamestates.Playing;
 import utils.LoadSave;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 import static utils.Constants.BossConstants.*;
@@ -14,7 +15,8 @@ import static utils.LoadSave.CRABULON;
 
 public class Crabulon extends Boss {
     private Point playerPos = new Point();
-    private boolean aiming = false;
+    private Point tempPlayerPos = new Point();
+    private boolean aiming = false, hold = false, hit = false;
     private static BufferedImage[][] CRABULON_IMAGES;
 
     static {
@@ -31,7 +33,9 @@ public class Crabulon extends Boss {
     public void update(int[][] collisionTile, Playing playing) {
         playerPos.x = (int) playing.getPlayer().getHitbox().getX();
         playerPos.y = (int) playing.getPlayer().getHitbox().getY();
+
         checkCollision(collisionTile);
+
         if (velocityX > 0 && collisionRight) {
             velocityX = 0;
         } else if (velocityX < 0 && collisionLeft) {
@@ -51,10 +55,34 @@ public class Crabulon extends Boss {
             velocityX = 4;
         }
 
-        if (counter == 120) {
-            aimAtPlayer(playing);
-            aiming = false;
-            velocityX = 0;
+        if (counter >= 100 && counter <= 110) {
+
+            if (counter == 100) {
+                hold = true;
+                tempPlayerPos.x = playerPos.x;
+                tempPlayerPos.y = playerPos.y;
+            }
+
+            if (counter == 110) {
+                int deltaX = tempPlayerPos.x - worldX;
+                int deltaY = tempPlayerPos.y - worldY;
+
+                double scaleFactor = 100.0;
+
+                double scaledDeltaX = deltaX * scaleFactor;
+                double scaledDeltaY = deltaY * scaleFactor;
+
+                int newX = worldX + (int) scaledDeltaX;
+                int newY = worldY + (int) scaledDeltaY;
+                if (checkPlayerHit(new Line2D.Float(worldX, worldY, newX, newY), playing.getPlayer())) {
+                    playing.getPlayer().takeDamage(10);
+                    hit = true;
+                }
+//            aimAtPlayer(playing);
+                hold = false;
+                aiming = false;
+                velocityX = 0;
+            }
         }
 
         if (counter == 180) {
@@ -96,6 +124,11 @@ public class Crabulon extends Boss {
             int deltaX = playerPos.x - worldX;
             int deltaY = playerPos.y - worldY;
 
+            if (hold) {
+                deltaX = tempPlayerPos.x - worldX;
+                deltaY = tempPlayerPos.y - worldY;
+            }
+
             double scaleFactor = 100.0;
 
             double scaledDeltaX = deltaX * scaleFactor;
@@ -103,22 +136,9 @@ public class Crabulon extends Boss {
 
             int newX = worldX + xOffset + (int) scaledDeltaX;
             int newY = worldY + yOffset + (int) scaledDeltaY;
-
+            g2.setStroke(new BasicStroke(80));
             g2.drawLine(worldX + xOffset, worldY + yOffset, newX, newY);
+            g2.setStroke(new BasicStroke(1));
         }
-    }
-
-    private void shootLaser(Playing playing) {
-        int playerX = (int) playing.getPlayer().getHitbox().getX();
-        int playerY = (int) playing.getPlayer().getHitbox().getY();
-
-        int deltaX = playerX - worldX;
-        int deltaY = playerY - worldY;
-
-        double distance = Math.max(0.000000001, Math.sqrt(deltaX * deltaX + deltaY * deltaY));
-
-        double directionX = deltaX / distance;
-        double directionY = deltaY / distance;
-
     }
 }

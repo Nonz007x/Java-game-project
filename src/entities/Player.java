@@ -202,7 +202,7 @@ public class Player extends Entity {
 
             float projectileX = centerX + directionX * 10;
             float projectileY = centerY + directionY * 10;
-            ProjectileManager.addProjectile(new BuckShot((int) projectileX, (int) projectileY, directionX, directionY), true);
+            ProjectileManager.addProjectile(new BuckShot((int) projectileX, (int) projectileY, directionX, directionY));
         }
     }
 

@@ -48,10 +48,10 @@ public class GrandPrix extends Enemy {
     }
 
     private void updateBehavior(int[][] collisionTile, Playing playing) {
-        if (checkPlayerHit(new Line2D.Float(0, 0, 100, 100), playing.getPlayer())) {
-            System.out.println("Hit");
+//        if (checkPlayerHit(new Line2D.Float(worldX, worldY, 100, 100), playing.getPlayer())) {
+//            System.out.println("Hit");
 //            Gamestate.state = Gamestate.QUIT;
-        }
+//        }
 
         int playerX = playing.getPlayer().getX();
         int playerY = playing.getPlayer().getY();
