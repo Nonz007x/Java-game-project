@@ -61,4 +61,26 @@ public class LoadSave {
         }
         return img;
     }
+
+    public static BufferedImage[][] GetImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int row, int col) {
+        BufferedImage sheet = LoadSave.GetSprite(CRABULON);
+
+        BufferedImage[][] sprites = new BufferedImage[row][col];
+
+        for (int i = 0; i < row; i++)
+            for (int j = 0; j < col; j++) {
+                sprites[i][j] = sheet.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth, spriteHeight);
+            }
+        return sprites;
+    }
+
+    public static BufferedImage[] GetImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int size) {
+        BufferedImage sheet = LoadSave.GetSprite(fileName);
+
+        BufferedImage[] sprites = new BufferedImage[size];
+
+        for (int i = 0; i < size; i++)
+            sprites[i] = sheet.getSubimage(i * spriteWidth, spriteHeight, spriteWidth, spriteHeight);
+        return sprites;
+    }
 }
