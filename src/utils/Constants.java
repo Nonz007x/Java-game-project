@@ -12,28 +12,13 @@ public class Constants {
         public static int MAX_CHOICE = 3;
 
     }
-    public static class Collision {
-        public static final int NO_COLLISION = 0;
-        public static final int FULL_COLLISION = 1;
-        public static final int TOP_COLLISION = 2;
-        public static final int LEFT_COLLISION = 3;
-        public static final int BOTTOM_COLLISION = 4;
-        public static final int RIGHT_COLLISION = 5;
-        public static final int TOP_LEFT_COLLISION = 6;
-        public static final int LEFT_BOTTOM_COLLISION = 7;
-        public static final int BOTTOM_RIGHT_COLLISION = 8;
-        public static final int TOP_RIGHT_COLLISION = 9;
-        public static final int RIGHT_LEFT_COLLISION = 10;
-        public static final int TOP_BOTTOM_COLLISION = 11;
-        public static final int LEFT_RIGHT_COLLISION = 12;
-        public static final int TOP_LEFT_RIGHT_COLLISION = 13;
-        public static final int TOP_LEFT_BOTTOM_COLLISION = 14;
-        public static final int LEFT_BOTTOM_RIGHT_COLLISION = 15;
-        public static final int TOP_RIGHT_BOTTOM_RIGHT_COLLISION = 16;
 
+    public static class Projectile {
+        public static final int BUCKSHOT_DAMAGE = 10;
     }
 
     public static class BossConstants {
+        public static final int CRABULON_HEALTH = 100;
         public static final int CRABULON_WIDTH_DEFAULT = 316;
         public static final int CRABULON_HEIGHT_DEFAULT = 196;
     }

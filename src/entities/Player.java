@@ -3,12 +3,15 @@ package entities;
 import gamestates.Playing;
 import main.Game;
 import objects.ProjectileManager;
+import objects.projectiles.BuckShot;
 import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import static utils.Constants.PlayerConstants.*;
 import static utils.HelpMethods.*;
@@ -37,8 +40,8 @@ public class Player extends Entity {
     private final int screenY = Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
     private Point mouseLocation = new Point(0, 0);
 
-    public Player(int width, int height, Playing playing) {
-        super(width, height);
+    public Player(Playing playing) {
+        super(48, 48, 100);
         this.speed = 4;
         this.state = IDLE;
 
@@ -181,16 +184,26 @@ public class Player extends Entity {
         if (shooting)
             return;
         shooting = true;
-        float directionX = (float) Math.cos(rotationAngleRad);
-        float directionY = (float) Math.sin(rotationAngleRad);
+        shootShotgun();
+    }
+
+    private void shootShotgun() {
+        Random random = new Random();
 
         float centerX = hitbox.x + hitbox.width / 2;
         float centerY = hitbox.y + hitbox.height / 2;
 
-        float projectileX = centerX + directionX * 10;
-        float projectileY = centerY + directionY * 10;
+        for (int i = 0; i < 3; i++) {
+            int randomNum = random.nextInt(61) - 30;
+            float fanAngle = (float) Math.toRadians(randomNum);
+            float rotatedAngle = (float) (rotationAngleRad + fanAngle);
+            float directionX = (float) Math.cos(rotatedAngle);
+            float directionY = (float) Math.sin(rotatedAngle);
 
-        ProjectileManager.addPlayerProjectile((int) projectileX, (int) projectileY, 10, directionX, directionY);
+            float projectileX = centerX + directionX * 10;
+            float projectileY = centerY + directionY * 10;
+            ProjectileManager.addProjectile(new BuckShot((int) projectileX, (int) projectileY, directionX, directionY), true);
+        }
     }
 
 

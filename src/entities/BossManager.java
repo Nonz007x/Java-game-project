@@ -2,6 +2,8 @@ package entities;
 
 import Level.Level;
 import gamestates.Playing;
+import objects.Projectile;
+import objects.ProjectileManager;
 import utils.Drawable;
 
 import java.awt.*;
@@ -23,8 +25,25 @@ public class BossManager implements Drawable {
 
     public void update() {
         for (Boss boss : bosses) {
-            boss.update(currentLevel.getCollisionTile(), playing);
+            if (!boss.isActive())
+                continue;
+
             boss.updateAnimationTick();
+            boss.update(currentLevel.getCollisionTile(), playing);
+            ArrayList<Projectile> playerProjectiles = ProjectileManager.getPlayerProjectiles();
+            for (int j = 0; j < playerProjectiles.size(); j++) {
+                Projectile projectile = playerProjectiles.get(j);
+                if (boss.getHitbox().intersects(projectile.getHitbox())) {
+                    boss.takeDamage(20);
+                    projectile.setActive(false);
+                    playerProjectiles.remove(j);
+                    break;
+                }
+            }
+
+            if (boss.currentHealth <= 0) {
+                boss.setActive(false);
+            }
         }
     }
 

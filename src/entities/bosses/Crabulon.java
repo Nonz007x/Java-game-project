@@ -4,28 +4,32 @@ import entities.Boss;
 import gamestates.Playing;
 import utils.LoadSave;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static utils.Constants.BossConstants.CRABULON_HEIGHT_DEFAULT;
-import static utils.Constants.BossConstants.CRABULON_WIDTH_DEFAULT;
+import static utils.Constants.BossConstants.*;
 import static utils.Constants.PlayerConstants.IDLE;
 import static utils.Constants.PlayerConstants.RUNNING;
 import static utils.LoadSave.CRABULON;
 
 public class Crabulon extends Boss {
+    private Point playerPos = new Point();
     private static BufferedImage[][] CRABULON_IMAGES;
 
     static {
         loadBossImages();
     }
+
     public Crabulon(int x, int y) {
-        super(x, y, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT);
+        super(x, y, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT, CRABULON_HEALTH);
         initHitbox(32, 8, width - 64, height - 8);
         animations = CRABULON_IMAGES;
     }
 
     @Override
     public void update(int[][] collisionTile, Playing playing) {
+        playerPos.x = (int) playing.getPlayer().getHitbox().getX();
+        playerPos.y = (int) playing.getPlayer().getHitbox().getY();
         checkCollision(collisionTile);
         if (velocityX > 0 && collisionRight) {
             velocityX = 0;
@@ -63,11 +67,16 @@ public class Crabulon extends Boss {
 
         if (velocityX != 0 || velocityY != 0) {
             state = RUNNING;
-        }
-        else {
+        } else {
             state = IDLE;
         }
 
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        super.setActive(active);
+        System.out.println("Crabulon has been defeated!");
     }
 
     private static void loadBossImages() {
@@ -87,4 +96,9 @@ public class Crabulon extends Boss {
             }
     }
 
+    @Override
+    public void draw(Graphics2D g2, int xOffset, int yOffset) {
+        super.draw(g2, xOffset, yOffset);
+        g2.drawLine(worldX + xOffset, worldY + yOffset, playerPos.x + xOffset, playerPos.y + yOffset);
+    }
 }

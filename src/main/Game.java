@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class Game implements Runnable {
 
-    private static final boolean SHOW_FPS_UPS = true;
+    private static final boolean SHOW_FPS_UPS = false;
     private static GamePanel gamePanel;
     private Thread gameThread;
     private static Playing playing;

@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static utils.Constants.Collision.*;
-
 public class HelpMethods {
 
     private HelpMethods() {
@@ -86,25 +84,6 @@ public class HelpMethods {
 
         int value = collisionTile[yIndex][xIndex];
         return value == 1;
-    }
-
-    private static boolean IsEdgeSolid(int x, int y, int[][] collisionTile) {
-        int xIndex = x / Game.TILE_SIZE;
-        int yIndex = y / Game.TILE_SIZE;
-
-        int tileValue = collisionTile[yIndex][xIndex];
-
-        // Check for different edge types
-        if (tileValue == TOP_COLLISION && y % Game.TILE_SIZE < 4) {
-            return true; // Top edge collision
-        }
-        if (tileValue == LEFT_COLLISION && x % Game.TILE_SIZE < 4) {
-            return true; // Left edge collision
-        }
-        if (tileValue == RIGHT_COLLISION && x % Game.TILE_SIZE > Game.TILE_SIZE - 4) {
-            return true; // Right edge collision
-        }
-        return tileValue == BOTTOM_COLLISION && y % Game.TILE_SIZE > Game.TILE_SIZE - 4; // Bottom edge collision
     }
 
     public static String loadProperty(String property, String filename) {

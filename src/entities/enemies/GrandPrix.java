@@ -21,12 +21,24 @@ public class GrandPrix extends Enemy {
     }
     // TODO Object pooling
     public GrandPrix(int x, int y) {
-        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, 35);
 
         animations = grandPrixImages;
         initHitbox(5, 10, DEFAULT_WIDTH - 5, DEFAULT_HEIGHT - 10);
         setSpeed(DEFAULT_SPEED);
         setDetectionRange(DEFAULT_DETECTION_RANGE);
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        super.takeDamage(damage);
+        System.out.println("ผีหลอกวิญญาณหลอน");
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        super.setActive(active);
+        System.out.println("ผีตายห่า");
     }
 
     public void update(int[][] collisionTile, Playing playing) {

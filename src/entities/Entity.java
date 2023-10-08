@@ -30,18 +30,18 @@ public abstract class Entity implements Drawable {
     protected boolean collisionLeft;
     protected boolean collisionRight;
 
-    public Entity(int width, int height) {
+    public Entity(int width, int height, int health) {
         this.width = width;
         this.height = height;
+        this.maxHealth = health;
+        this.currentHealth = health;
     }
 
-    public Entity(int x, int y, int width, int height) {
-        this.width = width;
-        this.height = height;
+    public Entity(int x, int y, int width, int height, int health) {
+        this(width, height, health);
         this.worldX = x;
         this.worldY = y;
     }
-
     public final void setSpeed(int speed) {
         this.speed = speed;
     }
@@ -96,6 +96,10 @@ public abstract class Entity implements Drawable {
     protected void updateYPos(float velocity) {
         worldY += (int) velocity;
         hitbox.y += (int) velocity;
+    }
+
+    public void takeDamage(int damage) {
+        currentHealth -= damage;
     }
 
     protected void checkCollision(int[][] collisionTile) {

@@ -1,34 +1,17 @@
 package entities;
 
 import gamestates.Playing;
+import objects.ProjectileManager;
+import objects.projectiles.BouncyBullet;
 
 public abstract class Boss extends Enemy{
     protected int counter = 0;
 
-    public Boss(int x, int y, int width, int height) {
-        super(x, y, width, height);
+    public Boss(int x, int y, int width, int height, int health) {
+        super(x, y, width, height, health);
     }
 
     public void update(int[][] collisionTile, Playing playing) {
-        checkCollision(collisionTile);
-        if (velocityX > 0 && collisionRight) {
-            velocityX = 0;
-        }
-        if (velocityX < 0 && collisionLeft) {
-            velocityX = 0;
-        }
-        if (velocityY < 0 && collisionUp) {
-            velocityY = 0;
-        }
-        if (velocityY > 0 && collisionDown) {
-            velocityY = 0;
-        }
-        updateXPos(velocityX);
-        updateYPos(velocityY);
-        counter++;
-        if (counter % 60 == 0) {
-            aimAtPlayer(playing);
-        }
     }
 
     protected void aimAtPlayer(Playing playing) {
@@ -43,6 +26,6 @@ public abstract class Boss extends Enemy{
         double directionX = deltaX / distance;
         double directionY = deltaY / distance;
 
-        shootProjectile(worldX + 20, worldY + 20, 10, directionX, directionY);
+        ProjectileManager.addProjectile(new BouncyBullet(worldX + 20, worldY + 20, 10, directionX, directionY, 15), false);
     }
 }

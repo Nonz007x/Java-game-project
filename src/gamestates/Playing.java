@@ -47,7 +47,7 @@ public class Playing extends State implements Statemethods {
         projectileManager = new ProjectileManager(this);
         objectManager = new ObjectManager(this);
         pauseOverlay = new PauseOverlay(this);
-        player = new Player(48, 48, this);
+        player = new Player( this);
         player.loadLvlData(LevelManager.GetCurrentLevel().getCollisionTile());
     }
 
@@ -56,7 +56,7 @@ public class Playing extends State implements Statemethods {
         if (!paused) {
             player.update();
             calcOffsets();
-            enemyManager.update(LevelManager.GetCurrentLevel().getCollisionTile(), this);
+            enemyManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
             levelManager.update();
             projectileManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
             objectManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
@@ -160,6 +160,7 @@ public class Playing extends State implements Statemethods {
 
         if (code == KeyEvent.VK_F) {
             levelManager.toggleLevel();
+            resetAll();
             enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
             bossManager.loadBosses(LevelManager.GetCurrentLevel());
         }
@@ -174,7 +175,6 @@ public class Playing extends State implements Statemethods {
         }
 
         if (code == KeyEvent.VK_R) {
-            enemyManager.addEnemy(new GrandPrix(10, 10));
             enemyManager.addEnemy(new GrandPrix(10, 20));
         }
     }
@@ -197,6 +197,9 @@ public class Playing extends State implements Statemethods {
         }
     }
 
+    private void resetAll() {
+        projectileManager.reset();
+    }
     public Player getPlayer() {
         return player;
     }

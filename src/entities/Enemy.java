@@ -15,8 +15,8 @@ public abstract class Enemy extends Entity {
     protected int enemyType;
     protected int detectionRange;
 
-    public Enemy(int x, int y, int width, int height) {
-        super(x, y, width, height);
+    public Enemy(int x, int y, int width, int height, int health) {
+        super(x, y, width, height, health);
         this.state = IDLE;
     }
 
@@ -41,9 +41,6 @@ public abstract class Enemy extends Entity {
         return aniIndex;
     }
 
-    public void shootProjectile(int x, int y, int speed, double directionX, double directionY) {
-        ProjectileManager.addProjectile(x, y, speed, directionX, directionY);
-    }
 
     public int getflipX() {
         if (velocityX >= 0)
@@ -64,8 +61,10 @@ public abstract class Enemy extends Entity {
     }
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
-        if (active)
+        if (active) {
+           drawHitbox(g2, xOffset, yOffset);
             g2.drawImage(animations[state][aniIndex], worldX + xOffset + getflipX(), worldY + yOffset, width * getflipW(), height, null);
+        }
     }
 
     public abstract void update(int[][] collisionTile, Playing playing);
