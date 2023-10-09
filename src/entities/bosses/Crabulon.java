@@ -3,6 +3,7 @@ package entities.bosses;
 import entities.Boss;
 import gamestates.Playing;
 import objects.projectiles.LaserBeam;
+import objects.projectiles.LaserSweep;
 import utils.LoadSave;
 
 import java.awt.*;
@@ -51,12 +52,15 @@ public class Crabulon extends Boss {
         counter++;
 
         if (counter == 60) {
-            aiming = true;
             velocityX = 4;
         }
 
         if (counter == 100) {
-            shootProjectile(new LaserBeam((int) hitbox.x, (int) hitbox.y, playerPos.x, playerPos.y, 40));
+            if (!aiming) {
+                shootProjectile(new LaserBeam((int) hitbox.x, (int) hitbox.y, playerPos.x, playerPos.y, 40));
+                shootProjectile(new LaserSweep((int) hitbox.x, (int) hitbox.y, 40));
+            }
+            aiming = true;
         }
 
         if (counter == 180) {

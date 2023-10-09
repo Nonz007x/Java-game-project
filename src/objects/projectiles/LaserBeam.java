@@ -22,7 +22,6 @@ public class LaserBeam extends EnemyProjectile {
 
     public LaserBeam(int startPointX, int startPointY, int endPointX, int endPointY, int damage) {
         super(startPointX, startPointY, 0, 0, 0, damage, DEFAULT_TICKS_TO_LIVE);
-        ;
         this.startPointX = startPointX;
         this.startPointY = startPointY;
         this.endPointX = endPointX;
@@ -32,6 +31,9 @@ public class LaserBeam extends EnemyProjectile {
 
     @Override
     public void update(int[][] collisionTile, Playing playing) {
+        if (!active)
+            return;
+        current_tick++;
         int deltaX = endPointX - startPointX;
         int deltaY = endPointY - startPointY;
 
@@ -42,13 +44,15 @@ public class LaserBeam extends EnemyProjectile {
 
         int newX = startPointX + (int) scaledDeltaX;
         int newY = startPointY + (int) scaledDeltaY;
-        if (checkLaserHitPlayer(new Line2D.Float(startPointX, startPointY, newX, newY), playing.getPlayer())) {
+        if (checkLaserHitPlayer(new Line2D.Float(startPointX, startPointY, newX, newY), playing.getPlayer(), 16)) {
             playing.getPlayer().takeDamage(damage);
         }
     }
 
     @Override
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
+        if (!active)
+            return;
         int deltaX = endPointX - startPointX;
         int deltaY = endPointY - startPointY;
 
@@ -62,10 +66,10 @@ public class LaserBeam extends EnemyProjectile {
         AffineTransform transform = new AffineTransform();
         transform.translate(startPointX + xOffset, startPointY + yOffset);
         transform.rotate(angle);
-        transform.translate(0, -40);
+        transform.translate(0, -8);
 
         g2.setTransform(transform);
-        g2.drawImage(LASER, 0, 0, (int) Math.abs(scaledDeltaX), 80, null);
+        g2.drawImage(LASER, 0, 0, (int) Math.abs(scaledDeltaX), 16, null);
 
         g2.setTransform(new AffineTransform());
     }
