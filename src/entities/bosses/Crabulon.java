@@ -2,6 +2,7 @@ package entities.bosses;
 
 import entities.Boss;
 import gamestates.Playing;
+import objects.projectiles.BouncyBullet;
 import objects.projectiles.LaserBeam;
 import objects.projectiles.LaserSweep;
 import utils.LoadSave;
@@ -18,7 +19,7 @@ public class Crabulon extends Boss {
     private Point playerPos = new Point();
     private Point tempPlayerPos = new Point();
     private boolean aiming = false, hold = false;
-    private static BufferedImage[][] CRABULON_IMAGES;
+    private static final BufferedImage[][] CRABULON_IMAGES;
 
     static {
         CRABULON_IMAGES = LoadSave.GetImagesFromSpriteSheet(CRABULON, 312, 196, 3, 6);
@@ -32,55 +33,80 @@ public class Crabulon extends Boss {
 
     @Override
     public void update(int[][] collisionTile, Playing playing) {
-        playerPos.x = (int) playing.getPlayer().getHitbox().getX();
-        playerPos.y = (int) playing.getPlayer().getHitbox().getY();
 
-        checkCollision(collisionTile);
-
-        if (velocityX > 0 && collisionRight) {
-            velocityX = 0;
-        } else if (velocityX < 0 && collisionLeft) {
-            velocityX = 0;
+        if (hitbox.intersects(playing.getPlayer().getHitbox())) {
+            playing.getPlayer().takeDamage(20);
         }
 
-        if (velocityY < 0 && collisionUp) {
-            velocityY = 0;
-        } else if (velocityY > 0 && collisionDown) {
-            velocityY = 0;
-        }
+        playerPos.x = playing.getPlayer().getHitboxCenterX();
+        playerPos.y = playing.getPlayer().getHitboxCenterY();
 
+        checkMove(collisionTile);
         counter++;
 
-        if (counter == 60) {
-            velocityX = 4;
-        }
-
-        if (counter == 100) {
-            if (!aiming) {
-                shootProjectile(new LaserBeam((int) hitbox.x, (int) hitbox.y, playerPos.x, playerPos.y, 40));
-                shootProjectile(new LaserSweep((int) hitbox.x, (int) hitbox.y, 40));
-            }
+        if (counter >= 60 && counter <= 90) {
+            chase(playing.getPlayer(), 5);
             aiming = true;
         }
 
+        if (counter == 100) {
+            aiming = false;
+            tempPlayerPos.x = playerPos.x;
+            tempPlayerPos.y = playerPos.y;
+        }
+
+        if (counter == 110) {
+            velocityX = 0;
+            velocityY = 0;
+        }
+
+        if (counter == 119) {
+
+            shootProjectile(new LaserBeam(getHitboxCenterX(),
+                    getHitboxCenterY(),
+                    tempPlayerPos.x,
+                    tempPlayerPos.y,
+                    40));
+        }
+
+        if (counter == 120 || counter == 126 || counter == 132) {
+            int predictionX = (int) playing.getPlayer().getVelocityX() * 40;
+            int predictionY = (int) playing.getPlayer().getVelocityY() * 40;
+            double[] directions = aimAtPos(getHitboxCenterX(), getHitboxCenterY(),
+                    playerPos.x + predictionX,
+                    playerPos.y + predictionY);
+
+            double[] directionsNoPrediction = aimAtPos(getHitboxCenterX(), getHitboxCenterY(),
+                    playerPos.x,
+                    playerPos.y);
+
+            shootBouncyBullet(directions);
+            shootBouncyBullet(directionsNoPrediction);
+
+        }
+
         if (counter == 180) {
-            velocityX = -4;
+            chase(playing.getPlayer(), 8);
         }
 
         if (counter == 240) {
-            velocityX = 0;
             counter = 0;
         }
+
 
         updateXPos(velocityX);
         updateYPos(velocityY);
 
-        if (velocityX != 0 || velocityY != 0) {
-            state = RUNNING;
-        } else {
-            state = IDLE;
-        }
+        state = (velocityX != 0 || velocityY != 0) ? RUNNING : IDLE;
+    }
 
+    private void shootBouncyBullet(double[] directions) {
+        shootProjectile(new BouncyBullet(getHitboxCenterX(),
+                getHitboxCenterY(),
+                10,
+                directions[0],
+                directions[1],
+                15));
     }
 
     @Override
@@ -92,5 +118,10 @@ public class Crabulon extends Boss {
     @Override
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         super.draw(g2, xOffset, yOffset);
+        if (aiming) {
+            int targetX = playerPos.x + xOffset;
+            int targetY = playerPos.y + yOffset;
+            g2.drawLine(getHitboxCenterX() + xOffset, getHitboxCenterY() + yOffset, targetX, targetY);
+        }
     }
 }

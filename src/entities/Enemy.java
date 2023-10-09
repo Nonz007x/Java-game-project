@@ -27,6 +27,7 @@ public abstract class Enemy extends Entity {
         int range = detectionRange * Game.TILE_SIZE;
         return xRange <= range && yRange <= range;
     }
+
     protected void updateAnimationTick() {
         aniTick++;
         if (aniTick >= aniSpeed) {
@@ -71,6 +72,7 @@ public abstract class Enemy extends Entity {
     public void shootLaser() {
 
     }
+
     protected boolean checkPlayerHit(Rectangle2D hitbox, Player player) {
         return hitbox.intersects(player.getHitbox());
     }
@@ -101,9 +103,44 @@ public abstract class Enemy extends Entity {
 
         return new Polygon(xPoints, yPoints, 4).intersects(player.getHitbox());
     }
+
+    protected void chase(Player player, int speed) {
+        int playerX = player.getHitboxCenterX();
+        int playerY = player.getHitboxCenterY();
+
+        int deltaX = playerX - getHitboxCenterX();
+        int deltaY = playerY - getHitboxCenterY();
+
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        if (distance > 0) {
+            double directionX = deltaX / distance;
+            double directionY = deltaY / distance;
+
+            velocityX = (int) (speed * directionX);
+            velocityY = (int) (speed * directionY);
+
+        } else {
+            velocityX = 0;
+            velocityY = 0;
+        }
+    }
+
+    protected void checkMove(int[][] collisionTile) {
+        checkCollision(collisionTile);
+
+        if ((velocityX > 0 && collisionRight) || (velocityX < 0 && collisionLeft)) {
+            velocityX = 0;
+        }
+
+        if ((velocityY < 0 && collisionUp) || (velocityY > 0 && collisionDown)) {
+            velocityY = 0;
+        }
+    }
+
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {
-           drawHitbox(g2, xOffset, yOffset);
+            drawHitbox(g2, xOffset, yOffset);
             g2.drawImage(animations[state][aniIndex], worldX + xOffset + getflipX(), worldY + yOffset, width * getflipW(), height, null);
         }
     }

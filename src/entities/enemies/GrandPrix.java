@@ -33,13 +33,11 @@ public class GrandPrix extends Enemy {
     @Override
     public void takeDamage(int damage) {
         super.takeDamage(damage);
-        System.out.println("ผีหลอกวิญญาณหลอน");
     }
 
     @Override
     public void setActive(boolean active) {
         super.setActive(active);
-        System.out.println("ผีตายห่า");
     }
 
     public void update(int[][] collisionTile, Playing playing) {
@@ -48,10 +46,6 @@ public class GrandPrix extends Enemy {
     }
 
     private void updateBehavior(int[][] collisionTile, Playing playing) {
-//        if (checkPlayerHit(new Line2D.Float(worldX, worldY, 100, 100), playing.getPlayer())) {
-//            System.out.println("Hit");
-//            Gamestate.state = Gamestate.QUIT;
-//        }
 
         int playerX = playing.getPlayer().getX();
         int playerY = playing.getPlayer().getY();

@@ -59,7 +59,5 @@ public class LaserSweep extends EnemyProjectile {
         g2.drawImage(LASER, 0, 0, width, height, null);
 
         g2.setTransform(new AffineTransform());
-        g2.setColor(Color.BLUE);
-        g2.drawLine(startPointX + xOffset, startPointY + yOffset, endPointX + xOffset, endPointY + yOffset);
     }
 }

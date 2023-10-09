@@ -21,7 +21,7 @@ public class LaserBeam extends EnemyProjectile {
     }
 
     public LaserBeam(int startPointX, int startPointY, int endPointX, int endPointY, int damage) {
-        super(startPointX, startPointY, 0, 0, 0, damage, DEFAULT_TICKS_TO_LIVE);
+        super(startPointX, startPointY, 0, 0, 0, damage, 60);
         this.startPointX = startPointX;
         this.startPointY = startPointY;
         this.endPointX = endPointX;

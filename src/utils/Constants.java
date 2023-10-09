@@ -1,8 +1,5 @@
 package utils;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class Constants {
 
     public static class Menu {

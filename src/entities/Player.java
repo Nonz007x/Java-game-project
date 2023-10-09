@@ -173,7 +173,7 @@ public class Player extends Entity {
             dodgeTick++;
             if (dodgeTick >= 6) {
                 dodgeTick = 0;
-                dodgeCooldown = 45;
+                dodgeCooldown = 30;
                 dodgeActive = false;
             }
         }
@@ -183,7 +183,7 @@ public class Player extends Entity {
     @Override
     public void takeDamage(int damage) {
         super.takeDamage(damage);
-        System.out.println("ouch");
+        System.out.println("*moan*");
     }
 
     public void shoot() {
@@ -199,7 +199,7 @@ public class Player extends Entity {
         float centerX = hitbox.x + hitbox.width / 2;
         float centerY = hitbox.y + hitbox.height / 2;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             int randomNum = random.nextInt(61) - 30;
             float fanAngle = (float) Math.toRadians(randomNum);
             float rotatedAngle = (float) (rotationAngleRad + fanAngle);
@@ -254,7 +254,6 @@ public class Player extends Entity {
     }
 
     private void updateCamera() {
-//        System.out.println(lvlData.length);
         playerScreenPosX = Math.min(screenX, worldX);
         playerScreenPosY = Math.min(screenY, worldY);
 

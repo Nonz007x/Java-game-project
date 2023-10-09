@@ -27,6 +27,7 @@ public abstract class Entity implements Drawable {
     protected int state;
 
     protected Rectangle2D.Float hitbox;
+    protected int hitboxOffsetX, hitboxOffsetY;
     protected boolean collisionUp;
     protected boolean collisionDown;
     protected boolean collisionLeft;
@@ -44,6 +45,7 @@ public abstract class Entity implements Drawable {
         this.worldX = x;
         this.worldY = y;
     }
+
     public final void setSpeed(int speed) {
         this.speed = speed;
     }
@@ -74,10 +76,8 @@ public abstract class Entity implements Drawable {
 
     protected final void initHitbox(float x, float y, float width, float height) {
         hitbox = new Rectangle2D.Float(x + worldX, y + worldY, width, height);
-    }
-
-    protected final void initHitbox() {
-        hitbox = new Rectangle2D.Float(worldX, worldY, width, height);
+        hitboxOffsetX = (int) x;
+        hitboxOffsetY = (int) y;
     }
 
     public int getState() {
@@ -135,6 +135,14 @@ public abstract class Entity implements Drawable {
         return hitbox;
     }
 
+    public int getHitboxCenterX() {
+        return (int) (hitbox.x + hitbox.width / 2);
+    }
+
+    public int getHitboxCenterY() {
+        return (int) (hitbox.y + hitbox.height / 2);
+    }
+
     public float getHitboxX() {
         return hitbox.x;
     }
@@ -149,5 +157,12 @@ public abstract class Entity implements Drawable {
 
     public float getHitboxHeight() {
         return hitbox.height;
+    }
+
+    public float getVelocityX() {
+        return velocityX;
+    }
+    public float getVelocityY() {
+        return velocityY;
     }
 }

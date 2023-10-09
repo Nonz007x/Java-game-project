@@ -105,6 +105,8 @@ public class Playing extends State implements Statemethods {
         if (!paused) {
             if (e.getButton() == MouseEvent.BUTTON1) {
 //                player.teleport();
+                player.calculateRad();
+                player.dodge();
                 player.shoot();
             }
         }

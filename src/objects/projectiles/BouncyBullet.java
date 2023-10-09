@@ -20,7 +20,7 @@ public class BouncyBullet extends EnemyProjectile {
 
     public BouncyBullet(int x, int y, int speed, double directionX, double directionY, int damage) {
         super(x, y, speed, directionX, directionY, damage, DEFAULT_TICKS_TO_LIVE);
-        hitbox = new Rectangle2D.Float(x, y, 10, 10);
+        hitbox = new Rectangle2D.Float(x, y , 10, 10);
         animations = BOUNCY_BULLET;
     }
 
@@ -28,6 +28,7 @@ public class BouncyBullet extends EnemyProjectile {
         current_tick++;
         updatePos();
         if (checkPlayerHit(hitbox, playing.getPlayer())) {
+            playing.getPlayer().takeDamage(damage);
             setActive(false);
         }
 
