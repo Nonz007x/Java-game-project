@@ -67,25 +67,39 @@ public abstract class Enemy extends Entity {
             setActive(false);
         }
     }
+
+    public void shootLaser() {
+
+    }
     protected boolean checkPlayerHit(Rectangle2D hitbox, Player player) {
         return hitbox.intersects(player.getHitbox());
     }
 
     protected boolean checkPlayerHit(Line2D.Float line, Player player) {
-
         float lineWidth = 80.0f;
 
-        Polygon thickHitbox = new Polygon();
-        thickHitbox.addPoint((int) (line.getX1() - lineWidth / 2),
-                (int) (line.getY1() + lineWidth / 2));
-        thickHitbox.addPoint((int) (line.getX2() - lineWidth / 2 ),
-                (int) (line.getY2() + lineWidth / 2));
-        thickHitbox.addPoint((int) (line.getX2() + lineWidth / 2),
-                (int) (line.getY2() - lineWidth / 2));
-        thickHitbox.addPoint((int) (line.getX1() + lineWidth / 2),
-                (int) (line.getY1() - lineWidth / 2));
+        // Calculate the angle of the line
+        double angle = Math.atan2(line.getY2() - line.getY1(), line.getX2() - line.getX1());
 
-        return thickHitbox.intersects(player.getHitbox());
+        // Calculate the offsets to add/subtract from the line endpoints
+        double xOffset = lineWidth / 2 * Math.sin(angle);
+        double yOffset = lineWidth / 2 * Math.cos(angle);
+
+        // Calculate the coordinates of the vertices
+        int[] xPoints = {
+                (int) (line.getX1() - xOffset),
+                (int) (line.getX2() - xOffset),
+                (int) (line.getX2() + xOffset),
+                (int) (line.getX1() + xOffset)
+        };
+        int[] yPoints = {
+                (int) (line.getY1() + yOffset),
+                (int) (line.getY2() + yOffset),
+                (int) (line.getY2() - yOffset),
+                (int) (line.getY1() - yOffset)
+        };
+
+        return new Polygon(xPoints, yPoints, 4).intersects(player.getHitbox());
     }
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {

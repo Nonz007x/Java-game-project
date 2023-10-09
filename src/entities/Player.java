@@ -96,7 +96,7 @@ public class Player extends Entity {
         setAnimation();
         updateMouseEvent();
         updateAnimationTick();
-        updataDodge();
+        updateDodge();
     }
 
     private void updateMouseEvent() {
@@ -168,7 +168,7 @@ public class Player extends Entity {
             dodgeActive = true;
     }
 
-    private void updataDodge() {
+    private void updateDodge() {
         if (dodgeActive) {
             dodgeTick++;
             if (dodgeTick >= 6) {
@@ -178,6 +178,12 @@ public class Player extends Entity {
             }
         }
         dodgeCooldown--;
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        super.takeDamage(damage);
+        System.out.println("ouch");
     }
 
     public void shoot() {
@@ -202,7 +208,7 @@ public class Player extends Entity {
 
             float projectileX = centerX + directionX * 10;
             float projectileY = centerY + directionY * 10;
-            ProjectileManager.addProjectile(new BuckShot((int) projectileX, (int) projectileY, directionX, directionY));
+            shootProjectile(new BuckShot((int) projectileX, (int) projectileY, directionX, directionY));
         }
     }
 

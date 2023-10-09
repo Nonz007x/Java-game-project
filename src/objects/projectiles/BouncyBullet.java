@@ -2,15 +2,16 @@ package objects.projectiles;
 
 import gamestates.Playing;
 import main.Game;
+import objects.EnemyProjectile;
 import objects.Projectile;
 import utils.LoadSave;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import static utils.HelpMethods.IsProjectileHittingLevel;
+import static utils.Constants.Projectile.DEFAULT_TICKS_TO_LIVE;
 
-public class BouncyBullet extends Projectile {
+public class BouncyBullet extends EnemyProjectile {
     private static BufferedImage[] BOUNCY_BULLET;
 
     static {
@@ -18,7 +19,7 @@ public class BouncyBullet extends Projectile {
     }
 
     public BouncyBullet(int x, int y, int speed, double directionX, double directionY, int damage) {
-        super(x, y, speed, directionX, directionY, damage);
+        super(x, y, speed, directionX, directionY, damage, DEFAULT_TICKS_TO_LIVE);
         hitbox = new Rectangle2D.Float(x, y, 10, 10);
         animations = BOUNCY_BULLET;
     }

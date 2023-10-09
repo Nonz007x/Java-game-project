@@ -2,10 +2,10 @@ package entities.bosses;
 
 import entities.Boss;
 import gamestates.Playing;
+import objects.projectiles.LaserBeam;
 import utils.LoadSave;
 
 import java.awt.*;
-import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 import static utils.Constants.BossConstants.*;
@@ -16,11 +16,11 @@ import static utils.LoadSave.CRABULON;
 public class Crabulon extends Boss {
     private Point playerPos = new Point();
     private Point tempPlayerPos = new Point();
-    private boolean aiming = false, hold = false, hit = false;
+    private boolean aiming = false, hold = false;
     private static BufferedImage[][] CRABULON_IMAGES;
 
     static {
-        loadBossImages();
+        CRABULON_IMAGES = LoadSave.GetImagesFromSpriteSheet(CRABULON, 312, 196, 3, 6);
     }
 
     public Crabulon(int x, int y) {
@@ -55,34 +55,8 @@ public class Crabulon extends Boss {
             velocityX = 4;
         }
 
-        if (counter >= 100 && counter <= 110) {
-
-            if (counter == 100) {
-                hold = true;
-                tempPlayerPos.x = playerPos.x;
-                tempPlayerPos.y = playerPos.y;
-            }
-
-            if (counter == 110) {
-                int deltaX = tempPlayerPos.x - worldX;
-                int deltaY = tempPlayerPos.y - worldY;
-
-                double scaleFactor = 100.0;
-
-                double scaledDeltaX = deltaX * scaleFactor;
-                double scaledDeltaY = deltaY * scaleFactor;
-
-                int newX = worldX + (int) scaledDeltaX;
-                int newY = worldY + (int) scaledDeltaY;
-                if (checkPlayerHit(new Line2D.Float(worldX, worldY, newX, newY), playing.getPlayer())) {
-                    playing.getPlayer().takeDamage(10);
-                    hit = true;
-                }
-//            aimAtPlayer(playing);
-                hold = false;
-                aiming = false;
-                velocityX = 0;
-            }
+        if (counter == 100) {
+            shootProjectile(new LaserBeam((int) hitbox.x, (int) hitbox.y, playerPos.x, playerPos.y, 40));
         }
 
         if (counter == 180) {
@@ -111,34 +85,8 @@ public class Crabulon extends Boss {
         System.out.println("Crabulon has been defeated!");
     }
 
-    private static void loadBossImages() {
-        CRABULON_IMAGES = LoadSave.GetImagesFromSpriteSheet(CRABULON, 312, 196, 3, 6);
-    }
-
     @Override
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         super.draw(g2, xOffset, yOffset);
-        if (!active)
-            return;
-        if (aiming) {
-            int deltaX = playerPos.x - worldX;
-            int deltaY = playerPos.y - worldY;
-
-            if (hold) {
-                deltaX = tempPlayerPos.x - worldX;
-                deltaY = tempPlayerPos.y - worldY;
-            }
-
-            double scaleFactor = 100.0;
-
-            double scaledDeltaX = deltaX * scaleFactor;
-            double scaledDeltaY = deltaY * scaleFactor;
-
-            int newX = worldX + xOffset + (int) scaledDeltaX;
-            int newY = worldY + yOffset + (int) scaledDeltaY;
-            g2.setStroke(new BasicStroke(80));
-            g2.drawLine(worldX + xOffset, worldY + yOffset, newX, newY);
-            g2.setStroke(new BasicStroke(1));
-        }
     }
 }

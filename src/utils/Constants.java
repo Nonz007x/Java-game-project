@@ -14,6 +14,7 @@ public class Constants {
     }
 
     public static class Projectile {
+        public static final int DEFAULT_TICKS_TO_LIVE = 600;
         public static final int BUCKSHOT_DAMAGE = 10;
     }
 

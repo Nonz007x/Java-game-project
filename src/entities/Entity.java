@@ -1,5 +1,7 @@
 package entities;
 
+import objects.Projectile;
+import objects.ProjectileManager;
 import utils.Drawable;
 
 import java.awt.*;
@@ -100,6 +102,10 @@ public abstract class Entity implements Drawable {
 
     public void takeDamage(int damage) {
         currentHealth -= damage;
+    }
+
+    public void shootProjectile(Projectile projectile) {
+        ProjectileManager.addProjectile(projectile);
     }
 
     protected void checkCollision(int[][] collisionTile) {
