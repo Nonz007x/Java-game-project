@@ -15,6 +15,8 @@ public abstract class Entity implements Drawable {
     protected int maxHealth;
     protected int currentHealth;
     protected int width, height;
+    protected int initialWorldX;
+    protected int initialWorldY;
     protected int worldX, worldY;
     protected float velocityX, velocityY;
     protected int speed;
@@ -22,7 +24,7 @@ public abstract class Entity implements Drawable {
     protected BufferedImage[][] animations;
     protected int flipW = 1;
     protected int flipX = 0;
-    protected final int aniSpeed = 10;
+    protected static final int ANI_SPEED = 10;
     protected int aniTick, aniIndex;
     protected int state;
 
@@ -42,6 +44,8 @@ public abstract class Entity implements Drawable {
 
     public Entity(int x, int y, int width, int height, int health) {
         this(width, height, health);
+        this.initialWorldX = x;
+        this.initialWorldY = y;
         this.worldX = x;
         this.worldY = y;
     }
@@ -115,6 +119,29 @@ public abstract class Entity implements Drawable {
         collisionRight = CheckCollisionRight((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height, collisionTile);
     }
 
+    public void knockback(double directionX, double directionY, int speed, int[][] collisionTile) {
+        float initialVelocityX = velocityX;
+        float initialVelocityY = velocityY;
+        velocityX = (float) (directionX * speed);
+        velocityY = (float) (directionY * speed);
+        checkCollision(collisionTile);
+        if (collisionRight) {
+            velocityX = 0;
+        } else if (collisionLeft) {
+            velocityX = 0;
+        }
+
+        if (collisionUp) {
+            velocityY = 0;
+        } else if (collisionDown) {
+            velocityY = 0;
+        }
+        updateXPos(velocityX);
+        updateYPos(velocityY);
+        velocityX = initialVelocityX;
+        velocityY = initialVelocityY;
+    }
+
     public static BufferedImage[][] loadImages(BufferedImage atlas, int xSize, int ySize, int spriteW, int spriteH) {
         BufferedImage[][] tempArr = new BufferedImage[ySize][xSize];
         for (int j = 0; j < tempArr.length; j++)
@@ -162,6 +189,7 @@ public abstract class Entity implements Drawable {
     public float getVelocityX() {
         return velocityX;
     }
+
     public float getVelocityY() {
         return velocityY;
     }

@@ -40,4 +40,19 @@ public abstract class Boss extends Enemy {
         double directionY = deltaY / distance;
         return new double[]{directionX, directionY};
     }
+
+    @Override
+    public void resetEnemy() {
+        active = true;
+        worldX = initialWorldX;
+        worldY = initialWorldY;
+        hitbox.x = worldX + hitboxOffsetX;
+        hitbox.y = worldY + hitboxOffsetY;
+        currentHealth = maxHealth;
+        velocityX = 0;
+        velocityY = 0;
+        aniIndex = 0;
+        aniTick = 0;
+        counter = 0;
+    }
 }

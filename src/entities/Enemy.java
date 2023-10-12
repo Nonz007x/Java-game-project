@@ -30,7 +30,7 @@ public abstract class Enemy extends Entity {
 
     protected void updateAnimationTick() {
         aniTick++;
-        if (aniTick >= aniSpeed) {
+        if (aniTick >= ANI_SPEED) {
             aniTick = 0;
             aniIndex++;
             if (aniIndex >= GetSpriteAmount(state, enemyType)) {
@@ -67,10 +67,6 @@ public abstract class Enemy extends Entity {
         if (currentHealth <= 0) {
             setActive(false);
         }
-    }
-
-    public void shootLaser() {
-
     }
 
     protected boolean checkPlayerHit(Rectangle2D hitbox, Player player) {
@@ -113,7 +109,7 @@ public abstract class Enemy extends Entity {
 
         double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-        if (distance > 0) {
+        if (distance > 0.01f) {
             double directionX = deltaX / distance;
             double directionY = deltaY / distance;
 
@@ -145,8 +141,12 @@ public abstract class Enemy extends Entity {
         }
     }
 
-    public abstract void update(int[][] collisionTile, Playing playing);
+    public void update(int[][] collisionTile, Playing playing) {
+        updateAnimationTick();
+        updateBehavior(collisionTile, playing);
+    }
 
+    protected abstract void updateBehavior(int [][]collisionTile, Playing playing);
     public boolean isActive() {
         return active;
     }
@@ -154,4 +154,18 @@ public abstract class Enemy extends Entity {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    public void resetEnemy() {
+        active = true;
+        worldX = initialWorldX;
+        worldY = initialWorldY;
+        hitbox.x = worldX + hitboxOffsetX;
+        hitbox.y = worldY + hitboxOffsetY;
+        currentHealth = maxHealth;
+        velocityX = 0;
+        velocityY = 0;
+        aniIndex = 0;
+        aniTick = 0;
+    }
 }
+
