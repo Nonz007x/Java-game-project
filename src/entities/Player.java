@@ -2,14 +2,12 @@ package entities;
 
 import gamestates.Playing;
 import main.Game;
-import objects.ProjectileManager;
 import objects.projectiles.BuckShot;
 import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -17,6 +15,7 @@ import static utils.Constants.PlayerConstants.*;
 import static utils.HelpMethods.*;
 
 public class Player extends Entity {
+    private Playing playing;
 
     private BufferedImage[][] gunFlashes;
     private BufferedImage boomstick;
@@ -34,6 +33,8 @@ public class Player extends Entity {
     private int dodgeTick;
     private int dodgeCooldown;
 
+    private boolean hit = false;
+
     private double rotationAngleRad;
     private double tempRadian;
     private final int screenX = Game.GAME_WIDTH / 2 - (Game.TILE_SIZE / 2);
@@ -41,11 +42,11 @@ public class Player extends Entity {
     private Point mouseLocation = new Point(0, 0);
 
     public Player(Playing playing) {
-        super(48, 48, 100);
+        super(96, 96, 48, 48, 100);
+        this.playing = playing;
         this.speed = 4;
         this.state = IDLE;
 
-        setSpawn();
         initHitbox(15, 18, 20, 33);
         loadAnimations();
     }
@@ -97,6 +98,10 @@ public class Player extends Entity {
         updateMouseEvent();
         updateAnimationTick();
         updateDodge();
+
+        if (currentHealth <= 0) {
+            playing.pauseGame();
+        }
     }
 
     private void updateMouseEvent() {
@@ -130,25 +135,26 @@ public class Player extends Entity {
         if (right && !left && !collisionRight) velocityX = speed;
 
         if (dodgeActive) {
-            // velocity = direction * 15 (dodge speed)
-            velocityY = (float) -(Math.sin(tempRadian) * 15);
-            velocityX = (float) -(Math.cos(tempRadian) * 15);
-
-            checkCollision();
-            if (velocityX > 0 && collisionRight) {
-                velocityX = 0;
-            } else if (velocityX < 0 && collisionLeft) {
-                velocityX = 0;
-            }
-
-            if (velocityY < 0 && collisionUp) {
-                velocityY = 0;
-            } else if (velocityY > 0 && collisionDown) {
-                velocityY = 0;
-            }
-
-            updateXPos(velocityX);
-            updateYPos(velocityY);
+            knockback(-Math.cos(tempRadian), -Math.sin(tempRadian), 15, lvlData);
+//            // velocity = direction * 15 (dodge speed)
+//            velocityY = (float) -(Math.sin(tempRadian) * 15);
+//            velocityX = (float) -(Math.cos(tempRadian) * 15);
+//
+//            checkCollision();
+//            if (collisionRight) {
+//                velocityX = 0;
+//            } else if (collisionLeft) {
+//                velocityX = 0;
+//            }
+//
+//            if (collisionUp) {
+//                velocityY = 0;
+//            } else if (collisionDown) {
+//                velocityY = 0;
+//            }
+//
+//            updateXPos(velocityX);
+//            updateYPos(velocityY);
             return;
         }
         updateXPos(velocityX);
@@ -182,8 +188,12 @@ public class Player extends Entity {
 
     @Override
     public void takeDamage(int damage) {
+        if (hit)
+            return;
+        hit = true;
+        System.out.println("ouch");
         super.takeDamage(damage);
-        System.out.println("*moan*");
+
     }
 
     public void shoot() {
@@ -243,11 +253,24 @@ public class Player extends Entity {
                 }
             }
         }
-        if (aniTick >= aniSpeed) {
+        if (aniTick >= ANI_SPEED) {
+            if (hit) {
+                flashCount++;
+
+                isFlashing = !isFlashing;
+
+                if (flashCount >= 5) {
+                    isFlashing = false;
+                    hit = false;
+                    flashCount = 0;
+                }
+            }
             aniTick = 0;
             aniIndex = (aniIndex + 1) % GetSpriteAmount(state);
         }
     }
+
+    private int flashCount = 0;
 
     public void loadLvlData(int[][] lvlData) {
         this.lvlData = lvlData;
@@ -260,8 +283,8 @@ public class Player extends Entity {
         int screenWidth = Game.GAME_WIDTH;
         int screenHeight = Game.GAME_HEIGHT;
 
-        int worldWidth = lvlData[0].length * 48;
-        int worldHeight = lvlData.length * 48;
+        int worldWidth = lvlData[0].length * Game.TILE_SIZE;
+        int worldHeight = lvlData.length * Game.TILE_SIZE;
 
         int maxRightOffset = worldWidth - worldX;
         playerScreenPosX = Math.max(playerScreenPosX, screenWidth - maxRightOffset);
@@ -270,11 +293,14 @@ public class Player extends Entity {
         playerScreenPosY = Math.max(playerScreenPosY, screenHeight - maxBottomOffset);
     }
 
+    private boolean isFlashing = false;
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
+        if (!isFlashing) {
+            g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, width * flipW, height, null);
+            drawWeapon(g2);
+        }
 
-        g2.drawImage(animations[state][aniIndex], playerScreenPosX + flipX, playerScreenPosY, width * flipW, height, null);
-        drawWeapon(g2);
         g2.setColor(Color.RED);
         g2.fillRect(mouseLocation.x, mouseLocation.y, 4, 4);
         drawHitbox(g2);
@@ -299,6 +325,16 @@ public class Player extends Entity {
 
         g2.setTransform(originalTransform);
 
+    }
+
+    public void resetPlayer() {
+        worldX = initialWorldX;
+        worldY = initialWorldY;
+        hitbox.x = worldX + hitboxOffsetX;
+        hitbox.y = worldY + hitboxOffsetY;
+        currentHealth = maxHealth;
+        aniIndex = 0;
+        aniTick = 0;
     }
 
     public int getScreenX() {

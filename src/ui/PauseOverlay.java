@@ -20,9 +20,9 @@ public class PauseOverlay {
     private void submit() {
         switch (selectedChoice) {
             case 0 -> playing.unpauseGame();
-            case 1 -> {
-            }
-            case 2 -> Gamestate.state = Gamestate.MENU;
+            case 1 -> playing.resetAll();
+            case 2 -> {}
+            case 3 -> Gamestate.state = Gamestate.MENU;
         }
     }
 
@@ -44,8 +44,9 @@ public class PauseOverlay {
         g.setColor(Color.WHITE);
         g.drawString("Pause", 1, 25);
         g.drawString("Resume", 1, 100);
-        g.drawString("Options", 1, 150);
-        g.drawString("Quit", 1, 200);
+        g.drawString("RESTART", 1, 150);
+        g.drawString("Options", 1, 200);
+        g.drawString("Quit", 1, 250);
         g.drawString(String.valueOf(selectedChoice), Game.GAME_WIDTH / 2, 125);
 
     }
