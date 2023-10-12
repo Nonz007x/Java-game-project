@@ -4,7 +4,7 @@ import entities.Enemy;
 import gamestates.Playing;
 import utils.LoadSave;
 
-import java.awt.geom.Line2D;
+
 import java.awt.image.BufferedImage;
 
 import static utils.Constants.EnemyConstants.*;
@@ -31,21 +31,13 @@ public class GrandPrix extends Enemy {
     }
 
     @Override
-    public void takeDamage(int damage) {
-        super.takeDamage(damage);
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        super.setActive(active);
-    }
-
     public void update(int[][] collisionTile, Playing playing) {
         updateAnimationTick();
         updateBehavior(collisionTile, playing);
     }
 
-    private void updateBehavior(int[][] collisionTile, Playing playing) {
+    @Override
+    protected void updateBehavior(int[][] collisionTile, Playing playing) {
 
         int playerX = playing.getPlayer().getX();
         int playerY = playing.getPlayer().getY();

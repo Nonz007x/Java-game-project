@@ -6,6 +6,7 @@ import entities.Boss;
 import entities.Enemy;
 import entities.bosses.Crabulon;
 import entities.enemies.GrandPrix;
+import entities.enemies.MonPiramid;
 import main.Game;
 
 import java.io.*;
@@ -77,10 +78,10 @@ public class Level {
         for (int y = 0; y < enemies.length; y++) {
             for (int x = 0; x < enemies[0].length; x++) {
                 int coordinate = enemies[y][x];
-                if (coordinate == 1) {
-                    this.enemies.add(new GrandPrix(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
-                } else if (coordinate == 2) {
-                    this.bosses.add(new Crabulon(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                switch (coordinate) {
+                    case 1 -> this.enemies.add(new GrandPrix(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                    case 2 -> this.bosses.add(new Crabulon(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                    case 3 -> this.enemies.add(new MonPiramid(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                 }
             }
         }
