@@ -3,10 +3,12 @@ package utils;
 public class Constants {
 
     public static class Menu {
+
         public static int PLAY = 0;
-        public static int OPTIONS = 1;
-        public static int EXIT = 2;
-        public static int MAX_CHOICE = 3;
+        public static int RESTART = 1;
+        public static int OPTIONS = 2;
+        public static int EXIT = 3;
+        public static int MAX_CHOICE = 4;
 
     }
 
@@ -55,9 +57,8 @@ public class Constants {
     public static class PlayerConstants {
         public static final int IDLE = 0;
         public static final int RUNNING = 1;
-        public static final int ATTACK = 2;
-        public static final int HIT = 3;
-        public static final int DEAD = 4;
+        public static final int HIT = 2;
+        public static final int DEAD = 3;
 
         public static int GetSpriteAmount(int player_action) {
             return switch (player_action) {

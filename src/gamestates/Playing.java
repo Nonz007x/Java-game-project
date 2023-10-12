@@ -5,7 +5,6 @@ import entities.BossManager;
 import entities.Enemy;
 import entities.Player;
 import entities.EnemyManager;
-import entities.enemies.GrandPrix;
 import main.Game;
 import objects.ObjectManager;
 import objects.ProjectileManager;
@@ -175,7 +174,7 @@ public class Playing extends State implements Statemethods {
         }
 
         if (code == KeyEvent.VK_R) {
-            enemyManager.addEnemy(new GrandPrix(10, 20));
+            resetAll();
         }
     }
 
@@ -197,8 +196,13 @@ public class Playing extends State implements Statemethods {
         }
     }
 
-    private void resetAll() {
+    public void resetAll() {
+        paused = false;
+        player.resetPlayer();
         projectileManager.reset();
+        for (Enemy enemy: getEnemiesAndBosses()) {
+                enemy.resetEnemy();
+        }
     }
     public Player getPlayer() {
         return player;
@@ -213,6 +217,10 @@ public class Playing extends State implements Statemethods {
 
     public void unpauseGame() {
         paused = false;
+    }
+
+    public void pauseGame() {
+        paused = true;
     }
 
     public ObjectManager getObjectManager() {

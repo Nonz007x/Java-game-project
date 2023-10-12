@@ -4,10 +4,10 @@ import entities.Boss;
 import gamestates.Playing;
 import objects.projectiles.BouncyBullet;
 import objects.projectiles.LaserBeam;
-import objects.projectiles.LaserSweep;
 import utils.LoadSave;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import static utils.Constants.BossConstants.*;
@@ -33,8 +33,12 @@ public class Crabulon extends Boss {
 
     @Override
     public void update(int[][] collisionTile, Playing playing) {
+        updateBehavior(collisionTile, playing);
+    }
 
-        if (hitbox.intersects(playing.getPlayer().getHitbox())) {
+    @Override
+    protected void updateBehavior(int[][] collisionTile, Playing playing) {
+        if (checkPlayerHit(hitbox, playing.getPlayer())) {
             playing.getPlayer().takeDamage(20);
         }
 
@@ -62,6 +66,12 @@ public class Crabulon extends Boss {
 
         if (counter == 119) {
 
+
+        for (int i = 0; i < 360; i += 10) {
+            double angleInRadians = Math.toRadians(i);
+
+            shootBouncyBullet(new double[] { Math.cos(angleInRadians), Math.sin(angleInRadians)});
+        }
             shootProjectile(new LaserBeam(getHitboxCenterX(),
                     getHitboxCenterY(),
                     tempPlayerPos.x,
@@ -86,13 +96,12 @@ public class Crabulon extends Boss {
         }
 
         if (counter == 180) {
-            chase(playing.getPlayer(), 8);
+            chase(playing.getPlayer(), 15);
         }
 
         if (counter == 240) {
             counter = 0;
         }
-
 
         updateXPos(velocityX);
         updateYPos(velocityY);
@@ -117,7 +126,13 @@ public class Crabulon extends Boss {
 
     @Override
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
+        if (!active)
+            return;
         super.draw(g2, xOffset, yOffset);
+
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        g2.drawImage(animations[state][aniIndex], worldX + xOffset + getflipX(), worldY + yOffset, width * getflipW(), height, null);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         if (aiming) {
             int targetX = playerPos.x + xOffset;
             int targetY = playerPos.y + yOffset;
