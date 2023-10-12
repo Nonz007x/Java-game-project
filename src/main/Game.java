@@ -8,19 +8,19 @@ import java.awt.*;
 
 public class Game implements Runnable {
 
-    private static final boolean SHOW_FPS_UPS = false;
+    private static final boolean SHOW_FPS_UPS = true;
     private static GamePanel gamePanel;
-    private Thread gameThread;
+    private Thread gameThread, renderThread;
     private static Playing playing;
     private static Menu menu;
 
     public static final int TILES_DEFAULT_SIZE = 16;
     public static final int SCALE = 3;
     public static final int TILE_SIZE = TILES_DEFAULT_SIZE * SCALE; // 48x48
-    public static final int TILE_IN_WIDTH = 16;
-    public static final int TILE_IN_HEIGHT = 12;
-    public static final int GAME_WIDTH = TILE_SIZE * TILE_IN_WIDTH; // 768
-    public static final int GAME_HEIGHT = TILE_SIZE * TILE_IN_HEIGHT; // 576
+    public static final int COLUMN = 40;
+    public static final int ROW = 22;
+    public static final int GAME_WIDTH = TILE_SIZE * COLUMN; // 768
+    public static final int GAME_HEIGHT = TILE_SIZE * ROW; // 576
 
     private static final int FPS_SET = 120;
     private static final int UPS_SET = 60;
@@ -40,55 +40,54 @@ public class Game implements Runnable {
 
     private void startGameThread() {
         gameThread = new Thread(this);
+        renderThread = new Thread(this::renderLoop);
         gameThread.start();
+        renderThread.start();
     }
 
     @Override
     public void run() {
-        double timePerFrame = 1000000000.0 / FPS_SET;
         double timePerUpdate = 1000000000.0 / UPS_SET;
-
         long previousTime = System.nanoTime();
-
-        int frames = 0;
-        int updates = 0;
-        long lastCheck = System.currentTimeMillis();
-
         double deltaU = 0;
-        double deltaF = 0;
 
         while (true) {
-
             long currentTime = System.nanoTime();
-
             deltaU += (currentTime - previousTime) / timePerUpdate;
-            deltaF += (currentTime - previousTime) / timePerFrame;
             previousTime = currentTime;
 
             if (deltaU >= 1) {
-
                 update();
-                updates++;
                 deltaU--;
-
             }
+        }
+    }
+
+    private void renderLoop() {
+        double timePerFrame = 1000000000.0 / FPS_SET;
+        long previousTime = System.nanoTime();
+        double deltaF = 0;
+
+        int frames = 0;
+        long lastCheck = System.currentTimeMillis();
+
+        while (true) {
+            long currentTime = System.nanoTime();
+            deltaF += (currentTime - previousTime) / timePerFrame;
+            previousTime = currentTime;
 
             if (deltaF >= 1) {
-
                 gamePanel.repaint();
                 frames++;
                 deltaF--;
-
             }
 
             if (SHOW_FPS_UPS)
                 if (System.currentTimeMillis() - lastCheck >= 1000) {
 
                     lastCheck = System.currentTimeMillis();
-                    System.out.println("FPS: " + frames + " | UPS: " + updates);
+                    System.out.println("FPS: " + frames);
                     frames = 0;
-                    updates = 0;
-
                 }
         }
     }
