@@ -69,22 +69,26 @@ public class LevelManager {
     }
 
     public void draw(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
+        int tileWidth = Game.TILE_SIZE;
+        int tileHeight = Game.TILE_SIZE;
+        int worldWidth = levels.get(lvlIndex).getWorldCol() * tileWidth;
+        int worldHeight = levels.get(lvlIndex).getWorldRow() * tileHeight;
+        Level currentLevel = GetCurrentLevel();
+        BufferedImage[] sprites = levelSprites;
 
-        int worldWidth = levels.get(lvlIndex).getWorldCol() * Game.TILE_SIZE;
-        int worldHeight = levels.get(lvlIndex).getWorldRow() * Game.TILE_SIZE;
+        int endRow = currentLevel.getWorldRow();
+        int endCol = currentLevel.getWorldCol();
 
-        for (int worldRow = 0; worldRow < GetCurrentLevel().getWorldRow(); worldRow++) {
-            int tileY = worldRow * Game.TILE_SIZE;
+        for (int worldRow = 0; worldRow < endRow; worldRow++) {
+            int tileY = worldRow * tileHeight;
             int screenY = tileY - playerY + screenPosY;
 
-            for (int worldCol = 0; worldCol < GetCurrentLevel().getWorldCol(); worldCol++) {
-                int tileNum = levels.get(lvlIndex).getSpriteIndex(0, worldCol, worldRow);
-                int tileNum2 = levels.get(lvlIndex).getSpriteIndex(1,worldCol, worldRow);
-
-                int tileX = worldCol * Game.TILE_SIZE;
+            for (int worldCol = 0; worldCol < endCol; worldCol++) {
+                int tileNum = currentLevel.getSpriteIndex(0, worldCol, worldRow);
+                int tileNum2 = currentLevel.getSpriteIndex(1, worldCol, worldRow);
+                int tileX = worldCol * tileWidth;
                 int screenX = tileX - playerX + screenPosX;
 
-                // Stop camera at the edge
                 if (screenPosX > playerX)
                     screenX = tileX;
 
@@ -94,30 +98,29 @@ public class LevelManager {
                 int rightOffset = Game.GAME_WIDTH - screenPosX;
                 if (rightOffset > worldWidth - playerX)
                     screenX = Game.GAME_WIDTH - (worldWidth - tileX);
-
                 int bottomOffset = Game.GAME_HEIGHT - screenPosY;
                 if (bottomOffset > worldHeight - playerY)
                     screenY = Game.GAME_HEIGHT - (worldHeight - tileY);
 
-                if (IsTileVisible(screenX, screenY, Game.GAME_WIDTH, Game.GAME_HEIGHT, Game.TILE_SIZE)) {
-                    if (tileNum == 41) {
-                        g2.drawImage(waterfallSprite[waterfallAniIndex], screenX, screenY, Game.TILE_SIZE, Game.TILE_SIZE, null);
-                    } else {
-                        g2.drawImage(levelSprites[tileNum], screenX, screenY, null);
+                if (IsTileVisible(screenX, screenY, tileWidth)) {
+                    if (screenX > Game.GAME_WIDTH + tileWidth || screenY > Game.GAME_HEIGHT + tileHeight) {
+                        break;
                     }
-                    g2.drawImage(levelSprites[tileNum2], screenX, screenY, null);
 
-
+                    if (tileNum == 41) {
+                        g2.drawImage(waterfallSprite[waterfallAniIndex], screenX, screenY, tileWidth, tileHeight, null);
+                    } else {
+                        g2.drawImage(sprites[tileNum], screenX, screenY, null);
+                    }
+                    g2.drawImage(sprites[tileNum2], screenX, screenY, null);
                 }
             }
         }
     }
 
-    private static boolean IsTileVisible(int screenX, int screenY, int screenWidth, int screenHeight, int tileSize) {
+    private static boolean IsTileVisible(int screenX, int screenY, int tileSize) {
         return screenX > -tileSize &&
-                screenX < screenWidth &&
-                screenY > -tileSize &&
-                screenY < screenHeight;
+                screenY > -tileSize;
     }
 
     public void update() {
