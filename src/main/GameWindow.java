@@ -19,7 +19,7 @@ public class GameWindow {
         ImageIcon icon = new ImageIcon("src/res/boomstick.png");
         jframe.setIconImage(icon.getImage());
 
-        jframe.setResizable(false);
+        jframe.setResizable(true);
         jframe.pack();
         jframe.setLocationRelativeTo(null);
         jframe.setVisible(true);
