@@ -74,13 +74,13 @@ public class Projectile {
 
     public void update(int[][] collisionTile, Playing playing) {
         current_tick++;
-        if (aniTick >= 6) {
-            aniTick = 0;
-            aniIndex++;
-            if (aniIndex >= 3) {
-                aniIndex = 0;
-            }
-        }
+//        if (aniTick >= 6) {
+//            aniTick = 0;
+//            aniIndex++;
+//            if (aniIndex >= 1) {
+//                aniIndex = 0;
+//            }
+//        }
         updatePos();
     }
 
