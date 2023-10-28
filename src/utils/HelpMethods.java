@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Random;
 
 public class HelpMethods {
 
@@ -110,5 +111,14 @@ public class HelpMethods {
         }
 
         return null;
+    }
+
+    public static int RandomDirection() {
+        Random random = new Random();
+        return random.nextBoolean() ? 1 : -1;
+    }
+
+    public static int RandomNumber(int lowerBound, int upperBound) {
+        return new Random().nextInt(upperBound + 1 - lowerBound) + lowerBound;
     }
 }

@@ -104,6 +104,13 @@ public abstract class Entity implements Drawable {
         hitbox.y += (int) velocity;
     }
 
+    protected void teleport(int x, int y) {
+        worldX = x;
+        hitbox.x = x;
+        worldY = y;
+        hitbox.y = y;
+    }
+
     public void takeDamage(int damage) {
         currentHealth -= damage;
     }
@@ -152,8 +159,7 @@ public abstract class Entity implements Drawable {
     }
 
     public void drawHitbox(Graphics2D g2, int xOffset, int yOffset) {
-        // For debugging the hitbox
-        g2.setColor(Color.PINK);
+        g2.setColor(Color.RED);
         g2.drawRect((int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height);
 
     }

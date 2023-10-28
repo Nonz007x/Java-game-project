@@ -38,6 +38,7 @@ public class MonPiramid extends Enemy {
     @Override
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
         chase(playing.getPlayer(), DEFAULT_SPEED);
+        checkMove(collisionTile);
         updateXPos(velocityX);
         updateYPos(velocityY);
     }

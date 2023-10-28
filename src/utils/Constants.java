@@ -18,6 +18,10 @@ public class Constants {
     }
 
     public static class BossConstants {
+        public static final int ULTRA_GRAND_PRIX_HEALTH = 1069;
+        public static final int ULTRA_GRAND_PRIX_WIDTH_DEFAULT = 96;
+        public static final int ULTRA_GRAND_PRIX_HEIGHT_DEFAULT = 96;
+
         public static final int CRABULON_HEALTH = 100;
         public static final int CRABULON_WIDTH_DEFAULT = 316;
         public static final int CRABULON_HEIGHT_DEFAULT = 196;

@@ -32,11 +32,6 @@ public class Crabulon extends Boss {
     }
 
     @Override
-    public void update(int[][] collisionTile, Playing playing) {
-        updateBehavior(collisionTile, playing);
-    }
-
-    @Override
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
         if (checkPlayerHit(hitbox, playing.getPlayer())) {
             playing.getPlayer().takeDamage(20);
@@ -66,17 +61,11 @@ public class Crabulon extends Boss {
 
         if (counter == 119) {
 
+            for (int i = 0; i < 360; i += 10) {
+                double angleInRadians = Math.toRadians(i);
 
-        for (int i = 0; i < 360; i += 10) {
-            double angleInRadians = Math.toRadians(i);
-
-            shootBouncyBullet(new double[] { Math.cos(angleInRadians), Math.sin(angleInRadians)});
-        }
-            shootProjectile(new LaserBeam(getHitboxCenterX(),
-                    getHitboxCenterY(),
-                    tempPlayerPos.x,
-                    tempPlayerPos.y,
-                    40));
+                shootBouncyBullet(new double[]{Math.cos(angleInRadians), Math.sin(angleInRadians)});
+            }
         }
 
         if (counter == 120 || counter == 126 || counter == 132) {

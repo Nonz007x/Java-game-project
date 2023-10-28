@@ -116,8 +116,8 @@ public class Player extends Entity {
     }
 
     public void teleport() {
-        worldX += mouseLocation.x - playerScreenPosX;
-        worldY += mouseLocation.y - playerScreenPosY;
+        worldX = worldX + mouseLocation.x - playerScreenPosX;
+        worldY = worldY + mouseLocation.y - playerScreenPosY;
         hitbox.x += mouseLocation.x - playerScreenPosX;
         hitbox.y += mouseLocation.y - playerScreenPosY;
     }

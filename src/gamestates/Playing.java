@@ -84,8 +84,6 @@ public class Playing extends State implements Statemethods {
         }
         projectileManager.draw(g2, xOffset, yOffset);
         if (paused) {
-            g2.setColor(new Color(0, 0, 0, 150));
-            g2.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             pauseOverlay.draw(g);
         }
     }
@@ -102,11 +100,15 @@ public class Playing extends State implements Statemethods {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!paused) {
-            if (e.getButton() == MouseEvent.BUTTON1) {
-//                player.teleport();
-                player.calculateRad();
-                player.dodge();
-                player.shoot();
+            switch (e.getButton()) {
+                case MouseEvent.BUTTON1 -> {
+                    player.calculateRad();
+                    player.dodge();
+                    player.shoot();
+                }
+                case MouseEvent.BUTTON3 -> {
+                 player.teleport();
+                }
             }
         }
     }

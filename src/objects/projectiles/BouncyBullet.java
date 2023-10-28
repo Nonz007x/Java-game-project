@@ -12,10 +12,10 @@ import static utils.Constants.Projectile.DEFAULT_TICKS_TO_LIVE;
 
 public class BouncyBullet extends EnemyProjectile {
     private int bounceCount = 0;
-    private static BufferedImage[] BOUNCY_BULLET;
+    private static final BufferedImage[] BOUNCY_BULLET;
 
     static {
-        BOUNCY_BULLET = LoadSave.GetImagesFromSpriteSheet("enemy_bullet.png", 10, 10, 1);
+        BOUNCY_BULLET = LoadSave.GetImagesFromSpriteSheet("enemy_bullet.png", 10, 10, 1, false);
     }
 
     public BouncyBullet(int x, int y, int speed, double directionX, double directionY, int damage) {

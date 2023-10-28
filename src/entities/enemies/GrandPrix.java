@@ -8,6 +8,8 @@ import utils.LoadSave;
 import java.awt.image.BufferedImage;
 
 import static utils.Constants.EnemyConstants.*;
+import static utils.HelpMethods.RandomDirection;
+import static utils.HelpMethods.RandomNumber;
 
 public class GrandPrix extends Enemy {
 
@@ -16,10 +18,14 @@ public class GrandPrix extends Enemy {
     private static final int DEFAULT_HEIGHT = GRANDPRIX_HEIGHT_DEFAULT;
     private static final int DEFAULT_SPEED = 3;
     private static final int DEFAULT_DETECTION_RANGE = 3;
+    private static final int CHARGE_TICK = 90;
+    private static final int CHARGE_COOLDOWN = 35;
+    private int currentChargeTick = 0;
 
     static {
         grandPrixImages = loadImages(LoadSave.GetSprite(LoadSave.GRANDPRIX), 3, 3, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
+
     // TODO Object pooling
     public GrandPrix(int x, int y) {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, 35);
@@ -31,54 +37,23 @@ public class GrandPrix extends Enemy {
     }
 
     @Override
-    public void update(int[][] collisionTile, Playing playing) {
-        updateAnimationTick();
-        updateBehavior(collisionTile, playing);
-    }
-
-    @Override
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
 
-        int playerX = playing.getPlayer().getX();
-        int playerY = playing.getPlayer().getY();
-
-        checkCollision(collisionTile);
-
-        if (isPlayerInRange(playing.getPlayer())) {
-            int deltaX = playerX - worldX;
-            int deltaY = playerY - worldY;
-
-            double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-            if (distance > 0) {
-                double directionX = deltaX / distance;
-                double directionY = deltaY / distance;
-
-                velocityX = (int) (speed * directionX);
-                velocityY = (int) (speed * directionY);
-
-                if (velocityX > 0 && collisionRight) {
-                    velocityX = 0;
-                } else if (velocityX < 0 && collisionLeft) {
-                    velocityX = 0;
-                }
-
-                if (velocityY < 0 && collisionUp) {
-                    velocityY = 0;
-                } else if (velocityY > 0 && collisionDown) {
-                    velocityY = 0;
-                }
-
-                updateXPos(velocityX);
-                updateYPos(velocityY);
-            } else {
-                velocityX = 0;
-                velocityY = 0;
-            }
-        } else {
-            state = 1;
-            aniIndex = 0;
+        currentChargeTick++;
+        if (currentChargeTick == 0) {
+            chase(playing.getPlayer(), 5 * DEFAULT_SPEED);
         }
+        else if (currentChargeTick >= CHARGE_TICK) {
+            velocityX = 0;
+            velocityY = 0;
+            int x = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitboxCenterX();
+            int y = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitboxCenterY();;
+            currentChargeTick = -CHARGE_COOLDOWN;
+            teleport(x, y);
+        }
+        checkMove(collisionTile);
+        updateXPos(velocityX);
+        updateYPos(velocityY);
 
         if (velocityX == 0 && velocityY == 0) {
             return;

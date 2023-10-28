@@ -3,6 +3,7 @@ package objects;
 import Level.LevelManager;
 import entities.Enemy;
 import gamestates.Playing;
+import utils.HelpMethods;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -16,10 +17,13 @@ public abstract class PlayerProjectile extends Projectile {
     public void update(int[][] collisionTile, Playing playing) {
         super.update(collisionTile, playing);
         ArrayList<Enemy> enemies = playing.getEnemiesAndBosses();
+        if (HelpMethods.IsProjectileHittingLevel(this, collisionTile)) {
+            setActive(false);
+        }
         for (Enemy e : enemies) {
             if (checkEnemyHit(hitbox, e) && e.isActive()) {
                 e.takeDamage(damage);
-                e.knockback(directionX, directionY, 40, LevelManager.GetCurrentLevel().getCollisionTile());
+                e.knockback(directionX, directionY, 4, LevelManager.GetCurrentLevel().getCollisionTile());
                 setActive(false);
             }
         }

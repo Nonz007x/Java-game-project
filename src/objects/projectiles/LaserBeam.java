@@ -9,19 +9,18 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
-import static utils.Constants.Projectile.DEFAULT_TICKS_TO_LIVE;
-
 public class LaserBeam extends EnemyProjectile {
-    private static final BufferedImage LASER;
+    private static final BufferedImage[] LASER;
     private int endPointX, endPointY;
     private int startPointX, startPointY;
 
     static {
-        LASER = LoadSave.GetSprite("laser.png");
+//        LASER = LoadSave.GetSprite("laser.png");
+        LASER = LoadSave.GetImagesFromSpriteSheet("Laser_sheet.png", 300, 100,  15, true);
     }
 
     public LaserBeam(int startPointX, int startPointY, int endPointX, int endPointY, int damage) {
-        super(startPointX, startPointY, 0, 0, 0, damage, 60);
+        super(startPointX, startPointY, 0, 0, 0, damage, 120);
         this.startPointX = startPointX;
         this.startPointY = startPointY;
         this.endPointX = endPointX;
@@ -34,6 +33,7 @@ public class LaserBeam extends EnemyProjectile {
         if (!active)
             return;
         current_tick++;
+
         int deltaX = endPointX - startPointX;
         int deltaY = endPointY - startPointY;
 
@@ -53,6 +53,7 @@ public class LaserBeam extends EnemyProjectile {
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (!active)
             return;
+        updateAnitick(16, 14);
         int deltaX = endPointX - startPointX;
         int deltaY = endPointY - startPointY;
 
@@ -66,11 +67,22 @@ public class LaserBeam extends EnemyProjectile {
         AffineTransform transform = new AffineTransform();
         transform.translate(startPointX + xOffset, startPointY + yOffset);
         transform.rotate(angle);
-        transform.translate(0, -8);
+        transform.translate(-166.5*2, -120*2);
 
         g2.setTransform(transform);
-        g2.drawImage(LASER, 0, 0, (int) Math.abs(scaledDeltaX), 16, null);
+        g2.drawImage(LASER[aniIndex], 0, 0, 1000*2, 333*2, null);
 
         g2.setTransform(new AffineTransform());
+    }
+
+    protected void updateAnitick(int cooldown, int maxSprite) {
+        aniTick++;
+        if (aniTick >= cooldown) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= maxSprite) {
+                setActive(false);
+            }
+        }
     }
 }

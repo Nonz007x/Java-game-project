@@ -41,6 +41,8 @@ public class PauseOverlay {
     }
 
     public void draw(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 150));
+        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
         g.setColor(Color.WHITE);
         g.drawString("Pause", 1, 25);
         g.drawString("Resume", 1, 100);

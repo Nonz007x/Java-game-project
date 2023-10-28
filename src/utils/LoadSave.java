@@ -20,15 +20,15 @@ public class LoadSave {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 return reader.lines()
                         .filter(fileName -> Pattern.matches("level_\\d\\.json$", fileName))
-                        .peek(fileName  -> System.out.println("Found file: " + fileName))
+                        .peek(fileName -> System.out.println("Found file: " + fileName))
                         .map(fileName -> "/maps/" + fileName)
                         .toArray(String[]::new);
-//                return new String[]{"/maps/level_1.json", "/maps/level_2.json", "/maps/level_3.json"};
+//                return new String[]{"/maps/level_1.json", "/maps/level_3.json"};
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            System.err.println("The specified directory "  + directoryPath + " does not exist.");
+            System.err.println("The specified directory " + directoryPath + " does not exist.");
         }
 
         return new String[0];
@@ -63,7 +63,7 @@ public class LoadSave {
     }
 
     public static BufferedImage[][] GetImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int row, int col) {
-        BufferedImage sheet = LoadSave.GetSprite(CRABULON);
+        BufferedImage sheet = LoadSave.GetSprite(fileName);
 
         BufferedImage[][] sprites = new BufferedImage[row][col];
 
@@ -74,13 +74,17 @@ public class LoadSave {
         return sprites;
     }
 
-    public static BufferedImage[] GetImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int size) {
+    public static BufferedImage[] GetImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int size, boolean isColumn) {
         BufferedImage sheet = LoadSave.GetSprite(fileName);
 
         BufferedImage[] sprites = new BufferedImage[size];
-
-        for (int i = 0; i < size; i++)
-            sprites[i] = sheet.getSubimage(i * spriteWidth, spriteHeight, spriteWidth, spriteHeight);
+        if (isColumn) {
+            for (int i = 0; i < size; i++)
+                sprites[i] = sheet.getSubimage(0, i * spriteHeight, spriteWidth, spriteHeight);
+        } else {
+            for (int i = 0; i < size; i++)
+                sprites[i] = sheet.getSubimage(i * spriteWidth, 0, spriteWidth, spriteHeight);
+        }
         return sprites;
     }
 }

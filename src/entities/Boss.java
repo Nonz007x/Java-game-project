@@ -11,22 +11,21 @@ public abstract class Boss extends Enemy {
         super(x, y, width, height, health);
     }
 
-    public void update(int[][] collisionTile, Playing playing) {
-    }
-
-    protected void aimAtPlayer(Playing playing) {
+    protected void shootAtPlayer(Playing playing, int speed, int damage) {
+        int startX = getHitboxCenterX();
+        int startY = getHitboxCenterY();
         int playerX = playing.getPlayer().getHitboxCenterX();
         int playerY = playing.getPlayer().getHitboxCenterY();
 
-        int deltaX = playerX - 1;
-        int deltaY = playerY - 1;
+        int deltaX = playerX - startX;
+        int deltaY = playerY - startY;
 
         double distance = Math.max(0.000000001, Math.sqrt(deltaX * deltaX + deltaY * deltaY));
 
         double directionX = deltaX / distance;
         double directionY = deltaY / distance;
 
-        shootProjectile(new BouncyBullet(1, 1, 10, directionX, directionY, 15));
+        shootProjectile(new BouncyBullet(startX, startY, speed, directionX, directionY, damage));
     }
 
     protected double[] aimAtPos(int startX, int startY, int targetX, int targetY) {;

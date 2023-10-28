@@ -17,8 +17,8 @@ public class Game implements Runnable {
     public static final int TILES_DEFAULT_SIZE = 16;
     public static final int SCALE = 3;
     public static final int TILE_SIZE = TILES_DEFAULT_SIZE * SCALE; // 48x48
-    public static final int COLUMN = 40;
-    public static final int ROW = 22;
+    public static final int COLUMN = 32;
+    public static final int ROW = 18;
     public static final int GAME_WIDTH = TILE_SIZE * COLUMN; // 768
     public static final int GAME_HEIGHT = TILE_SIZE * ROW; // 576
 

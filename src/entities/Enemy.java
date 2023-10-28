@@ -124,12 +124,19 @@ public abstract class Enemy extends Entity {
 
     protected void checkMove(int[][] collisionTile) {
         checkCollision(collisionTile);
-
-        if ((velocityX > 0 && collisionRight) || (velocityX < 0 && collisionLeft)) {
+//        if (collisionDown || collisionLeft || collisionRight || collisionUp) {
+//            velocityX = 0;
+//            velocityY = 0;
+//        }
+        if (velocityX > 0 && collisionRight) {
+            velocityX = 0;
+        } else if (velocityX < 0 && collisionLeft) {
             velocityX = 0;
         }
 
-        if ((velocityY < 0 && collisionUp) || (velocityY > 0 && collisionDown)) {
+        if (velocityY < 0 && collisionUp) {
+            velocityY = 0;
+        } else if (velocityY > 0 && collisionDown) {
             velocityY = 0;
         }
     }
@@ -147,6 +154,7 @@ public abstract class Enemy extends Entity {
     }
 
     protected abstract void updateBehavior(int [][]collisionTile, Playing playing);
+
     public boolean isActive() {
         return active;
     }
