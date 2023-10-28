@@ -1,8 +1,7 @@
 package entities;
 
 import gamestates.Playing;
-import objects.projectiles.BouncyBullet;
-
+import objects.projectiles.BasicBullet;
 
 public abstract class Boss extends Enemy {
     protected int counter = 0;
@@ -25,7 +24,7 @@ public abstract class Boss extends Enemy {
         double directionX = deltaX / distance;
         double directionY = deltaY / distance;
 
-        shootProjectile(new BouncyBullet(startX, startY, speed, directionX, directionY, damage));
+        shootProjectile(new BasicBullet(startX, startY, speed, directionX, directionY, damage));
     }
 
     protected double[] aimAtPos(int startX, int startY, int targetX, int targetY) {;

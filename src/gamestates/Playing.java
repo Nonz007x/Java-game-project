@@ -8,6 +8,7 @@ import entities.EnemyManager;
 import main.Game;
 import objects.ObjectManager;
 import objects.ProjectileManager;
+import ui.Hud;
 import ui.PauseOverlay;
 import utils.Drawable;
 
@@ -28,6 +29,7 @@ public class Playing extends State implements Statemethods {
     private static ObjectManager objectManager;
     private static BossManager bossManager;
     private static ProjectileManager projectileManager;
+    private static Hud hud;
 
     private int xOffset, yOffset;
 
@@ -47,7 +49,8 @@ public class Playing extends State implements Statemethods {
         projectileManager = new ProjectileManager(this);
         objectManager = new ObjectManager(this);
         pauseOverlay = new PauseOverlay(this);
-        player = new Player( this);
+        player = new Player(this);
+        hud = new Hud(this);
         player.loadLvlData(LevelManager.GetCurrentLevel().getCollisionTile());
     }
 
@@ -83,6 +86,7 @@ public class Playing extends State implements Statemethods {
             drawable.draw(g2, xOffset, yOffset);
         }
         projectileManager.draw(g2, xOffset, yOffset);
+        hud.draw(g2);
         if (paused) {
             pauseOverlay.draw(g);
         }
@@ -106,9 +110,7 @@ public class Playing extends State implements Statemethods {
                     player.dodge();
                     player.shoot();
                 }
-                case MouseEvent.BUTTON3 -> {
-                 player.teleport();
-                }
+                case MouseEvent.BUTTON3 -> player.shootSingleBullet();
             }
         }
     }
@@ -167,8 +169,8 @@ public class Playing extends State implements Statemethods {
         }
 
         if (code == KeyEvent.VK_SPACE) {
-                player.calculateRad();
-                player.dodge();
+            player.calculateRad();
+            player.dodge();
         }
 
         if (code == KeyEvent.VK_ESCAPE) {
@@ -177,6 +179,10 @@ public class Playing extends State implements Statemethods {
 
         if (code == KeyEvent.VK_R) {
             resetAll();
+        }
+
+        if (code == KeyEvent.VK_Q) {
+            player.drinkPotion();
         }
     }
 
@@ -202,10 +208,11 @@ public class Playing extends State implements Statemethods {
         paused = false;
         player.resetPlayer();
         projectileManager.reset();
-        for (Enemy enemy: getEnemiesAndBosses()) {
-                enemy.resetEnemy();
+        for (Enemy enemy : getEnemiesAndBosses()) {
+            enemy.resetEnemy();
         }
     }
+
     public Player getPlayer() {
         return player;
     }
@@ -215,6 +222,10 @@ public class Playing extends State implements Statemethods {
         enemies.addAll(enemyManager.getEnemies());
         enemies.addAll(bossManager.getBosses());
         return enemies;
+    }
+
+    public BossManager getBossManager() {
+        return bossManager;
     }
 
     public void unpauseGame() {

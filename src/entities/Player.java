@@ -41,6 +41,8 @@ public class Player extends Entity {
     private final int screenY = Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
     private Point mouseLocation = new Point(0, 0);
 
+    private int potion = 10;
+
     public Player(Playing playing) {
         super(96, 96, 48, 48, 100);
         this.playing = playing;
@@ -196,11 +198,31 @@ public class Player extends Entity {
 
     }
 
+    public void drinkPotion() {
+        if (currentHealth == maxHealth)
+            return;
+        potion = Math.max(0, potion - 1);
+        currentHealth = Math.min(currentHealth + 40, 100);
+    }
+
     public void shoot() {
         if (shooting)
             return;
         shooting = true;
         shootShotgun();
+    }
+
+    public void shootSingleBullet() {
+        if (shooting)
+            return;
+        shooting = true;
+        float centerX = hitbox.x + hitbox.width / 2;
+        float centerY = hitbox.y + hitbox.height / 2;
+        float directionX = (float) Math.cos(rotationAngleRad);
+        float directionY = (float) Math.sin(rotationAngleRad);
+        float projectileX = centerX + directionX * 10;
+        float projectileY = centerY + directionY * 10;
+        shootProjectile(new BuckShot((int) projectileX, (int) projectileY, directionX, directionY, 150));
     }
 
     private void shootShotgun() {
@@ -335,6 +357,10 @@ public class Player extends Entity {
         currentHealth = maxHealth;
         aniIndex = 0;
         aniTick = 0;
+    }
+
+    public int getPotionAmount() {
+        return potion;
     }
 
     public int getScreenX() {

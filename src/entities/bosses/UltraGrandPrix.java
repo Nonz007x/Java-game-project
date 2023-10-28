@@ -36,7 +36,9 @@ public class UltraGrandPrix extends Boss {
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
         flipX = velocityX >= 0 ? 0 : width;
         flipW = velocityX >= 0 ? 1 : -1;
-
+        if (checkPlayerHit(hitbox, playing.getPlayer())) {
+            playing.getPlayer().takeDamage(25);
+        }
         // Phase 1
         if (currentHealth > maxHealth * 0.3) {
             if (!found) {

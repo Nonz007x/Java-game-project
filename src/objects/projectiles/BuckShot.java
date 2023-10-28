@@ -20,4 +20,9 @@ public class BuckShot extends PlayerProjectile {
         hitbox = new Rectangle2D.Float(x, y, 16, 16);
         animations = BUCKSHOT_IMAGE;
     }
+    public BuckShot(int x, int y, double directionX, double directionY, int ttl) {
+        super(x, y, 20, directionX, directionY, BUCKSHOT_DAMAGE, ttl);
+        hitbox = new Rectangle2D.Float(x, y, 16, 16);
+        animations = BUCKSHOT_IMAGE;
+    }
 }

@@ -164,6 +164,17 @@ public abstract class Entity implements Drawable {
 
     }
 
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public float getHealthPercentage() {
+        return (float) currentHealth / maxHealth;
+    }
     public Rectangle2D getHitbox() {
         return hitbox;
     }
