@@ -34,21 +34,24 @@ public class Hud {
             int endY = GAME_HEIGHT - 75;
             int textX = GAME_WIDTH / 2 - 50;
             int textY = startY + 20;
-            g2.setColor(Color.BLACK);
-            g2.fillRect(startX - 5, startY - 5, GAME_WIDTH / 2 + 10, 35);
-            for (Boss boss : bosses) {
-                String text = boss.getCurrentHealth() + " / " + boss.getMaxHealth();
-                GradientPaint gradient = new GradientPaint(new Point(startX, startY),
-                        new Color(255, 0, 0),
-                        new Point(endX, endY),
-                        new Color(0, 255, 0),
-                        false);
-                g2.setPaint(gradient);
-                g2.fillRect(startX, startY, (int) (boss.getHealthPercentage() * (GAME_WIDTH / 2)), 25);
 
-                g2.setFont(new Font("Arial", Font.BOLD, 20));
-                g2.setColor(Color.WHITE);
-                g2.drawString(text, textX, textY);
+            for (Boss boss : bosses) {
+                if (boss.isActive()) {
+                    g2.setColor(Color.BLACK);
+                    g2.fillRect(startX - 5, startY - 5, GAME_WIDTH / 2 + 10, 35);
+                    String text = boss.getCurrentHealth() + " / " + boss.getMaxHealth();
+                    GradientPaint gradient = new GradientPaint(new Point(startX, startY),
+                            new Color(255, 0, 0),
+                            new Point(endX, endY),
+                            new Color(0, 255, 0),
+                            false);
+                    g2.setPaint(gradient);
+                    g2.fillRect(startX, startY, (int) (boss.getHealthPercentage() * (GAME_WIDTH / 2)), 25);
+
+                    g2.setFont(new Font("Arial", Font.BOLD, 20));
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(text, textX, textY);
+                }
             }
         }
     }
@@ -86,9 +89,15 @@ public class Hud {
         g2.drawString(String.valueOf(potionAmount), 70, 90);
     }
 
+    private void drawBulletAmount(Graphics2D g2) {
+        int bulletAmount = playing.getPlayer().getBulletAmount();
+        g2.drawString(String.valueOf(bulletAmount), playing.getPlayer().getPlayerScreenPosX() + 15,  playing.getPlayer().getPlayerScreenPosY() + 30);
+    }
+
     public void draw(Graphics2D g2) {
         drawBossHP(g2);
         drawPlayerHP(g2);
         drawPotionAmount(g2);
+        drawBulletAmount(g2);
     }
 }
