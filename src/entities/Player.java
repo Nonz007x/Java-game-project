@@ -31,7 +31,7 @@ public class Player extends Entity {
     private boolean left, right, up, down;
     private boolean dodgeActive;
     private int dodgeTick;
-    private int dodgeCooldown;
+    private int reloadCooldown;
 
     private boolean hit = false;
 
@@ -42,6 +42,7 @@ public class Player extends Entity {
     private Point mouseLocation = new Point(0, 0);
 
     private int potion = 10;
+    private int bullets = 2;
 
     public Player(Playing playing) {
         super(96, 96, 48, 48, 100);
@@ -172,8 +173,9 @@ public class Player extends Entity {
     }
 
     public void dodge() {
-        if (!dodgeActive && dodgeCooldown < 0)
+        if (bullets > 0) {
             dodgeActive = true;
+        }
     }
 
     private void updateDodge() {
@@ -181,11 +183,16 @@ public class Player extends Entity {
             dodgeTick++;
             if (dodgeTick >= 6) {
                 dodgeTick = 0;
-                dodgeCooldown = 30;
                 dodgeActive = false;
             }
         }
-        dodgeCooldown--;
+        if (bullets < 2) {
+            reloadCooldown--;
+        }
+        if (reloadCooldown <= 0) {
+            reloadCooldown = 60;
+            bullets = Math.min(bullets + 1, 2);
+        }
     }
 
     @Override
@@ -206,10 +213,12 @@ public class Player extends Entity {
     }
 
     public void shoot() {
-        if (shooting)
-            return;
-        shooting = true;
-        shootShotgun();
+        if (bullets > 0) {
+            System.out.println("shoot");
+            bullets--;
+            shooting = true;
+            shootShotgun();
+        }
     }
 
     public void shootSingleBullet() {
@@ -361,6 +370,10 @@ public class Player extends Entity {
 
     public int getPotionAmount() {
         return potion;
+    }
+
+    public int getBulletAmount() {
+        return bullets;
     }
 
     public int getScreenX() {
