@@ -22,8 +22,8 @@ public abstract class Enemy extends Entity {
     }
 
     protected boolean isPlayerInRange(Player player) {
-        int xRange = (int) Math.abs(player.getHitboxX() - hitbox.x);
-        int yRange = (int) Math.abs(player.getHitboxY() - hitbox.y);
+        int xRange = (int) Math.abs(player.getHitBoxX() - hitBox.x);
+        int yRange = (int) Math.abs(player.getHitBoxY() - hitBox.y);
         int range = detectionRange * Game.TILE_SIZE;
         return xRange <= range && yRange <= range;
     }
@@ -69,8 +69,8 @@ public abstract class Enemy extends Entity {
         }
     }
 
-    protected boolean checkPlayerHit(Rectangle2D hitbox, Player player) {
-        return hitbox.intersects(player.getHitbox());
+    protected boolean checkPlayerHit(Rectangle2D hitBox, Player player) {
+        return hitBox.intersects(player.getHitBox());
     }
 
     protected boolean checkPlayerHit(Line2D.Float line, Player player) {
@@ -97,15 +97,15 @@ public abstract class Enemy extends Entity {
                 (int) (line.getY1() - yOffset)
         };
 
-        return new Polygon(xPoints, yPoints, 4).intersects(player.getHitbox());
+        return new Polygon(xPoints, yPoints, 4).intersects(player.getHitBox());
     }
 
     protected void chase(Player player, int speed) {
-        int playerX = player.getHitboxCenterX();
-        int playerY = player.getHitboxCenterY();
+        int playerX = player.getHitBoxCenterX();
+        int playerY = player.getHitBoxCenterY();
 
-        int deltaX = playerX - getHitboxCenterX();
-        int deltaY = playerY - getHitboxCenterY();
+        int deltaX = playerX - getHitBoxCenterX();
+        int deltaY = playerY - getHitBoxCenterY();
 
         double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
@@ -143,7 +143,7 @@ public abstract class Enemy extends Entity {
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {
-            drawHitbox(g2, xOffset, yOffset);
+            drawHitBox(g2, xOffset, yOffset);
             g2.drawImage(animations[state][aniIndex], worldX + xOffset + getflipX(), worldY + yOffset, width * getflipW(), height, null);
         }
     }
@@ -167,8 +167,8 @@ public abstract class Enemy extends Entity {
         active = true;
         worldX = initialWorldX;
         worldY = initialWorldY;
-        hitbox.x = worldX + hitboxOffsetX;
-        hitbox.y = worldY + hitboxOffsetY;
+        hitBox.x = worldX + hitBoxOffsetX;
+        hitBox.y = worldY + hitBoxOffsetY;
         currentHealth = maxHealth;
         velocityX = 0;
         velocityY = 0;

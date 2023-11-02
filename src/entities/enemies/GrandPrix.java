@@ -31,7 +31,7 @@ public class GrandPrix extends Enemy {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, 35);
 
         animations = grandPrixImages;
-        initHitbox(5, 10, DEFAULT_WIDTH - 5, DEFAULT_HEIGHT - 10);
+        initHitBox(5, 10, DEFAULT_WIDTH - 5, DEFAULT_HEIGHT - 10);
         setSpeed(DEFAULT_SPEED);
         setDetectionRange(DEFAULT_DETECTION_RANGE);
     }
@@ -46,8 +46,8 @@ public class GrandPrix extends Enemy {
         else if (currentChargeTick >= CHARGE_TICK) {
             velocityX = 0;
             velocityY = 0;
-            int x = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitboxCenterX();
-            int y = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitboxCenterY();;
+            int x = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitBoxCenterX();
+            int y = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitBoxCenterY();;
             currentChargeTick = -CHARGE_COOLDOWN;
             teleport(x, y);
         }

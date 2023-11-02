@@ -1,6 +1,6 @@
 package objects;
 
-import Level.LevelManager;
+import level.LevelManager;
 import entities.Enemy;
 import gamestates.Playing;
 import utils.HelpMethods;
@@ -21,16 +21,16 @@ public abstract class PlayerProjectile extends Projectile {
             setActive(false);
         }
         for (Enemy e : enemies) {
-            if (checkEnemyHit(hitbox, e) && e.isActive()) {
+            if (checkEnemyHit(hitBox, e) && e.isActive()) {
                 e.takeDamage(damage);
-                e.knockback(directionX, directionY, 4, LevelManager.GetCurrentLevel().getCollisionTile());
+                e.knockBack(directionX, directionY, 4, LevelManager.GetCurrentLevel().getCollisionTile());
                 setActive(false);
             }
         }
 
     }
 
-    protected boolean checkEnemyHit(Rectangle2D hitbox, Enemy enemy) {
-        return hitbox.intersects(enemy.getHitbox());
+    protected boolean checkEnemyHit(Rectangle2D hitBox, Enemy enemy) {
+        return hitBox.intersects(enemy.getHitBox());
     }
 }

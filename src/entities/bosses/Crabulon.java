@@ -27,18 +27,18 @@ public class Crabulon extends Boss {
 
     public Crabulon(int x, int y) {
         super(x, y, CRABULON_WIDTH_DEFAULT, CRABULON_HEIGHT_DEFAULT, CRABULON_HEALTH);
-        initHitbox(32, 8, width - 64, height - 8);
+        initHitBox(32, 8, width - 64, height - 8);
         animations = CRABULON_IMAGES;
     }
 
     @Override
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
-        if (checkPlayerHit(hitbox, playing.getPlayer())) {
+        if (checkPlayerHit(hitBox, playing.getPlayer())) {
             playing.getPlayer().takeDamage(20);
         }
 
-        playerPos.x = playing.getPlayer().getHitboxCenterX();
-        playerPos.y = playing.getPlayer().getHitboxCenterY();
+        playerPos.x = playing.getPlayer().getHitBoxCenterX();
+        playerPos.y = playing.getPlayer().getHitBoxCenterY();
 
         checkMove(collisionTile);
         counter++;
@@ -71,11 +71,11 @@ public class Crabulon extends Boss {
         if (counter == 120 || counter == 126 || counter == 132) {
             int predictionX = (int) playing.getPlayer().getVelocityX() * 40;
             int predictionY = (int) playing.getPlayer().getVelocityY() * 40;
-            double[] directions = aimAtPos(getHitboxCenterX(), getHitboxCenterY(),
+            double[] directions = aimAtPos(getHitBoxCenterX(), getHitBoxCenterY(),
                     playerPos.x + predictionX,
                     playerPos.y + predictionY);
 
-            double[] directionsNoPrediction = aimAtPos(getHitboxCenterX(), getHitboxCenterY(),
+            double[] directionsNoPrediction = aimAtPos(getHitBoxCenterX(), getHitBoxCenterY(),
                     playerPos.x,
                     playerPos.y);
 
@@ -99,8 +99,8 @@ public class Crabulon extends Boss {
     }
 
     private void shootBouncyBullet(double[] directions) {
-        shootProjectile(new BouncyBullet(getHitboxCenterX(),
-                getHitboxCenterY(),
+        shootProjectile(new BouncyBullet(getHitBoxCenterX(),
+                getHitBoxCenterY(),
                 10,
                 directions[0],
                 directions[1],
@@ -125,7 +125,7 @@ public class Crabulon extends Boss {
         if (aiming) {
             int targetX = playerPos.x + xOffset;
             int targetY = playerPos.y + yOffset;
-            g2.drawLine(getHitboxCenterX() + xOffset, getHitboxCenterY() + yOffset, targetX, targetY);
+            g2.drawLine(getHitBoxCenterX() + xOffset, getHitBoxCenterY() + yOffset, targetX, targetY);
         }
     }
 }

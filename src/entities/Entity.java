@@ -28,8 +28,8 @@ public abstract class Entity implements Drawable {
     protected int aniTick, aniIndex;
     protected int state;
 
-    protected Rectangle2D.Float hitbox;
-    protected int hitboxOffsetX, hitboxOffsetY;
+    protected Rectangle2D.Float hitBox;
+    protected int hitBoxOffsetX, hitBoxOffsetY;
     protected boolean collisionUp;
     protected boolean collisionDown;
     protected boolean collisionLeft;
@@ -78,10 +78,10 @@ public abstract class Entity implements Drawable {
         this.worldY = y;
     }
 
-    protected final void initHitbox(float x, float y, float width, float height) {
-        hitbox = new Rectangle2D.Float(x + worldX, y + worldY, width, height);
-        hitboxOffsetX = (int) x;
-        hitboxOffsetY = (int) y;
+    protected final void initHitBox(float x, float y, float width, float height) {
+        hitBox = new Rectangle2D.Float(x + worldX, y + worldY, width, height);
+        hitBoxOffsetX = (int) x;
+        hitBoxOffsetY = (int) y;
     }
 
     public int getState() {
@@ -96,19 +96,19 @@ public abstract class Entity implements Drawable {
 
     protected void updateXPos(float velocity) {
         worldX += (int) velocity;
-        hitbox.x += (int) velocity;
+        hitBox.x += (int) velocity;
     }
 
     protected void updateYPos(float velocity) {
         worldY += (int) velocity;
-        hitbox.y += (int) velocity;
+        hitBox.y += (int) velocity;
     }
 
     protected void teleport(int x, int y) {
         worldX = x;
-        hitbox.x = x;
+        hitBox.x = x;
         worldY = y;
-        hitbox.y = y;
+        hitBox.y = y;
     }
 
     public void takeDamage(int damage) {
@@ -120,13 +120,13 @@ public abstract class Entity implements Drawable {
     }
 
     protected void checkCollision(int[][] collisionTile) {
-        collisionUp = CheckCollisionUp((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, collisionTile);
-        collisionDown = CheckCollisionDown((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, (int) hitbox.height, collisionTile);
-        collisionLeft = CheckCollisionLeft((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.height, collisionTile);
-        collisionRight = CheckCollisionRight((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height, collisionTile);
+        collisionUp = CheckCollisionUp((int) hitBox.x, (int) (hitBox.y + velocityY), (int) hitBox.width, collisionTile);
+        collisionDown = CheckCollisionDown((int) hitBox.x, (int) (hitBox.y + velocityY), (int) hitBox.width, (int) hitBox.height, collisionTile);
+        collisionLeft = CheckCollisionLeft((int) (hitBox.x + velocityX), (int) hitBox.y, (int) hitBox.height, collisionTile);
+        collisionRight = CheckCollisionRight((int) (hitBox.x + velocityX), (int) hitBox.y, (int) hitBox.width, (int) hitBox.height, collisionTile);
     }
 
-    public void knockback(double directionX, double directionY, int speed, int[][] collisionTile) {
+    public void knockBack(double directionX, double directionY, int speed, int[][] collisionTile) {
         float initialVelocityX = velocityX;
         float initialVelocityY = velocityY;
         velocityX = (float) (directionX * speed);
@@ -158,9 +158,9 @@ public abstract class Entity implements Drawable {
         return tempArr;
     }
 
-    public void drawHitbox(Graphics2D g2, int xOffset, int yOffset) {
+    public void drawHitBox(Graphics2D g2, int xOffset, int yOffset) {
         g2.setColor(Color.RED);
-        g2.drawRect((int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height);
+        g2.drawRect((int) hitBox.x + xOffset, (int) hitBox.y + yOffset, (int) hitBox.width, (int) hitBox.height);
 
     }
 
@@ -175,32 +175,32 @@ public abstract class Entity implements Drawable {
     public float getHealthPercentage() {
         return (float) currentHealth / maxHealth;
     }
-    public Rectangle2D getHitbox() {
-        return hitbox;
+    public Rectangle2D getHitBox() {
+        return hitBox;
     }
 
-    public int getHitboxCenterX() {
-        return (int) (hitbox.x + hitbox.width / 2);
+    public int getHitBoxCenterX() {
+        return (int) (hitBox.x + hitBox.width / 2);
     }
 
-    public int getHitboxCenterY() {
-        return (int) (hitbox.y + hitbox.height / 2);
+    public int getHitBoxCenterY() {
+        return (int) (hitBox.y + hitBox.height / 2);
     }
 
-    public float getHitboxX() {
-        return hitbox.x;
+    public float getHitBoxX() {
+        return hitBox.x;
     }
 
-    public float getHitboxY() {
-        return hitbox.y;
+    public float getHitBoxY() {
+        return hitBox.y;
     }
 
-    public float getHitboxWidth() {
-        return hitbox.width;
+    public float getHitBoxWidth() {
+        return hitBox.width;
     }
 
-    public float getHitboxHeight() {
-        return hitbox.height;
+    public float getHitBoxHeight() {
+        return hitBox.height;
     }
 
     public float getVelocityX() {

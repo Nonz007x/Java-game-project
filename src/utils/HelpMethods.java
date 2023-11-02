@@ -62,7 +62,7 @@ public class HelpMethods {
     }
 
     public static boolean IsProjectileHittingLevel(Projectile p, int[][] collisionTile) {
-        return IsSolid((int) (p.getHitbox().x + p.getHitbox().width / 2), (int) (p.getHitbox().y + p.getHitbox().height / 2), collisionTile);
+        return IsSolid((int) (p.getHitBox().x + p.getHitBox().width / 2), (int) (p.getHitBox().y + p.getHitBox().height / 2), collisionTile);
     }
 
     public static boolean CanMoveHere(int x, int y, int width, int height, int[][] collisionTile) {

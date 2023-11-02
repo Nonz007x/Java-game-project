@@ -21,7 +21,7 @@ public class MonPiramid extends Enemy {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, 1);
 
         animations = images;
-        initHitbox(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        initHitBox(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setSpeed(DEFAULT_SPEED);
         setDetectionRange(DEFAULT_DETECTION_RANGE);
     }
@@ -38,6 +38,9 @@ public class MonPiramid extends Enemy {
     @Override
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
         chase(playing.getPlayer(), DEFAULT_SPEED);
+        if (hitBox.intersects(playing.getPlayer().getHitBox())) {
+            playing.getPlayer().takeDamage(Integer.MAX_VALUE);
+        }
         checkMove(collisionTile);
         updateXPos(velocityX);
         updateYPos(velocityY);

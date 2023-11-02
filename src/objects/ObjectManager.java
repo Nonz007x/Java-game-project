@@ -1,12 +1,10 @@
 package objects;
 
-import entities.Player;
 import gamestates.Playing;
-import Level.LevelManager;
-import Level.Level;
+import level.LevelManager;
+import level.Level;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class ObjectManager {
     private Playing playing;

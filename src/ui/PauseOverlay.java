@@ -12,6 +12,7 @@ import static utils.Constants.Menu.MAX_CHOICE;
 public class PauseOverlay {
     private final Playing playing;
     private int selectedChoice = 0;
+    private final Color backgroundColor = new Color(0, 0, 0, 150);
 
     public PauseOverlay(Playing playing) {
         this.playing = playing;
@@ -26,8 +27,8 @@ public class PauseOverlay {
         }
     }
 
-    private void circleChoice(int amount) {
-        selectedChoice = selectedChoice + amount >= 0 ? (selectedChoice + amount) % MAX_CHOICE : MAX_CHOICE - 1;
+    private void circleChoice(int step) {
+        selectedChoice = selectedChoice + step >= 0 ? (selectedChoice + step) % 4 : 3;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -41,7 +42,7 @@ public class PauseOverlay {
     }
 
     public void draw(Graphics g) {
-        g.setColor(new Color(0, 0, 0, 150));
+        g.setColor(backgroundColor);
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
         g.setColor(Color.WHITE);
         g.drawString("Pause", 1, 25);

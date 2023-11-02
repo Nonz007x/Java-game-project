@@ -5,6 +5,7 @@ import main.Game;
 import objects.projectiles.BuckShot;
 import utils.LoadSave;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -29,9 +30,13 @@ public class Player extends Entity {
     private int playerScreenPosY;
     private boolean moving = false;
     private boolean left, right, up, down;
+    private boolean leftClicked, rightClicked;
     private boolean dodgeActive;
     private int dodgeTick;
     private int reloadCooldown;
+
+    private Timer shootDelay;
+    private boolean onShootDelay;
 
     private boolean hit = false;
 
@@ -50,13 +55,22 @@ public class Player extends Entity {
         this.speed = 4;
         this.state = IDLE;
 
-        initHitbox(15, 18, 20, 33);
+        initHitBox(15, 18, 20, 33);
         loadAnimations();
+        initializeTimer();
     }
 
     public void setSpawn() {
         this.worldX = 96;
         this.worldY = 96;
+    }
+
+    private void initializeTimer() {
+        shootDelay = new Timer(350 , e ->  {
+            onShootDelay = false;
+            shootDelay.restart();
+            shootDelay.stop();
+        });
     }
 
     public void setUp(boolean up) {
@@ -108,6 +122,19 @@ public class Player extends Entity {
     }
 
     private void updateMouseEvent() {
+
+        if (leftClicked && !onShootDelay) {
+            calculateRad();
+            dodge();
+            shoot();
+            shootDelay.start();
+            onShootDelay = true;
+        }
+
+        if (rightClicked) {
+            shootSingleBullet();
+        }
+
         final int halfTileSize = Game.TILE_SIZE / 2;
 
         flipW = (mouseLocation.x >= playerScreenPosX + halfTileSize) ? 1 : -1;
@@ -121,8 +148,8 @@ public class Player extends Entity {
     public void teleport() {
         worldX = worldX + mouseLocation.x - playerScreenPosX;
         worldY = worldY + mouseLocation.y - playerScreenPosY;
-        hitbox.x += mouseLocation.x - playerScreenPosX;
-        hitbox.y += mouseLocation.y - playerScreenPosY;
+        hitBox.x += mouseLocation.x - playerScreenPosX;
+        hitBox.y += mouseLocation.y - playerScreenPosY;
     }
 
     private void updatePos() {
@@ -138,7 +165,7 @@ public class Player extends Entity {
         if (right && !left && !collisionRight) velocityX = speed;
 
         if (dodgeActive) {
-            knockback(-Math.cos(tempRadian), -Math.sin(tempRadian), 15, lvlData);
+            knockBack(-Math.cos(tempRadian), -Math.sin(tempRadian), 15, lvlData);
 //            // velocity = direction * 15 (dodge speed)
 //            velocityY = (float) -(Math.sin(tempRadian) * 15);
 //            velocityX = (float) -(Math.cos(tempRadian) * 15);
@@ -166,10 +193,10 @@ public class Player extends Entity {
     }
 
     private void checkCollision() {
-        collisionUp = CheckCollisionUp((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, lvlData);
-        collisionDown = CheckCollisionDown((int) hitbox.x, (int) (hitbox.y + velocityY), (int) hitbox.width, (int) hitbox.height, lvlData);
-        collisionLeft = CheckCollisionLeft((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.height, lvlData);
-        collisionRight = CheckCollisionRight((int) (hitbox.x + velocityX), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height, lvlData);
+        collisionUp = CheckCollisionUp((int) hitBox.x, (int) (hitBox.y + velocityY), (int) hitBox.width, lvlData);
+        collisionDown = CheckCollisionDown((int) hitBox.x, (int) (hitBox.y + velocityY), (int) hitBox.width, (int) hitBox.height, lvlData);
+        collisionLeft = CheckCollisionLeft((int) (hitBox.x + velocityX), (int) hitBox.y, (int) hitBox.height, lvlData);
+        collisionRight = CheckCollisionRight((int) (hitBox.x + velocityX), (int) hitBox.y, (int) hitBox.width, (int) hitBox.height, lvlData);
     }
 
     public void dodge() {
@@ -214,7 +241,6 @@ public class Player extends Entity {
 
     public void shoot() {
         if (bullets > 0) {
-            System.out.println("shoot");
             bullets--;
             shooting = true;
             shootShotgun();
@@ -225,8 +251,8 @@ public class Player extends Entity {
         if (shooting)
             return;
         shooting = true;
-        float centerX = hitbox.x + hitbox.width / 2;
-        float centerY = hitbox.y + hitbox.height / 2;
+        float centerX = hitBox.x + hitBox.width / 2;
+        float centerY = hitBox.y + hitBox.height / 2;
         float directionX = (float) Math.cos(rotationAngleRad);
         float directionY = (float) Math.sin(rotationAngleRad);
         float projectileX = centerX + directionX * 10;
@@ -237,8 +263,8 @@ public class Player extends Entity {
     private void shootShotgun() {
         Random random = new Random();
 
-        float centerX = hitbox.x + hitbox.width / 2;
-        float centerY = hitbox.y + hitbox.height / 2;
+        float centerX = hitBox.x + hitBox.width / 2;
+        float centerY = hitBox.y + hitBox.height / 2;
 
         for (int i = 0; i < 4; i++) {
             int randomNum = random.nextInt(61) - 30;
@@ -334,13 +360,13 @@ public class Player extends Entity {
 
         g2.setColor(Color.RED);
         g2.fillRect(mouseLocation.x, mouseLocation.y, 4, 4);
-        drawHitbox(g2);
+        drawHitBox(g2);
 
     }
 
-    public void drawHitbox(Graphics2D g) {
+    public void drawHitBox(Graphics2D g) {
         g.setColor(Color.RED);
-        g.drawRect(playerScreenPosX + 15, playerScreenPosY + 18, (int) hitbox.width, (int) hitbox.height);
+        g.drawRect(playerScreenPosX + 15, playerScreenPosY + 18, (int) hitBox.width, (int) hitBox.height);
     }
 
     private void drawWeapon(Graphics2D g2) {
@@ -358,11 +384,19 @@ public class Player extends Entity {
 
     }
 
+    public void setLeftClicked(boolean clicked) {
+        leftClicked = clicked;
+    }
+
+    public void setRightClicked(boolean clicked) {
+       rightClicked = clicked;
+    }
+
     public void resetPlayer() {
         worldX = initialWorldX;
         worldY = initialWorldY;
-        hitbox.x = worldX + hitboxOffsetX;
-        hitbox.y = worldY + hitboxOffsetY;
+        hitBox.x = worldX + hitBoxOffsetX;
+        hitBox.y = worldY + hitBoxOffsetY;
         currentHealth = maxHealth;
         aniIndex = 0;
         aniTick = 0;

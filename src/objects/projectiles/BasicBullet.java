@@ -20,7 +20,7 @@ public class BasicBullet extends EnemyProjectile {
 
     public BasicBullet(int x, int y, int speed, double directionX, double directionY, int damage) {
         super(x, y, speed, directionX, directionY, damage, DEFAULT_TICKS_TO_LIVE);
-        hitbox = new Rectangle2D.Float(x, y , 16, 16);
+        hitBox = new Rectangle2D.Float(x, y , 16, 16);
         animations = BASIC_BULLET;
     }
 
@@ -30,7 +30,7 @@ public class BasicBullet extends EnemyProjectile {
         if (HelpMethods.IsProjectileHittingLevel(this, collisionTile)) {
             setActive(false);
         }
-        if (checkPlayerHit(hitbox, playing.getPlayer())) {
+        if (checkPlayerHit(hitBox, playing.getPlayer())) {
             playing.getPlayer().takeDamage(damage);
             setActive(false);
         }

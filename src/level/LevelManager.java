@@ -1,4 +1,4 @@
-package Level;
+package level;
 
 import main.Game;
 import utils.LoadSave;
@@ -71,52 +71,31 @@ public class LevelManager {
     public void draw(Graphics2D g2, int playerX, int playerY, int screenPosX, int screenPosY) {
         int tileWidth = Game.TILE_SIZE;
         int tileHeight = Game.TILE_SIZE;
-        int worldWidth = levels.get(lvlIndex).getWorldCol() * tileWidth;
-        int worldHeight = levels.get(lvlIndex).getWorldRow() * tileHeight;
         Level currentLevel = GetCurrentLevel();
         BufferedImage[] sprites = levelSprites;
 
-        int endRow = currentLevel.getWorldRow();
-        int endCol = currentLevel.getWorldCol();
+        int startRow = Math.max(0, (playerY / tileHeight) - Game.ROW);
+        int startCol = Math.max(0, (playerX / tileWidth) - Game.COLUMN);
+        int endRow = Math.min(currentLevel.getWorldRow(), (playerY / tileHeight) + Game.ROW);
+        int endCol = Math.min(currentLevel.getWorldCol(), (playerX / tileWidth)  + Game.COLUMN);
 
-        for (int worldRow = 0; worldRow < endRow; worldRow++) {
-            int tileY = worldRow * tileHeight;
-            int screenY = tileY - playerY + screenPosY;
-
-            for (int worldCol = 0; worldCol < endCol; worldCol++) {
+        for (int worldRow = startRow; worldRow < endRow; worldRow++) {
+            for (int worldCol = startCol; worldCol < endCol; worldCol++) {
                 int tileNum = currentLevel.getSpriteIndex(0, worldCol, worldRow);
                 int tileNum2 = currentLevel.getSpriteIndex(1, worldCol, worldRow);
-                int tileX = worldCol * tileWidth;
-                int screenX = tileX - playerX + screenPosX;
+                int tileX = worldCol * tileWidth - playerX + screenPosX;
+                int tileY = worldRow * tileHeight - playerY + screenPosY;
 
-                if (screenPosX > playerX)
-                    screenX = tileX;
-
-                if (screenPosY > playerY)
-                    screenY = tileY;
-
-                int rightOffset = Game.GAME_WIDTH - screenPosX;
-                if (rightOffset > worldWidth - playerX)
-                    screenX = Game.GAME_WIDTH - (worldWidth - tileX);
-                int bottomOffset = Game.GAME_HEIGHT - screenPosY;
-                if (bottomOffset > worldHeight - playerY)
-                    screenY = Game.GAME_HEIGHT - (worldHeight - tileY);
-
-                if (IsTileVisible(screenX, screenY, tileWidth)) {
-                    if (screenX > Game.GAME_WIDTH + tileWidth || screenY > Game.GAME_HEIGHT + tileHeight) {
-                        break;
-                    }
-
-                    if (tileNum == 41) {
-                        g2.drawImage(waterfallSprite[waterfallAniIndex], screenX, screenY, tileWidth, tileHeight, null);
-                    } else {
-                        g2.drawImage(sprites[tileNum], screenX, screenY, null);
-                    }
-                    g2.drawImage(sprites[tileNum2], screenX, screenY, null);
+                if (tileNum == 41) {
+                    g2.drawImage(waterfallSprite[waterfallAniIndex], tileX, tileY, tileWidth, tileHeight, null);
+                } else {
+                    g2.drawImage(sprites[tileNum], tileX, tileY, null);
                 }
+                g2.drawImage(sprites[tileNum2], tileX, tileY, null);
             }
         }
     }
+
 
     private static boolean IsTileVisible(int screenX, int screenY, int tileSize) {
         return screenX > -tileSize &&

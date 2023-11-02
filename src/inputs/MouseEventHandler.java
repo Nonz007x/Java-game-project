@@ -22,12 +22,18 @@ public class MouseEventHandler implements MouseListener, MouseMotionListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        switch (Gamestate.state) {
+            case MENU -> gamePanel.getGame().getMenu().mousePressed(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().mousePressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        switch (Gamestate.state) {
+            case MENU -> gamePanel.getGame().getMenu().mouseReleased(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().mouseReleased(e);
+        }
     }
 
     @Override

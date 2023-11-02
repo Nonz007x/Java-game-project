@@ -1,7 +1,7 @@
 package entities;
 
 import gamestates.Playing;
-import Level.Level;
+import level.Level;
 
 import java.util.ArrayList;
 

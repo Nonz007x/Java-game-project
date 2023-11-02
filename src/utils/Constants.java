@@ -8,7 +8,7 @@ public class Constants {
         public static int RESTART = 1;
         public static int OPTIONS = 2;
         public static int EXIT = 3;
-        public static int MAX_CHOICE = 4;
+        public static int MAX_CHOICE = 3;
 
     }
 

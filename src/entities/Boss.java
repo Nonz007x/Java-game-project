@@ -11,10 +11,10 @@ public abstract class Boss extends Enemy {
     }
 
     protected void shootAtPlayer(Playing playing, int speed, int damage) {
-        int startX = getHitboxCenterX();
-        int startY = getHitboxCenterY();
-        int playerX = playing.getPlayer().getHitboxCenterX();
-        int playerY = playing.getPlayer().getHitboxCenterY();
+        int startX = getHitBoxCenterX();
+        int startY = getHitBoxCenterY();
+        int playerX = playing.getPlayer().getHitBoxCenterX();
+        int playerY = playing.getPlayer().getHitBoxCenterY();
 
         int deltaX = playerX - startX;
         int deltaY = playerY - startY;
@@ -44,8 +44,8 @@ public abstract class Boss extends Enemy {
         active = true;
         worldX = initialWorldX;
         worldY = initialWorldY;
-        hitbox.x = worldX + hitboxOffsetX;
-        hitbox.y = worldY + hitboxOffsetY;
+        hitBox.x = worldX + hitBoxOffsetX;
+        hitBox.y = worldY + hitBoxOffsetY;
         currentHealth = maxHealth;
         velocityX = 0;
         velocityY = 0;

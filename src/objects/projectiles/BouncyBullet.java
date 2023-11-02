@@ -20,14 +20,14 @@ public class BouncyBullet extends EnemyProjectile {
 
     public BouncyBullet(int x, int y, int speed, double directionX, double directionY, int damage) {
         super(x, y, speed, directionX, directionY, damage, DEFAULT_TICKS_TO_LIVE);
-        hitbox = new Rectangle2D.Float(x, y , 16, 16);
+        hitBox = new Rectangle2D.Float(x, y , 16, 16);
         animations = BOUNCY_BULLET;
     }
 
     public void update(int[][] collisionTile, Playing playing) {
         current_tick++;
         updatePos();
-        if (checkPlayerHit(hitbox, playing.getPlayer())) {
+        if (checkPlayerHit(hitBox, playing.getPlayer())) {
             playing.getPlayer().takeDamage(damage);
             setActive(false);
         }
@@ -36,12 +36,12 @@ public class BouncyBullet extends EnemyProjectile {
             setActive(false);
         }
 
-        if (hitbox.x <= 0 || hitbox.x >= collisionTile[0].length * Game.TILE_SIZE) {
+        if (hitBox.x <= 0 || hitBox.x >= collisionTile[0].length * Game.TILE_SIZE) {
             bounceCount++;
             directionX = -directionX;
         }
 
-        if (hitbox.y <= 0 || hitbox.y >= collisionTile.length * Game.TILE_SIZE) {
+        if (hitBox.y <= 0 || hitBox.y >= collisionTile.length * Game.TILE_SIZE) {
             bounceCount++;
             directionY = -directionY;
         }

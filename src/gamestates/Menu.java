@@ -15,6 +15,9 @@ public class Menu extends State implements Statemethods {
     private int selectedChoice = 0;
     private MenuButton[] menuButtons;
 
+    private final Color backgroundColor = new Color(0, 0, 0, 150);
+    private final Color textColor = Color.WHITE;
+
     public Menu(Game game) {
         super(game);
     }
@@ -40,11 +43,17 @@ public class Menu extends State implements Statemethods {
     @Override
     public void draw(Graphics g) {
 
-        g.setColor(new Color(0, 0, 0, 150));
+        g.setColor(backgroundColor);
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
         g.setColor(Color.WHITE);
 
+        FontMetrics fm = g.getFontMetrics();
+        String text = "Quantum Bullets";
+
+        int x = (Game.GAME_WIDTH - fm.stringWidth(text)) / 2;
+
+        g.drawString(text, x, 25);
         String[] menuItems = {"Play", "Options", "Quit"};
         int menuItemY = 100;
 
@@ -56,8 +65,6 @@ public class Menu extends State implements Statemethods {
             g.drawString(menuItems[i], 1, menuItemY);
             menuItemY += 50;
         }
-
-        g.drawString("Menu", 1, 25);
     }
 
 
@@ -91,9 +98,9 @@ public class Menu extends State implements Statemethods {
         int code = e.getKeyCode();
 
         switch (code) {
-            case KeyEvent.VK_S -> circleChoice(1);
-            case KeyEvent.VK_W -> circleChoice(-1);
-            case KeyEvent.VK_E -> submit();
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> circleChoice(1);
+            case KeyEvent.VK_W, KeyEvent.VK_UP -> circleChoice(-1);
+            case KeyEvent.VK_E, KeyEvent.VK_ENTER -> submit();
         }
     }
 

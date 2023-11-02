@@ -14,12 +14,15 @@ import static main.Game.GAME_WIDTH;
 
 public class Hud {
     private static final BufferedImage potionImage;
+    private static boolean hudEnable = true;
+
+    private final Font HP_TEXT = new Font("Arial", Font.BOLD, 20);
 
     static {
         potionImage = LoadSave.GetSprite("40degree.png");
     }
 
-    private Playing playing;
+    private final Playing playing;
 
     public Hud(Playing playing) {
         this.playing = playing;
@@ -41,14 +44,14 @@ public class Hud {
                     g2.fillRect(startX - 5, startY - 5, GAME_WIDTH / 2 + 10, 35);
                     String text = boss.getCurrentHealth() + " / " + boss.getMaxHealth();
                     GradientPaint gradient = new GradientPaint(new Point(startX, startY),
-                            new Color(255, 0, 0),
+                            Color.RED,
                             new Point(endX, endY),
-                            new Color(0, 255, 0),
+                            Color.GREEN,
                             false);
                     g2.setPaint(gradient);
                     g2.fillRect(startX, startY, (int) (boss.getHealthPercentage() * (GAME_WIDTH / 2)), 25);
 
-                    g2.setFont(new Font("Arial", Font.BOLD, 20));
+                    g2.setFont(HP_TEXT);
                     g2.setColor(Color.WHITE);
                     g2.drawString(text, textX, textY);
                 }
@@ -70,14 +73,14 @@ public class Hud {
         g2.fillRect(startX - 5, startY - 5, 310, 35);
 
         GradientPaint gradient = new GradientPaint(new Point(startX, startY),
-                new Color(255, 0, 0),
+                Color.RED,
                 new Point(endX, endY),
-                new Color(0, 255, 0),
+                Color.GREEN,
                 false);
         g2.setPaint(gradient);
         g2.fillRect(startX, startY, (int) (player.getHealthPercentage() * 300), 25);
 
-        g2.setFont(new Font("Arial", Font.BOLD, 20));
+        g2.setFont(HP_TEXT);
         g2.setColor(Color.WHITE);
         g2.drawString(text, textX, textY);
     }
@@ -95,9 +98,15 @@ public class Hud {
     }
 
     public void draw(Graphics2D g2) {
-        drawBossHP(g2);
-        drawPlayerHP(g2);
-        drawPotionAmount(g2);
-        drawBulletAmount(g2);
+        if (hudEnable) {
+            drawBossHP(g2);
+            drawPlayerHP(g2);
+            drawPotionAmount(g2);
+            drawBulletAmount(g2);
+        }
+    }
+
+    public static void toggleHud() {
+        hudEnable = !hudEnable;
     }
 }

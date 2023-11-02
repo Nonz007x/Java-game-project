@@ -1,9 +1,7 @@
 package entities;
 
-import Level.Level;
+import level.Level;
 import gamestates.Playing;
-import objects.Projectile;
-import objects.ProjectileManager;
 import utils.Drawable;
 
 import java.awt.*;
@@ -37,7 +35,7 @@ public class BossManager implements Drawable {
         for (Boss boss : bosses) {
             if (boss != null) {
                 boss.draw(g, xOffset, yOffset);
-                boss.drawHitbox(g, xOffset, yOffset);
+                boss.drawHitBox(g, xOffset, yOffset);
             }
         }
     }

@@ -12,12 +12,12 @@ public class EnemyProjectile extends Projectile {
         super(x, y, speed, directionX, directionY, damage, TICKS_TO_LIVE);
     }
 
-    protected boolean checkPlayerHit(Rectangle2D.Float hitbox, Player player) {
-        return (hitbox.intersects(player.getHitbox()));
+    protected boolean checkPlayerHit(Rectangle2D.Float hitBox, Player player) {
+        return (hitBox.intersects(player.getHitBox()));
     }
 
-    public boolean checkPlayerHit(Line2D.Float hitbox, Player player) {
-        return (hitbox.intersects(player.getHitbox()));
+    public boolean checkPlayerHit(Line2D.Float hitBox, Player player) {
+        return (hitBox.intersects(player.getHitBox()));
     }
 
     protected boolean checkLaserHitPlayer(Line2D.Float line, Player player, float lineWidth) {
@@ -40,12 +40,12 @@ public class EnemyProjectile extends Projectile {
                 (int) (line.getY1() - yOffset)
         };
 
-        return new Polygon(xPoints, yPoints, 4).intersects(player.getHitbox());
+        return new Polygon(xPoints, yPoints, 4).intersects(player.getHitBox());
     }
     @Override
     public void update(int[][] collisionTile, Playing playing) {
         super.update(collisionTile, playing);
-        if (checkPlayerHit(hitbox, playing.getPlayer())) {
+        if (checkPlayerHit(hitBox, playing.getPlayer())) {
             playing.getPlayer().takeDamage(damage);
             setActive(false);
         }

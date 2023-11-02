@@ -3,7 +3,6 @@ package entities.bosses;
 import entities.Boss;
 import gamestates.Playing;
 import objects.projectiles.BasicBullet;
-import objects.projectiles.BouncyBullet;
 import utils.LoadSave;
 
 import java.awt.*;
@@ -28,7 +27,7 @@ public class UltraGrandPrix extends Boss {
 
     public UltraGrandPrix(int x, int y) {
         super(x, y, ULTRA_GRAND_PRIX_WIDTH_DEFAULT, ULTRA_GRAND_PRIX_HEIGHT_DEFAULT, ULTRA_GRAND_PRIX_HEALTH);
-        initHitbox(5, 10, ULTRA_GRAND_PRIX_WIDTH_DEFAULT - 5, ULTRA_GRAND_PRIX_HEIGHT_DEFAULT - 10);
+        initHitBox(5, 10, ULTRA_GRAND_PRIX_WIDTH_DEFAULT - 5, ULTRA_GRAND_PRIX_HEIGHT_DEFAULT - 10);
         setSpeed(4);
         animations = IMAGES;
     }
@@ -36,13 +35,14 @@ public class UltraGrandPrix extends Boss {
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
         flipX = velocityX >= 0 ? 0 : width;
         flipW = velocityX >= 0 ? 1 : -1;
-        if (checkPlayerHit(hitbox, playing.getPlayer())) {
+        if (checkPlayerHit(hitBox, playing.getPlayer())) {
             playing.getPlayer().takeDamage(25);
         }
         // Phase 1
         if (currentHealth > maxHealth * 0.3) {
+            counter++;
             if (!found) {
-                double centerYDifference = getHitboxCenterY() - playing.getPlayer().getHitboxCenterY();
+                double centerYDifference = getHitBoxCenterY() - playing.getPlayer().getHitBoxCenterY();
                 double tolerance = 24.0;
 
                 if (centerYDifference > tolerance) {
@@ -57,28 +57,29 @@ public class UltraGrandPrix extends Boss {
                 }
             }
             if (found) {
-                counter++;
                 if (collisionRight || collisionLeft) {
                     velocityY = 0;
                     found = false;
-                    counter = 0;
                 } else if (counter == 20) {
-                    shootAtPlayer(playing, 10, 15);
-                    shootProjectile(new BasicBullet(getHitboxCenterX(),
-                            getHitboxCenterY(),
+                    shootProjectile(new BasicBullet(getHitBoxCenterX(),
+                            getHitBoxCenterY(),
                             10,
                             0,
                             -1,
                             15));
 
-                    shootProjectile(new BasicBullet(getHitboxCenterX(),
-                            getHitboxCenterY(),
+                    shootProjectile(new BasicBullet(getHitBoxCenterX(),
+                            getHitBoxCenterY(),
                             10,
                             0,
                             1,
                             15));
-                    counter = 0;
                 }
+            }
+
+            if (counter == 30) {
+                shootAtPlayer(playing, 10, 15);
+                counter = 0;
             }
             updateXPos(velocityX);
             updateYPos(velocityY);
@@ -109,8 +110,6 @@ public class UltraGrandPrix extends Boss {
                     chaseCount = 0;
                 }
             }
-
-
         }
 
         checkMove(collisionTile);
@@ -140,16 +139,16 @@ public class UltraGrandPrix extends Boss {
         int directionX = RandomNumber(-1, 1);
         int directionY = directionX == 0 ? RandomDirection() : RandomNumber(-1, 1);
 
-        int x = directionX * 128 + playing.getPlayer().getHitboxCenterX();
-        int y = directionY * 128 + playing.getPlayer().getHitboxCenterY();
+        int x = directionX * 128 + playing.getPlayer().getHitBoxCenterX();
+        int y = directionY * 128 + playing.getPlayer().getHitBoxCenterY();
 
         currentChargeTick = -CHARGE_COOLDOWN;
-        super.teleport((int) (x - getHitboxWidth() / 2), (int) (y - getHitboxHeight() / 2));
+        super.teleport((int) (x - getHitBoxWidth() / 2), (int) (y - getHitBoxHeight() / 2));
     }
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {
-            drawHitbox(g2, xOffset, yOffset);
+            drawHitBox(g2, xOffset, yOffset);
             g2.drawImage(animations[state][aniIndex], worldX + xOffset + flipX, worldY + yOffset, width * flipW, height, null);
         }
     }

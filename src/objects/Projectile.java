@@ -10,7 +10,7 @@ import gamestates.Playing;
 
 public class Projectile {
     protected int damage;
-    protected Rectangle2D.Float hitbox;
+    protected Rectangle2D.Float hitBox;
     protected int TICKS_TO_LIVE;
     protected BufferedImage animations[];
     protected int aniTick, aniIndex;
@@ -35,17 +35,17 @@ public class Projectile {
 
     protected void updatePos() {
         // update velocity
-        hitbox.y += directionY * speed;
-        hitbox.x += directionX * speed;
+        hitBox.y += directionY * speed;
+        hitBox.x += directionX * speed;
     }
 
     public void setPos(int x, int y) {
-        hitbox.x = x;
-        hitbox.y = y;
+        hitBox.x = x;
+        hitBox.y = y;
     }
 
-    public Rectangle2D.Float getHitbox() {
-        return hitbox;
+    public Rectangle2D.Float getHitBox() {
+        return hitBox;
     }
 
     public void setActive(boolean active) {
@@ -67,8 +67,8 @@ public class Projectile {
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {
-            g2.drawImage(animations[aniIndex], (int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height, null);
-//            g2.fillRect((int) hitbox.x + xOffset, (int) hitbox.y + yOffset, (int) hitbox.width, (int) hitbox.height);
+            g2.drawImage(animations[aniIndex], (int) hitBox.x + xOffset, (int) hitBox.y + yOffset, (int) hitBox.width, (int) hitBox.height, null);
+//            g2.fillRect((int) hitBox.x + xOffset, (int) hitBox.y + yOffset, (int) hitBox.width, (int) hitBox.height);
         }
     }
 

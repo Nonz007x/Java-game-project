@@ -1,6 +1,6 @@
 package gamestates;
 
-import Level.LevelManager;
+import level.LevelManager;
 import entities.BossManager;
 import entities.Enemy;
 import entities.Player;
@@ -69,26 +69,40 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void draw(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        levelManager.draw(g2, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
+        Graphics2D graphics2D = (Graphics2D) g;
 
+        // Draw the game level
+        levelManager.draw(graphics2D, player.getX(), player.getY(), player.getPlayerScreenPosX(), player.getPlayerScreenPosY());
+
+        // Prepare drawable objects for rendering
+        List<Drawable> drawableObjects = prepareDrawableObjects();
+
+        // Sort and draw the drawable objects
+        drawSortedDrawableObjects(graphics2D, drawableObjects);
+
+        // Draw projectiles and HUD
+        projectileManager.draw(graphics2D, xOffset, yOffset);
+        hud.draw(graphics2D);
+
+        // Draw pause overlay if the game is paused
+        if (paused) {
+            pauseOverlay.draw(g);
+        }
+    }
+
+    private List<Drawable> prepareDrawableObjects() {
         List<Drawable> drawableObjects = new ArrayList<>();
-
         drawableObjects.add(player);
         drawableObjects.addAll(enemyManager.getEnemies());
         drawableObjects.addAll(bossManager.getBosses());
-        // TODO
-//        drawableObjects.addAll(objectManager.getDrawables(xOffset, yOffset));
+        // drawableObjects.addAll(objectManager.getDrawables(xOffset, yOffset));
+        return drawableObjects;
+    }
 
+    private void drawSortedDrawableObjects(Graphics2D graphics2D, List<Drawable> drawableObjects) {
         drawableObjects.sort(Comparator.comparingDouble(Drawable::getY));
-
         for (Drawable drawable : drawableObjects) {
-            drawable.draw(g2, xOffset, yOffset);
-        }
-        projectileManager.draw(g2, xOffset, yOffset);
-        hud.draw(g2);
-        if (paused) {
-            pauseOverlay.draw(g);
+            drawable.draw(graphics2D, xOffset, yOffset);
         }
     }
 
@@ -103,26 +117,27 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         if (!paused) {
             switch (e.getButton()) {
-                case MouseEvent.BUTTON1 -> {
-                    player.calculateRad();
-                    player.dodge();
-                    player.shoot();
-                }
-                case MouseEvent.BUTTON3 -> player.shootSingleBullet();
+                case MouseEvent.BUTTON1 -> player.setLeftClicked(true);
+                case MouseEvent.BUTTON3 -> player.setRightClicked(true);
             }
         }
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-        // Not implemented, but can be added if needed
-    }
-
-    @Override
     public void mouseReleased(MouseEvent e) {
-        // Not implemented, but can be added if needed
+        if (!paused) {
+            switch (e.getButton()) {
+                case MouseEvent.BUTTON1 -> player.setLeftClicked(false);
+                case MouseEvent.BUTTON3 -> player.setRightClicked(false);
+            }
+        }
     }
 
     @Override
@@ -145,44 +160,21 @@ public class Playing extends State implements Statemethods {
             pauseOverlay.keyPressed(e);
         }
 
-        if (code == KeyEvent.VK_W) {
-            player.setUp(true);
-        }
-
-        if (code == KeyEvent.VK_A) {
-            player.setLeft(true);
-        }
-
-        if (code == KeyEvent.VK_S) {
-            player.setDown(true);
-        }
-
-        if (code == KeyEvent.VK_D) {
-            player.setRight(true);
-        }
-
-        if (code == KeyEvent.VK_F) {
-            levelManager.toggleLevel();
-            resetAll();
-            enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
-            bossManager.loadBosses(LevelManager.GetCurrentLevel());
-        }
-
-        if (code == KeyEvent.VK_SPACE) {
-            player.calculateRad();
-            player.dodge();
-        }
-
-        if (code == KeyEvent.VK_ESCAPE) {
-            paused = !paused;
-        }
-
-        if (code == KeyEvent.VK_R) {
-            resetAll();
-        }
-
-        if (code == KeyEvent.VK_Q) {
-            player.drinkPotion();
+        switch (code) {
+            case KeyEvent.VK_W -> player.setUp(true);
+            case KeyEvent.VK_A -> player.setLeft(true);
+            case KeyEvent.VK_S -> player.setDown(true);
+            case KeyEvent.VK_D -> player.setRight(true);
+            case KeyEvent.VK_F -> {
+                levelManager.toggleLevel();
+                resetAll();
+                enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
+                bossManager.loadBosses(LevelManager.GetCurrentLevel());
+            }
+            case KeyEvent.VK_ESCAPE -> paused = !paused;
+            case KeyEvent.VK_R -> resetAll();
+            case KeyEvent.VK_Q -> player.drinkPotion();
+            case KeyEvent.VK_F1 -> Hud.toggleHud();
         }
     }
 

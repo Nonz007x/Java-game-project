@@ -18,12 +18,12 @@ public class LoadSave {
 
         if (inputStream != null) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                return reader.lines()
-                        .filter(fileName -> Pattern.matches("level_\\d\\.json$", fileName))
-                        .peek(fileName -> System.out.println("Found file: " + fileName))
-                        .map(fileName -> "/maps/" + fileName)
-                        .toArray(String[]::new);
-//                return new String[]{"/maps/level_1.json", "/maps/level_3.json"};
+//                return reader.lines()
+//                        .filter(fileName -> Pattern.matches("level_\\d\\.json$", fileName))
+//                        .peek(fileName -> System.out.println("Found file: " + fileName))
+//                        .map(fileName -> "/maps/" + fileName)
+//                        .toArray(String[]::new);
+                return new String[]{"/maps/level_1.json", "/maps/level_2.json"};
             } catch (IOException e) {
                 e.printStackTrace();
             }
