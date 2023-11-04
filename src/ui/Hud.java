@@ -39,7 +39,7 @@ public class Hud {
             int textY = startY + 20;
 
             for (Boss boss : bosses) {
-                if (boss.isActive()) {
+                if (boss.isActive() && boss.getCurrentHealth() > 0) {
                     g2.setColor(Color.BLACK);
                     g2.fillRect(startX - 5, startY - 5, GAME_WIDTH / 2 + 10, 35);
                     String text = boss.getCurrentHealth() + " / " + boss.getMaxHealth();
@@ -78,7 +78,7 @@ public class Hud {
                 Color.GREEN,
                 false);
         g2.setPaint(gradient);
-        g2.fillRect(startX, startY, (int) (player.getHealthPercentage() * 300), 25);
+        g2.fillRect(startX, startY, (int) (Math.max(player.getHealthPercentage(), 0) * 300), 25);
 
         g2.setFont(HP_TEXT);
         g2.setColor(Color.WHITE);

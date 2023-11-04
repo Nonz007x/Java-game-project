@@ -15,14 +15,19 @@ public class BuckShot extends PlayerProjectile {
         BUCKSHOT_IMAGE = LoadSave.GetImagesFromSpriteSheet("player_bullet.png", 10, 10, 1, false);
     }
 
-    public BuckShot(int x, int y, double directionX, double directionY) {
-        super(x, y, 10, directionX, directionY, BUCKSHOT_DAMAGE, 15);
+    public BuckShot(int x, int y, double directionX, double directionY, int ttl, int damage) {
+        super(x, y, ttl <= 15 ? 10 : 20, directionX, directionY, damage, ttl);
         hitBox = new Rectangle2D.Float(x, y, 16, 16);
         animations = BUCKSHOT_IMAGE;
     }
+
     public BuckShot(int x, int y, double directionX, double directionY, int ttl) {
-        super(x, y, 20, directionX, directionY, BUCKSHOT_DAMAGE, ttl);
+        super(x, y, ttl <= 15 ? 10 : 20, directionX, directionY, BUCKSHOT_DAMAGE, ttl);
         hitBox = new Rectangle2D.Float(x, y, 16, 16);
         animations = BUCKSHOT_IMAGE;
+    }
+
+    public BuckShot(int x, int y, double directionX, double directionY) {
+        this(x, y, directionX, directionY, 15); // Default TTL value
     }
 }

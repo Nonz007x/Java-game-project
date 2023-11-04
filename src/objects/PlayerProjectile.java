@@ -9,6 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 public abstract class PlayerProjectile extends Projectile {
+    private static final int KNOCKBACK_STRENGTH = 4;
     public PlayerProjectile(int x, int y, int speed, double directionX, double directionY, int damage, int TICK_TO_LIVE) {
         super(x, y, speed, directionX, directionY, damage, TICK_TO_LIVE);
     }
@@ -21,13 +22,12 @@ public abstract class PlayerProjectile extends Projectile {
             setActive(false);
         }
         for (Enemy e : enemies) {
-            if (checkEnemyHit(hitBox, e) && e.isActive()) {
+            if (checkEnemyHit(hitBox, e) && e.isActive() && e.isHitBoxEnabled()) {
                 e.takeDamage(damage);
-                e.knockBack(directionX, directionY, 4, LevelManager.GetCurrentLevel().getCollisionTile());
+                e.knockBack(directionX, directionY, KNOCKBACK_STRENGTH, LevelManager.GetCurrentLevel().getCollisionTile());
                 setActive(false);
             }
         }
-
     }
 
     protected boolean checkEnemyHit(Rectangle2D hitBox, Enemy enemy) {

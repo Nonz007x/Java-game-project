@@ -1,6 +1,7 @@
 package entities.bosses;
 
 import entities.Boss;
+import entities.enemies.GrandPrix;
 import gamestates.Playing;
 import objects.projectiles.BasicBullet;
 import utils.LoadSave;
@@ -60,7 +61,8 @@ public class UltraGrandPrix extends Boss {
                 if (collisionRight || collisionLeft) {
                     velocityY = 0;
                     found = false;
-                } else if (counter == 20) {
+                }
+                if (counter % 40 == 0) {
                     shootProjectile(new BasicBullet(getHitBoxCenterX(),
                             getHitBoxCenterY(),
                             10,
@@ -74,11 +76,29 @@ public class UltraGrandPrix extends Boss {
                             0,
                             1,
                             15));
+                } else if (counter % 20 == 0) {
+                    shootProjectile(new BasicBullet(getHitBoxCenterX(),
+                            getHitBoxCenterY(),
+                            10,
+                            flipW,
+                            -0.5,
+                            15));
+
+                    shootProjectile(new BasicBullet(getHitBoxCenterX(),
+                            getHitBoxCenterY(),
+                            10,
+                            flipW,
+                            0.5,
+                            15));
                 }
             }
 
-            if (counter == 30) {
+            if (counter % 30 == 0) {
                 shootAtPlayer(playing, 10, 15);
+            }
+
+            if (counter % 240 == 0) {
+                playing.getEnemyManager().addTempEnemy(new GrandPrix(getHitBoxCenterX(), getHitBoxCenterY()));
                 counter = 0;
             }
             updateXPos(velocityX);

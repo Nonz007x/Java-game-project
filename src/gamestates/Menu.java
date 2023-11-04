@@ -2,12 +2,17 @@ package gamestates;
 
 import main.Game;
 import ui.MenuButton;
+import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.font.TextAttribute;
+import java.awt.image.BufferedImage;
+import java.util.Collections;
 
 import static utils.Constants.Menu.MAX_CHOICE;
+import static utils.Constants.Menu.backgroundColor;
 
 public class Menu extends State implements Statemethods {
     Font font;
@@ -15,8 +20,15 @@ public class Menu extends State implements Statemethods {
     private int selectedChoice = 0;
     private MenuButton[] menuButtons;
 
-    private final Color backgroundColor = new Color(0, 0, 0, 150);
-    private final Color textColor = Color.WHITE;
+    private static final BufferedImage[] backgroundImages = new BufferedImage[8];
+    private static int spriteIndex = 0;
+    private static int spriteTick = 0;
+
+    static {
+        for (int i = 0; i < 8; i++) {
+            backgroundImages[i] = LoadSave.GetSprite("title" + (i+1) + ".png");
+        }
+    }
 
     public Menu(Game game) {
         super(game);
@@ -37,35 +49,46 @@ public class Menu extends State implements Statemethods {
 
     @Override
     public void update() {
-
+        spriteTick++;
+        if (spriteTick >= 10) {
+            spriteTick = 0;
+            spriteIndex = spriteIndex + 1 > 7 ? 0 : spriteIndex + 1;
+        }
     }
 
     @Override
     public void draw(Graphics g) {
-
+        g.drawImage(backgroundImages[spriteIndex], 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         g.setColor(backgroundColor);
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
         g.setColor(Color.WHITE);
 
+        g.setFont(new Font("Dialog", Font.PLAIN, 80));
         FontMetrics fm = g.getFontMetrics();
         String text = "Quantum Bullets";
 
-        int x = (Game.GAME_WIDTH - fm.stringWidth(text)) / 2;
+        g.drawString(text, 1, 100);
 
-        g.drawString(text, x, 25);
+        g.setFont(new Font("Dialog", Font.PLAIN, 40));
         String[] menuItems = {"Play", "Options", "Quit"};
-        int menuItemY = 100;
+        int menuItemY = 200;
 
         for (int i = 0; i < menuItems.length; i++) {
             if (i == selectedChoice) {
-                g.fillRect(1, menuItemY + 1, 25, 1);
+                g.setFont(g.getFont().deriveFont(Collections.singletonMap(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON)));
             }
 
             g.drawString(menuItems[i], 1, menuItemY);
-            menuItemY += 50;
+
+            if (i == selectedChoice) {
+                g.setFont(g.getFont().deriveFont(Collections.singletonMap(TextAttribute.UNDERLINE, -1)));
+            }
+
+            menuItemY += 100;
         }
     }
+
 
 
     @Override

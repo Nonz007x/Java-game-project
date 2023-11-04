@@ -30,7 +30,7 @@ public abstract class Enemy extends Entity {
 
     protected void updateAnimationTick() {
         aniTick++;
-        if (aniTick >= ANI_SPEED) {
+        if (aniTick >= aniSpeed) {
             aniTick = 0;
             aniIndex++;
             if (aniIndex >= GetSpriteAmount(state, enemyType)) {
@@ -124,10 +124,6 @@ public abstract class Enemy extends Entity {
 
     protected void checkMove(int[][] collisionTile) {
         checkCollision(collisionTile);
-//        if (collisionDown || collisionLeft || collisionRight || collisionUp) {
-//            velocityX = 0;
-//            velocityY = 0;
-//        }
         if (velocityX > 0 && collisionRight) {
             velocityX = 0;
         } else if (velocityX < 0 && collisionLeft) {

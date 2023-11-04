@@ -38,7 +38,7 @@ public class MonPiramid extends Enemy {
     @Override
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
         chase(playing.getPlayer(), DEFAULT_SPEED);
-        if (hitBox.intersects(playing.getPlayer().getHitBox())) {
+        if (checkPlayerHit(hitBox, playing.getPlayer())) {
             playing.getPlayer().takeDamage(Integer.MAX_VALUE);
         }
         checkMove(collisionTile);

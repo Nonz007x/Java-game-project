@@ -77,7 +77,7 @@ public class Projectile {
         updatePos();
     }
 
-    protected void updateAnitick(int cooldown, int maxSprite) {
+    protected void updateAniTick(int cooldown, int maxSprite) {
         aniTick++;
         if (aniTick >= cooldown) {
             aniTick = 0;

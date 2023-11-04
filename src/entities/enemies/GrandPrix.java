@@ -8,8 +8,6 @@ import utils.LoadSave;
 import java.awt.image.BufferedImage;
 
 import static utils.Constants.EnemyConstants.*;
-import static utils.HelpMethods.RandomDirection;
-import static utils.HelpMethods.RandomNumber;
 
 public class GrandPrix extends Enemy {
 
@@ -29,7 +27,6 @@ public class GrandPrix extends Enemy {
     // TODO Object pooling
     public GrandPrix(int x, int y) {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, 35);
-
         animations = grandPrixImages;
         initHitBox(5, 10, DEFAULT_WIDTH - 5, DEFAULT_HEIGHT - 10);
         setSpeed(DEFAULT_SPEED);
@@ -39,18 +36,19 @@ public class GrandPrix extends Enemy {
     @Override
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
 
-        currentChargeTick++;
-        if (currentChargeTick == 0) {
-            chase(playing.getPlayer(), 5 * DEFAULT_SPEED);
-        }
-        else if (currentChargeTick >= CHARGE_TICK) {
-            velocityX = 0;
-            velocityY = 0;
-            int x = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitBoxCenterX();
-            int y = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitBoxCenterY();;
-            currentChargeTick = -CHARGE_COOLDOWN;
-            teleport(x, y);
-        }
+//        currentChargeTick++;
+//        if (currentChargeTick == 0) {
+//            chase(playing.getPlayer(), 5 * DEFAULT_SPEED);
+//        }
+//        else if (currentChargeTick >= CHARGE_TICK) {
+//            velocityX = 0;
+//            velocityY = 0;
+//            int x = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitBoxCenterX();
+//            int y = RandomDirection() * RandomNumber(64, 112) + playing.getPlayer().getHitBoxCenterY();;
+//            currentChargeTick = -CHARGE_COOLDOWN;
+//            teleport(x, y);
+//        }
+        chase(playing.getPlayer(), DEFAULT_SPEED);
         checkMove(collisionTile);
         updateXPos(velocityX);
         updateYPos(velocityY);

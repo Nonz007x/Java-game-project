@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Boss;
 import entities.Enemy;
 import entities.bosses.Crabulon;
+import entities.bosses.Slime;
 import entities.bosses.UltraGrandPrix;
 import entities.enemies.GrandPrix;
 import entities.enemies.MonPiramid;
@@ -84,6 +85,7 @@ public class Level {
                     case 2 -> this.bosses.add(new Crabulon(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                     case 3 -> this.enemies.add(new MonPiramid(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                     case 4 -> this.bosses.add(new UltraGrandPrix(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                    case 5 -> this.bosses.add(new Slime(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                 }
             }
         }

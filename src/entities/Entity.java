@@ -24,7 +24,7 @@ public abstract class Entity implements Drawable {
     protected BufferedImage[][] animations;
     protected int flipW = 1;
     protected int flipX = 0;
-    protected static final int ANI_SPEED = 10;
+    protected int aniSpeed = 10;
     protected int aniTick, aniIndex;
     protected int state;
 
@@ -34,6 +34,8 @@ public abstract class Entity implements Drawable {
     protected boolean collisionDown;
     protected boolean collisionLeft;
     protected boolean collisionRight;
+
+    protected boolean hitBoxEnable = true;
 
     public Entity(int width, int height, int health) {
         this.width = width;
@@ -126,11 +128,11 @@ public abstract class Entity implements Drawable {
         collisionRight = CheckCollisionRight((int) (hitBox.x + velocityX), (int) hitBox.y, (int) hitBox.width, (int) hitBox.height, collisionTile);
     }
 
-    public void knockBack(double directionX, double directionY, int speed, int[][] collisionTile) {
+    public void knockBack(double directionX, double directionY, int knockbackStrength, int[][] collisionTile) {
         float initialVelocityX = velocityX;
         float initialVelocityY = velocityY;
-        velocityX = (float) (directionX * speed);
-        velocityY = (float) (directionY * speed);
+        velocityX = (float) (directionX * knockbackStrength);
+        velocityY = (float) (directionY * knockbackStrength);
         checkCollision(collisionTile);
         if (collisionRight) {
             velocityX = 0;
@@ -201,6 +203,10 @@ public abstract class Entity implements Drawable {
 
     public float getHitBoxHeight() {
         return hitBox.height;
+    }
+
+    public boolean isHitBoxEnabled() {
+        return hitBoxEnable;
     }
 
     public float getVelocityX() {

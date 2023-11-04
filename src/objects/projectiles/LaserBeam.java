@@ -53,7 +53,7 @@ public class LaserBeam extends EnemyProjectile {
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (!active)
             return;
-        updateAnitick(16, 14);
+        updateAniTick(16, 14);
         int deltaX = endPointX - startPointX;
         int deltaY = endPointY - startPointY;
 

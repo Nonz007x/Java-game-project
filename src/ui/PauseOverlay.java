@@ -2,6 +2,7 @@ package ui;
 
 import gamestates.Gamestate;
 import gamestates.Playing;
+import gamestates.State;
 import main.Game;
 
 import java.awt.*;
@@ -23,7 +24,7 @@ public class PauseOverlay {
             case 0 -> playing.unpauseGame();
             case 1 -> playing.resetAll();
             case 2 -> {}
-            case 3 -> Gamestate.state = Gamestate.MENU;
+            case 3 -> playing.toMainMenu();
         }
     }
 

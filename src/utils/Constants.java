@@ -1,14 +1,24 @@
 package utils;
 
+import java.awt.*;
+
 public class Constants {
+
+    public static class UI {
+        public static final Font F_DEFAULT = new Font("Dialog", Font.PLAIN, 12);
+        public static final Color OVERLAY_BG_COLOR = new Color(0, 0, 0, 150);
+    }
 
     public static class Menu {
 
-        public static int PLAY = 0;
-        public static int RESTART = 1;
-        public static int OPTIONS = 2;
-        public static int EXIT = 3;
-        public static int MAX_CHOICE = 3;
+        public static final int PLAY = 0;
+        public static final int RESTART = 1;
+        public static final int OPTIONS = 2;
+        public static final int EXIT = 3;
+        public static final int MAX_CHOICE = 3;
+
+        public static Color backgroundColor = new Color(0, 0, 0, 150);
+        public static final Color textColor = Color.WHITE;
 
     }
 
@@ -25,6 +35,10 @@ public class Constants {
         public static final int CRABULON_HEALTH = 100;
         public static final int CRABULON_WIDTH_DEFAULT = 316;
         public static final int CRABULON_HEIGHT_DEFAULT = 196;
+
+        public static final int SLIME_HEALTH = 2000;
+        public static final int SLIME_WIDTH_DEFAULT = 320;
+        public static final int SLIME_HEIGHT_DEFAULT = 320;
     }
 
     public static class EnemyConstants {
@@ -58,17 +72,17 @@ public class Constants {
 
 
     }
+
     public static class PlayerConstants {
         public static final int IDLE = 0;
         public static final int RUNNING = 1;
-        public static final int HIT = 2;
-        public static final int DEAD = 3;
+        public static final int DEAD = 2;
 
         public static int GetSpriteAmount(int player_action) {
             return switch (player_action) {
+                case IDLE, DEAD -> 1;
                 case RUNNING -> 3;
-                case HIT -> 4;
-                default -> 1;
+                default -> throw new IllegalStateException("Unexpected value: " + player_action);
             };
         }
     }

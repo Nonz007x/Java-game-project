@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import static utils.Constants.PlayerConstants.*;
+import static utils.Constants.Projectile.BUCKSHOT_DAMAGE;
 import static utils.HelpMethods.*;
 
 public class Player extends Entity {
@@ -24,16 +25,17 @@ public class Player extends Entity {
     private int boomstickFlipY, boomstickFlipH;
     private int sgFlashFlipY, sgFlashFlipH;
     private int gunFlashTick;
-    private boolean shooting;
     private int[][] lvlData;
     private int playerScreenPosX;
     private int playerScreenPosY;
+    private int dodgeTick;
+    private int reloadCooldown;
+
     private boolean moving = false;
+    private boolean shooting;
     private boolean left, right, up, down;
     private boolean leftClicked, rightClicked;
     private boolean dodgeActive;
-    private int dodgeTick;
-    private int reloadCooldown;
 
     private Timer shootDelay;
     private boolean onShootDelay;
@@ -95,6 +97,12 @@ public class Player extends Entity {
         rotationAngleRad = Math.atan2(mouseLocation.y - playerScreenPosY - 24, mouseLocation.x - playerScreenPosX - 24);
     }
 
+    public void updateMousePosition(int x, int y) {
+        mouseLocation.x = x;
+        mouseLocation.y = y;
+        rotationAngleRad = Math.atan2(mouseLocation.y - playerScreenPosY - 24, mouseLocation.x - playerScreenPosX - 24);
+    }
+
     public void calculateRad() {
         tempRadian = rotationAngleRad;
     }
@@ -105,7 +113,7 @@ public class Player extends Entity {
 
         boomstick = LoadSave.GetSprite("boomstick.png");
         gunFlashes = loadImages(shotgunFlashSprites, 7, 1, 16, 16);
-        animations = loadImages(playerSprites, 4, 2, 16, 16);
+        animations = loadImages(playerSprites, 3, 3, 16, 16);
     }
 
     public void update() {
@@ -117,7 +125,8 @@ public class Player extends Entity {
         updateDodge();
 
         if (currentHealth <= 0) {
-            playing.pauseGame();
+            newState(DEAD);
+            playing.endGame();
         }
     }
 
@@ -240,7 +249,7 @@ public class Player extends Entity {
         float directionY = (float) Math.sin(rotationAngleRad);
         float projectileX = centerX + directionX * 10;
         float projectileY = centerY + directionY * 10;
-        shootProjectile(new BuckShot((int) projectileX, (int) projectileY, directionX, directionY, 150));
+        shootProjectile(new BuckShot((int) projectileX, (int) projectileY, directionX, directionY, 150, (int)( BUCKSHOT_DAMAGE * 1.5)));
     }
 
     private void shootShotgun() {
@@ -293,7 +302,7 @@ public class Player extends Entity {
                 }
             }
         }
-        if (aniTick >= ANI_SPEED) {
+        if (aniTick >= aniSpeed) {
             if (hit) {
                 flashCount++;
 
@@ -376,6 +385,8 @@ public class Player extends Entity {
     }
 
     public void resetPlayer() {
+        velocityX = 0;
+        velocityY = 0;
         worldX = initialWorldX;
         worldY = initialWorldY;
         hitBox.x = worldX + hitBoxOffsetX;
@@ -383,6 +394,9 @@ public class Player extends Entity {
         currentHealth = maxHealth;
         aniIndex = 0;
         aniTick = 0;
+        dodgeActive = false;
+        gunFlashTick = 0;
+        shooting = false;
     }
 
     public int getPotionAmount() {

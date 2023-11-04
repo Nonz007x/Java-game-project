@@ -8,6 +8,7 @@ import entities.EnemyManager;
 import main.Game;
 import objects.ObjectManager;
 import objects.ProjectileManager;
+import ui.GameOverOverlay;
 import ui.Hud;
 import ui.PauseOverlay;
 import utils.Drawable;
@@ -26,6 +27,7 @@ public class Playing extends State implements Statemethods {
     private static LevelManager levelManager;
     private static EnemyManager enemyManager;
     private static PauseOverlay pauseOverlay;
+    private static GameOverOverlay gameOverOverlay;
     private static ObjectManager objectManager;
     private static BossManager bossManager;
     private static ProjectileManager projectileManager;
@@ -34,6 +36,8 @@ public class Playing extends State implements Statemethods {
     private int xOffset, yOffset;
 
     private static boolean paused = false;
+    private static boolean gameOver = false;
+    private MouseEvent lastMouseEvent;
 
     public Playing(Game game) {
         super(game);
@@ -49,6 +53,7 @@ public class Playing extends State implements Statemethods {
         projectileManager = new ProjectileManager(this);
         objectManager = new ObjectManager(this);
         pauseOverlay = new PauseOverlay(this);
+        gameOverOverlay = new GameOverOverlay(this);
         player = new Player(this);
         hud = new Hud(this);
         player.loadLvlData(LevelManager.GetCurrentLevel().getCollisionTile());
@@ -57,7 +62,8 @@ public class Playing extends State implements Statemethods {
     @Override
     public void update() {
         if (!paused) {
-            player.update();
+            if (!gameOver)
+                player.update();
             calcOffsets();
             enemyManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
             levelManager.update();
@@ -87,6 +93,8 @@ public class Playing extends State implements Statemethods {
         // Draw pause overlay if the game is paused
         if (paused) {
             pauseOverlay.draw(g);
+        } else if (gameOver) {
+            gameOverOverlay.draw(g);
         }
     }
 
@@ -94,6 +102,7 @@ public class Playing extends State implements Statemethods {
         List<Drawable> drawableObjects = new ArrayList<>();
         drawableObjects.add(player);
         drawableObjects.addAll(enemyManager.getEnemies());
+        drawableObjects.addAll(enemyManager.getTempEnemies());
         drawableObjects.addAll(bossManager.getBosses());
         // drawableObjects.addAll(objectManager.getDrawables(xOffset, yOffset));
         return drawableObjects;
@@ -112,7 +121,13 @@ public class Playing extends State implements Statemethods {
     }
 
     public void updateMouse(MouseEvent e) {
-        player.updateMousePosition(e);
+        if (e == null) {
+            int x = 1;
+            int y = 0;
+            player.updateMousePosition(x, y);
+        } else {
+            player.updateMousePosition(e);
+        }
     }
 
     @Override
@@ -122,7 +137,7 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (!paused) {
+        if (!paused || !gameOver) {
             switch (e.getButton()) {
                 case MouseEvent.BUTTON1 -> player.setLeftClicked(true);
                 case MouseEvent.BUTTON3 -> player.setRightClicked(true);
@@ -132,7 +147,7 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (!paused) {
+        if (!paused || !gameOver) {
             switch (e.getButton()) {
                 case MouseEvent.BUTTON1 -> player.setLeftClicked(false);
                 case MouseEvent.BUTTON3 -> player.setRightClicked(false);
@@ -142,14 +157,18 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-//        if (!paused)
-        updateMouse(e);
+        if (!paused && !gameOver) {
+            updateMouse(e);
+        }
+        lastMouseEvent = e;
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-//        if (!paused)
-        updateMouse(e);
+        if (!paused && !gameOver) {
+            updateMouse(e);
+        }
+        lastMouseEvent = e;
     }
 
     @Override
@@ -158,6 +177,10 @@ public class Playing extends State implements Statemethods {
 
         if (paused) {
             pauseOverlay.keyPressed(e);
+        }
+
+        if (gameOver) {
+            gameOverOverlay.keyPressed(e);
         }
 
         switch (code) {
@@ -171,10 +194,11 @@ public class Playing extends State implements Statemethods {
                 enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
                 bossManager.loadBosses(LevelManager.GetCurrentLevel());
             }
-            case KeyEvent.VK_ESCAPE -> paused = !paused;
+            case KeyEvent.VK_ESCAPE -> togglePause();
             case KeyEvent.VK_R -> resetAll();
             case KeyEvent.VK_Q -> player.drinkPotion();
             case KeyEvent.VK_F1 -> Hud.toggleHud();
+            case KeyEvent.VK_F3 -> gameOver = !gameOver;
         }
     }
 
@@ -197,12 +221,15 @@ public class Playing extends State implements Statemethods {
     }
 
     public void resetAll() {
+        gameOver = false;
         paused = false;
         player.resetPlayer();
         projectileManager.reset();
+        enemyManager.getTempEnemies().clear();
         for (Enemy enemy : getEnemiesAndBosses()) {
             enemy.resetEnemy();
         }
+
     }
 
     public Player getPlayer() {
@@ -211,6 +238,7 @@ public class Playing extends State implements Statemethods {
 
     public ArrayList<Enemy> getEnemiesAndBosses() {
         ArrayList<Enemy> enemies = new ArrayList<>();
+        enemies.addAll(enemyManager.getTempEnemies());
         enemies.addAll(enemyManager.getEnemies());
         enemies.addAll(bossManager.getBosses());
         return enemies;
@@ -222,14 +250,41 @@ public class Playing extends State implements Statemethods {
 
     public void unpauseGame() {
         paused = false;
+        updateMouse(lastMouseEvent);
     }
 
     public void pauseGame() {
         paused = true;
     }
 
+    public void togglePause() {
+        if (!gameOver) {
+            paused = !paused;
+            updateMouse(lastMouseEvent);
+        }
+    }
+
+    public void endGame() {
+        gameOver = true;
+    }
+
+    public void continueGame() {
+        gameOver = false;
+        paused = false;
+    }
+
+    public void toMainMenu() {
+        resetAll();
+        continueGame();
+        State.setGamestate(Gamestate.MENU);
+    }
+
     public ObjectManager getObjectManager() {
         return objectManager;
+    }
+
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
     }
 
 }

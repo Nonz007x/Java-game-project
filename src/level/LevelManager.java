@@ -15,7 +15,7 @@ public class LevelManager {
 
     private int aniTick, aniIndex;
     private int waterfallAniIndex;
-    private BufferedImage[] waterfallSprite;
+    private BufferedImage[] waterfallSprite, torchSprite;
     private int waterAniIndex;
     private static final BufferedImage[] levelSprites;
     private static final ArrayList<Level> levels;
@@ -44,26 +44,27 @@ public class LevelManager {
 
     private static void InitializeTileImage() {
         BufferedImage imageSet = LoadSave.GetSprite(LoadSave.LEVEL_SPRITE);
-        int counter = 1;
+        int index = 1;
 
         for (int row = 0;  row < 60;  row++) {
             for (int col = 0; col < 40; col++) {
                 BufferedImage tileImage = imageSet.getSubimage(16 * col, 16 *  row, 16, 16);
                 BufferedImage scaledImage = ScaleImage(tileImage, Game.TILE_SIZE, Game.TILE_SIZE);
-                levelSprites[counter] = scaledImage;
-                counter++;
+                levelSprites[index] = scaledImage;
+                index++;
             }
         }
     }
 
     private void createWaterfall() {
-        waterfallSprite = new BufferedImage[216];
+        torchSprite = new BufferedImage[8];
+        waterfallSprite = new BufferedImage[8];
         BufferedImage img = LoadSave.GetSprite(LoadSave.LEVEL_SPRITE);
-        int counter = 0;
+        int index = 0;
         for (int row = 1; row <= 2; row++) {
             for (int col = 0; col < 4; col++) {
-                waterfallSprite[counter] = img.getSubimage(col * 16, row*16, 16, 16);
-                counter++;
+                waterfallSprite[index] = img.getSubimage(col * 16, row*16, 16, 16);
+                index++;
             }
         }
     }
