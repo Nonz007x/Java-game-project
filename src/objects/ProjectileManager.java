@@ -17,7 +17,8 @@ public class ProjectileManager {
     }
 
     public void update(int[][] collisionTile) {
-        for (Projectile p : projectiles) {
+        for (int i = 0; i < projectiles.size(); i++) {
+            Projectile p = projectiles.get(i);
             if (!p.isActive() || !p.isWithinTickLimit()) {
                 p.setActive(false);
                 continue;
@@ -27,9 +28,12 @@ public class ProjectileManager {
     }
 
     public void draw(Graphics2D g, int xOffset, int yOffset) {
-        for (Projectile p : projectiles)
-            if (p.isActive())
+        for (int i = 0; i < projectiles.size(); i++) {
+            Projectile p = projectiles.get(i);
+            if (p.isActive()) {
                 p.draw(g, xOffset, yOffset);
+            }
+        }
     }
 
     public static ArrayList<Projectile> getProjectiles() {

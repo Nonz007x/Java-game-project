@@ -189,8 +189,8 @@ public class Playing extends State implements Statemethods {
             case KeyEvent.VK_S -> player.setDown(true);
             case KeyEvent.VK_D -> player.setRight(true);
             case KeyEvent.VK_F -> {
-                levelManager.toggleLevel();
                 resetAll();
+                levelManager.toggleLevel();
                 enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
                 bossManager.loadBosses(LevelManager.GetCurrentLevel());
             }

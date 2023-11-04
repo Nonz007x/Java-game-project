@@ -14,7 +14,6 @@ import javax.swing.Timer;
 import static utils.Constants.BossConstants.*;
 
 public class Slime extends Boss {
-    Timer timer;
     private static final BufferedImage[][] images;
     private static final int DEFAULT_SPEED = 4;
     private boolean alternate = false;
@@ -38,11 +37,6 @@ public class Slime extends Boss {
         setSpeed(DEFAULT_SPEED);
         initHitBox(90, 90, 140, 140);
         aniSpeed = 30;
-        initTimer();
-    }
-
-    private void initTimer() {
-        timer = new Timer(200, e -> dying());
     }
 
     @Override
@@ -56,6 +50,10 @@ public class Slime extends Boss {
                 case 7, 8, 9 -> bounce(playing);
             }
 
+        } else {
+            if (counter % 12 == 0) {
+                dying();
+            }
         }
         checkMove(collisionTile);
         updateXPos(velocityX);
@@ -199,15 +197,6 @@ public class Slime extends Boss {
             drawOffset = 0;
             executionCount = 0;
             setActive(false);
-            timer.stop();
-        }
-    }
-
-    public void takeDamage(int damage) {
-        if (!jumping)
-            currentHealth -= damage;
-        if (currentHealth <= 0) {
-            timer.start();
         }
     }
 
@@ -217,5 +206,6 @@ public class Slime extends Boss {
         width = SLIME_WIDTH_DEFAULT;
         height = SLIME_HEIGHT_DEFAULT;
         jumpOffset = 0;
+        drawOffset = 0;
     }
 }
