@@ -166,25 +166,6 @@ public class Player extends Entity {
 
         if (dodgeActive) {
             knockBack(-Math.cos(tempRadian), -Math.sin(tempRadian), 15, lvlData);
-//            // velocity = direction * 15 (dodge speed)
-//            velocityY = (float) -(Math.sin(tempRadian) * 15);
-//            velocityX = (float) -(Math.cos(tempRadian) * 15);
-//
-//            checkCollision();
-//            if (collisionRight) {
-//                velocityX = 0;
-//            } else if (collisionLeft) {
-//                velocityX = 0;
-//            }
-//
-//            if (collisionUp) {
-//                velocityY = 0;
-//            } else if (collisionDown) {
-//                velocityY = 0;
-//            }
-//
-//            updateXPos(velocityX);
-//            updateYPos(velocityY);
             return;
         }
         updateXPos(velocityX);
@@ -242,6 +223,8 @@ public class Player extends Entity {
     public void shoot() {
         if (bullets > 0) {
             bullets--;
+            if (shooting)
+                gunFlashAniIndex = 0;
             shooting = true;
             shootShotgun();
         }
