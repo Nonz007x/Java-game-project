@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class BossManager implements Drawable {
     private Level currentLevel;
     private static ArrayList<Boss> bosses = new ArrayList<>();
+    private static final ArrayList<Boss> tempBosses = new ArrayList<>();
     private Playing playing;
 
     public BossManager(Playing playing) {
@@ -19,10 +20,11 @@ public class BossManager implements Drawable {
     public void loadBosses(Level level) {
         this.currentLevel = level;
         bosses = currentLevel.getBosses();
+        tempBosses.addAll(bosses);
     }
 
     public void update() {
-        for (Boss boss : bosses) {
+        for (Boss boss : tempBosses) {
             if (boss.isActive()) {
                 boss.updateAnimationTick();
                 boss.update(currentLevel.getCollisionTile(), playing);
@@ -32,7 +34,7 @@ public class BossManager implements Drawable {
 
     @Override
     public void draw(Graphics2D g, int xOffset, int yOffset) {
-        for (Boss boss : bosses) {
+        for (Boss boss : tempBosses) {
             if (boss != null) {
                 boss.draw(g, xOffset, yOffset);
                 boss.drawHitBox(g, xOffset, yOffset);
@@ -47,5 +49,17 @@ public class BossManager implements Drawable {
     @Override
     public int getY() {
         return 0;
+    }
+
+    public void addTempBoss(Boss e) {
+        tempBosses.add(e);
+    }
+
+    public ArrayList<Boss> getTempBosses() {
+        return tempBosses;
+    }
+
+    public void reset() {
+        tempBosses.clear();
     }
 }

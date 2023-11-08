@@ -45,8 +45,8 @@ public class EnemyProjectile extends Projectile {
     @Override
     public void update(int[][] collisionTile, Playing playing) {
         super.update(collisionTile, playing);
-        if (checkPlayerHit(hitBox, playing.getPlayer())) {
-            playing.getPlayer().takeDamage(damage);
+        if (checkPlayerHit(hitBox, Playing.getPlayer())) {
+            Playing.getPlayer().takeDamage(damage);
             setActive(false);
         }
     }

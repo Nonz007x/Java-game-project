@@ -7,8 +7,7 @@ import java.util.regex.Pattern;
 
 public class LoadSave {
     public static final String PLAYER_SPRITES = "player_sprites.png";
-    public static final String LEVEL_SPRITE = "overworld.png";
-    public static final String HAUNTING_GHOSTS = "hauntingghosts.png";
+    public static final String LEVEL_SPRITE = "tiles.png";
     public static final String GRANDPRIX = "grand_prix.png";
     public static final String CRABULON = "crabulon/Crabulon.png";
 

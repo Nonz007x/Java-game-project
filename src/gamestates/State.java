@@ -5,10 +5,10 @@ import main.Game;
 
 public abstract class State {
 
-    protected final Game game;
+    protected static Game game;
 
     public State(Game game) {
-        this.game = game;
+        State.game = game;
     }
 
 //    public boolean isIn(MouseEvent e, MenuButton mb) {
@@ -24,7 +24,10 @@ public abstract class State {
 //            case MENU -> game.getAudioPlayer().playSong(AudioPlayer.MENU_1);
 //            case PLAYING -> game.getAudioPlayer().setLevelSong(game.getPlaying().getLevelManager().getLevelIndex());
 //        }
-
+        switch (state) {
+            case ARENA -> game.getArena().initArena();
+            case PLAYING -> game.getPlaying().initPlaying();
+        }
         Gamestate.state = state;
     }
 

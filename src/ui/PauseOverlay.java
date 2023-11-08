@@ -1,19 +1,21 @@
 package ui;
 
+import gamestates.Arena;
 import gamestates.Gamestate;
 import gamestates.Playing;
 import gamestates.State;
+import level.LevelManager;
 import main.Game;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static utils.Constants.Menu.MAX_CHOICE;
-
 public class PauseOverlay {
     private final Playing playing;
     private int selectedChoice = 0;
     private final Color backgroundColor = new Color(0, 0, 0, 150);
+
+    private static final int MAX_CHOICE = 4;
 
     public PauseOverlay(Playing playing) {
         this.playing = playing;
@@ -22,8 +24,13 @@ public class PauseOverlay {
     private void submit() {
         switch (selectedChoice) {
             case 0 -> playing.unpauseGame();
-            case 1 -> playing.resetAll();
-            case 2 -> {}
+            case 1 -> {
+                if (Gamestate.state == Gamestate.PLAYING)
+                    Playing.loadNewLevel(LevelManager.getLevelIndex());
+                else Arena.resetAll();
+            }
+            case 2 -> {
+            }
             case 3 -> playing.toMainMenu();
         }
     }

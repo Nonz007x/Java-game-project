@@ -11,7 +11,6 @@ import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 
-import static utils.Constants.Menu.MAX_CHOICE;
 import static utils.Constants.Menu.backgroundColor;
 
 public class Menu extends State implements Statemethods {
@@ -19,6 +18,7 @@ public class Menu extends State implements Statemethods {
     FontMetrics fontMetrics;
     private int selectedChoice = 0;
     private MenuButton[] menuButtons;
+    private static int MAX_CHOICE = 3;
 
     private static final BufferedImage[] backgroundImages = new BufferedImage[8];
     private static int spriteIndex = 0;
@@ -36,10 +36,9 @@ public class Menu extends State implements Statemethods {
 
     private void submit() {
         switch (selectedChoice) {
-            case 0 -> Gamestate.state = Gamestate.PLAYING;
-            case 1 -> {
-            }
-            case 2 -> Gamestate.state = Gamestate.QUIT;
+            case 0 -> State.setGamestate(Gamestate.PLAYING);
+            case 1 -> State.setGamestate(Gamestate.ARENA);
+            case 2 -> State.setGamestate(Gamestate.QUIT);
         }
     }
 
@@ -71,7 +70,7 @@ public class Menu extends State implements Statemethods {
         g.drawString(text, 1, 100);
 
         g.setFont(new Font("Dialog", Font.PLAIN, 40));
-        String[] menuItems = {"Play", "Options", "Quit"};
+        String[] menuItems = {"Play", "Arena", "Quit"};
         int menuItemY = 200;
 
         for (int i = 0; i < menuItems.length; i++) {

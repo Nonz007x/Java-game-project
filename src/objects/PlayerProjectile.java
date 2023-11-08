@@ -24,7 +24,7 @@ public abstract class PlayerProjectile extends Projectile {
         for (Enemy e : enemies) {
             if (checkEnemyHit(hitBox, e) && e.isActive() && e.isHitBoxEnabled()) {
                 e.takeDamage(damage);
-                e.knockBack(directionX, directionY, KNOCKBACK_STRENGTH, LevelManager.GetCurrentLevel().getCollisionTile());
+                e.knockBack(directionX, directionY, KNOCKBACK_STRENGTH, LevelManager.getCurrentLevel().getCollisionTile());
                 setActive(false);
             }
         }

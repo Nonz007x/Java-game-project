@@ -139,7 +139,7 @@ public abstract class Enemy extends Entity {
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {
-            drawHitBox(g2, xOffset, yOffset);
+//            drawHitBox(g2, xOffset, yOffset);
             g2.drawImage(animations[state][aniIndex], worldX + xOffset + getflipX(), worldY + yOffset, width * getflipW(), height, null);
         }
     }

@@ -29,7 +29,7 @@ public class Hud {
     }
 
     private void drawBossHP(Graphics2D g2) {
-        ArrayList<Boss> bosses = playing.getBossManager().getBosses();
+        ArrayList<Boss> bosses = playing.getBossManager().getTempBosses();
         if (!bosses.isEmpty()) {
             int startX = GAME_WIDTH / 4;
             int startY = GAME_HEIGHT - 100;

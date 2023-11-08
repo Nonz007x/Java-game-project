@@ -10,9 +10,13 @@ import entities.bosses.UltraGrandPrix;
 import entities.enemies.GrandPrix;
 import entities.enemies.MonPiramid;
 import main.Game;
+import objects.gameobjects.Gate;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
+
+import static utils.HelpMethods.loadProperty;
 
 
 public class Level {
@@ -22,7 +26,9 @@ public class Level {
 
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<Boss> bosses = new ArrayList<>();
+    private final ArrayList<Gate> gates = new ArrayList<>();
     private int worldRow, worldCol;
+    private int spawnX, spawnY;
 
     public Level(String path) {
         lvlId++;
@@ -90,7 +96,8 @@ public class Level {
             }
         }
         // How to read from .properties extension
-//        int isHaunted = Integer.parseInt(loadProperty("grandprix", "res/maps/level_" + lvlId + ".properties"));
+        spawnX = Integer.parseInt(Objects.requireNonNull(loadProperty("x", "res/maps/level_" + lvlId + ".properties")));
+        spawnY = Integer.parseInt(Objects.requireNonNull(loadProperty("y", "res/maps/level_" + lvlId + ".properties")));
     }
 
     public ArrayList<Enemy> getEnemies() {
@@ -101,6 +108,9 @@ public class Level {
         return bosses;
     }
 
+    public ArrayList<Gate> getGates() {
+        return gates;
+    }
     public int getSpriteIndex(int x, int y) {
         return lvlData[0][y][x];
     }
@@ -123,5 +133,13 @@ public class Level {
 
     public int getWorldCol() {
         return worldCol;
+    }
+
+    public int getSpawnX() {
+        return spawnX;
+    }
+
+    public int getSpawnY() {
+        return spawnY;
     }
 }

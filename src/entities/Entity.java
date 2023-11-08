@@ -52,10 +52,6 @@ public abstract class Entity implements Drawable {
         this.worldY = y;
     }
 
-    public final void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
     public final int getX() {
         return worldX;
     }
@@ -72,6 +68,69 @@ public abstract class Entity implements Drawable {
         return height;
     }
 
+    public final int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public final int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public final float getHealthPercentage() {
+        return (float) currentHealth / maxHealth;
+    }
+
+    public final float getVelocityX() {
+        return velocityX;
+    }
+
+    public final float getVelocityY() {
+        return velocityY;
+    }
+
+    public final boolean isHitBoxEnabled() {
+        return hitBoxEnable;
+    }
+
+    public final Rectangle2D getHitBox() {
+        return hitBox;
+    }
+    public final int getHitBoxCenterX() {
+        return (int) (hitBox.x + hitBox.width / 2);
+    }
+
+    public final int getHitBoxCenterY() {
+        return (int) (hitBox.y + hitBox.height / 2);
+    }
+
+    public final float getHitBoxX() {
+        return hitBox.x;
+    }
+
+    public final float getHitBoxY() {
+        return hitBox.y;
+    }
+
+    public final float getHitBoxWidth() {
+        return hitBox.width;
+    }
+
+    public final float getHitBoxHeight() {
+        return hitBox.height;
+    }
+
+    public final void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public void setVelocityX(float velocityX) {
+        this.velocityX = velocityX;
+    }
+
+    public void setVelocityY(float velocityY) {
+        this.velocityY = velocityY;
+    }
+
     public final void setX(int x) {
         this.worldX = x;
     }
@@ -86,8 +145,12 @@ public abstract class Entity implements Drawable {
         hitBoxOffsetY = (int) y;
     }
 
-    public int getState() {
-        return state;
+    public void takeDamage(int damage) {
+        currentHealth -= damage;
+    }
+
+    public void shootProjectile(Projectile projectile) {
+        ProjectileManager.addProjectile(projectile);
     }
 
     protected void newState(int state) {
@@ -111,14 +174,6 @@ public abstract class Entity implements Drawable {
         hitBox.x = x;
         worldY = y;
         hitBox.y = y;
-    }
-
-    public void takeDamage(int damage) {
-        currentHealth -= damage;
-    }
-
-    public void shootProjectile(Projectile projectile) {
-        ProjectileManager.addProjectile(projectile);
     }
 
     protected void checkCollision(int[][] collisionTile) {
@@ -163,57 +218,5 @@ public abstract class Entity implements Drawable {
     public void drawHitBox(Graphics2D g2, int xOffset, int yOffset) {
         g2.setColor(Color.RED);
         g2.drawRect((int) hitBox.x + xOffset, (int) hitBox.y + yOffset, (int) hitBox.width, (int) hitBox.height);
-
-    }
-
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
-
-    public int getMaxHealth() {
-        return maxHealth;
-    }
-
-    public float getHealthPercentage() {
-        return (float) currentHealth / maxHealth;
-    }
-    public Rectangle2D getHitBox() {
-        return hitBox;
-    }
-
-    public int getHitBoxCenterX() {
-        return (int) (hitBox.x + hitBox.width / 2);
-    }
-
-    public int getHitBoxCenterY() {
-        return (int) (hitBox.y + hitBox.height / 2);
-    }
-
-    public float getHitBoxX() {
-        return hitBox.x;
-    }
-
-    public float getHitBoxY() {
-        return hitBox.y;
-    }
-
-    public float getHitBoxWidth() {
-        return hitBox.width;
-    }
-
-    public float getHitBoxHeight() {
-        return hitBox.height;
-    }
-
-    public boolean isHitBoxEnabled() {
-        return hitBoxEnable;
-    }
-
-    public float getVelocityX() {
-        return velocityX;
-    }
-
-    public float getVelocityY() {
-        return velocityY;
     }
 }

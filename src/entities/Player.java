@@ -1,6 +1,7 @@
 package entities;
 
 import gamestates.Playing;
+import level.LevelManager;
 import main.Game;
 import objects.projectiles.BuckShot;
 import utils.LoadSave;
@@ -48,7 +49,7 @@ public class Player extends Entity {
     private final int screenY = Game.GAME_HEIGHT / 2 - (Game.TILE_SIZE / 2);
     private Point mouseLocation = new Point(0, 0);
 
-    private int potion = 10;
+    private int potion = 1;
     private int bullets = 2;
 
     public Player(Playing playing) {
@@ -60,11 +61,16 @@ public class Player extends Entity {
         initHitBox(15, 18, 20, 33);
         loadAnimations();
         initializeTimer();
+        setSpawn();
     }
 
     public void setSpawn() {
-        this.worldX = 96;
-        this.worldY = 96;
+        this.initialWorldX = LevelManager.getCurrentLevel().getSpawnX();
+        this.initialWorldY = LevelManager.getCurrentLevel().getSpawnY();
+        this.worldX = initialWorldX;
+        this.worldY = initialWorldY;
+        hitBox.x = worldX + hitBoxOffsetX;
+        hitBox.y = worldY + hitBoxOffsetY;
     }
 
     private void initializeTimer() {
@@ -154,11 +160,18 @@ public class Player extends Entity {
         sgFlashFlipY = (flipW == 1) ? 0 : 58;
     }
 
-    public void teleport() {
+    public void teleportToMouse() {
         worldX = worldX + mouseLocation.x - playerScreenPosX;
         worldY = worldY + mouseLocation.y - playerScreenPosY;
         hitBox.x += mouseLocation.x - playerScreenPosX;
         hitBox.y += mouseLocation.y - playerScreenPosY;
+    }
+
+    public void teleport(int x, int y) {
+        worldX = x;
+        worldY = y;
+        hitBox.x = x;
+        hitBox.y = y;
     }
 
     private void updatePos() {
@@ -217,13 +230,11 @@ public class Player extends Entity {
         if (hit)
             return;
         hit = true;
-        System.out.println("ouch");
         super.takeDamage(damage);
-
     }
 
     public void drinkPotion() {
-        if (currentHealth == maxHealth)
+        if (currentHealth == maxHealth || potion == 0)
             return;
         potion = Math.max(0, potion - 1);
         currentHealth = Math.min(currentHealth + 40, 100);

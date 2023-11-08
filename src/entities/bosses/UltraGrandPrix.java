@@ -98,7 +98,7 @@ public class UltraGrandPrix extends Boss {
             }
 
             if (counter % 240 == 0) {
-                playing.getEnemyManager().addTempEnemy(new GrandPrix(getHitBoxCenterX(), getHitBoxCenterY()));
+                Playing.getEnemyManager().addTempEnemy(new GrandPrix(getHitBoxCenterX(), getHitBoxCenterY()));
                 counter = 0;
             }
             updateXPos(velocityX);

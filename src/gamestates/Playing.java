@@ -8,9 +8,11 @@ import entities.EnemyManager;
 import main.Game;
 import objects.ObjectManager;
 import objects.ProjectileManager;
+import objects.gameobjects.Gate;
 import ui.GameOverOverlay;
 import ui.Hud;
 import ui.PauseOverlay;
+import ui.TransitionOverlay;
 import utils.Drawable;
 
 import java.util.ArrayList;
@@ -23,31 +25,35 @@ import java.awt.event.MouseEvent;
 
 
 public class Playing extends State implements Statemethods {
-    private static Player player;
-    private static LevelManager levelManager;
-    private static EnemyManager enemyManager;
-    private static PauseOverlay pauseOverlay;
-    private static GameOverOverlay gameOverOverlay;
-    private static ObjectManager objectManager;
-    private static BossManager bossManager;
-    private static ProjectileManager projectileManager;
-    private static Hud hud;
+    protected static Player player;
+    protected static LevelManager levelManager;
+    protected static EnemyManager enemyManager;
+    protected static PauseOverlay pauseOverlay;
+    protected static GameOverOverlay gameOverOverlay;
+    protected static ObjectManager objectManager;
+    protected static BossManager bossManager;
+    protected static ProjectileManager projectileManager;
+    protected static Hud hud;
 
-    private int xOffset, yOffset;
+    protected int xOffset, yOffset;
 
-    private static boolean paused = false;
-    private static boolean gameOver = false;
-    private MouseEvent lastMouseEvent;
+    protected static boolean paused = false;
+    protected static boolean gameOver = false;
+    protected MouseEvent lastMouseEvent;
 
     public Playing(Game game) {
         super(game);
         initClasses();
-        enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
-        bossManager.loadBosses(LevelManager.GetCurrentLevel());
+    }
+
+    public void initPlaying() {
+        LevelManager.setLevelIndex(0);
+        enemyManager.loadEnemies(LevelManager.getCurrentLevel());
+        bossManager.loadBosses(LevelManager.getCurrentLevel());
     }
 
     private void initClasses() {
-        levelManager = new LevelManager(game);
+        levelManager = new LevelManager(this);
         enemyManager = new EnemyManager(this);
         bossManager = new BossManager(this);
         projectileManager = new ProjectileManager(this);
@@ -56,7 +62,7 @@ public class Playing extends State implements Statemethods {
         gameOverOverlay = new GameOverOverlay(this);
         player = new Player(this);
         hud = new Hud(this);
-        player.loadLvlData(LevelManager.GetCurrentLevel().getCollisionTile());
+        player.loadLvlData(LevelManager.getCurrentLevel().getCollisionTile());
     }
 
     @Override
@@ -65,10 +71,10 @@ public class Playing extends State implements Statemethods {
             if (!gameOver)
                 player.update();
             calcOffsets();
-            enemyManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
+            enemyManager.update(LevelManager.getCurrentLevel().getCollisionTile());
             levelManager.update();
-            projectileManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
-            objectManager.update(LevelManager.GetCurrentLevel().getCollisionTile());
+            projectileManager.update(LevelManager.getCurrentLevel().getCollisionTile());
+            objectManager.update();
             bossManager.update();
         }
     }
@@ -96,6 +102,9 @@ public class Playing extends State implements Statemethods {
         } else if (gameOver) {
             gameOverOverlay.draw(g);
         }
+
+        if (TransitionOverlay.drawing)
+            TransitionOverlay.draw(g);
     }
 
     private List<Drawable> prepareDrawableObjects() {
@@ -103,7 +112,7 @@ public class Playing extends State implements Statemethods {
         drawableObjects.add(player);
         drawableObjects.addAll(enemyManager.getEnemies());
         drawableObjects.addAll(enemyManager.getTempEnemies());
-        drawableObjects.addAll(bossManager.getBosses());
+        drawableObjects.addAll(bossManager.getTempBosses());
         // drawableObjects.addAll(objectManager.getDrawables(xOffset, yOffset));
         return drawableObjects;
     }
@@ -183,23 +192,19 @@ public class Playing extends State implements Statemethods {
             gameOverOverlay.keyPressed(e);
         }
 
-        switch (code) {
-            case KeyEvent.VK_W -> player.setUp(true);
-            case KeyEvent.VK_A -> player.setLeft(true);
-            case KeyEvent.VK_S -> player.setDown(true);
-            case KeyEvent.VK_D -> player.setRight(true);
-            case KeyEvent.VK_F -> {
-                resetAll();
-                levelManager.toggleLevel();
-                enemyManager.loadEnemies(LevelManager.GetCurrentLevel());
-                bossManager.loadBosses(LevelManager.GetCurrentLevel());
+        if (code == KeyEvent.VK_ESCAPE)
+            togglePause();
+        if (!gameOver && !paused)
+            switch (code) {
+                case KeyEvent.VK_W -> player.setUp(true);
+                case KeyEvent.VK_A -> player.setLeft(true);
+                case KeyEvent.VK_S -> player.setDown(true);
+                case KeyEvent.VK_D -> player.setRight(true);
+                case KeyEvent.VK_F -> loadNewLevel();
+                case KeyEvent.VK_R -> loadNewLevel(LevelManager.getLevelIndex());
+                case KeyEvent.VK_Q -> player.drinkPotion();
+                case KeyEvent.VK_F1 -> Hud.toggleHud();
             }
-            case KeyEvent.VK_ESCAPE -> togglePause();
-            case KeyEvent.VK_R -> resetAll();
-            case KeyEvent.VK_Q -> player.drinkPotion();
-            case KeyEvent.VK_F1 -> Hud.toggleHud();
-            case KeyEvent.VK_F3 -> gameOver = !gameOver;
-        }
     }
 
     @Override
@@ -220,37 +225,71 @@ public class Playing extends State implements Statemethods {
         }
     }
 
-    public void resetAll() {
+    public static void resetAll() {
         gameOver = false;
         paused = false;
         player.resetPlayer();
         projectileManager.reset();
-        enemyManager.getTempEnemies().clear();
+        enemyManager.reset();
+        bossManager.reset();
         for (Enemy enemy : getEnemiesAndBosses()) {
             enemy.resetEnemy();
         }
 
     }
 
-    public Player getPlayer() {
+    public static void loadAllEnemies() {
+        enemyManager.loadEnemies(LevelManager.getCurrentLevel());
+        bossManager.loadBosses(LevelManager.getCurrentLevel());
+    }
+    public static Player getPlayer() {
         return player;
     }
 
-    public ArrayList<Enemy> getEnemiesAndBosses() {
+    public static ArrayList<Enemy> getEnemiesAndBosses() {
         ArrayList<Enemy> enemies = new ArrayList<>();
         enemies.addAll(enemyManager.getTempEnemies());
         enemies.addAll(enemyManager.getEnemies());
         enemies.addAll(bossManager.getBosses());
+        enemies.addAll(bossManager.getTempBosses());
         return enemies;
+    }
+
+    public static LevelManager getLevelManager() {
+        return levelManager;
+    }
+
+    public static ObjectManager getObjectManager() {
+        return objectManager;
+    }
+
+    public static EnemyManager getEnemyManager() {
+        return enemyManager;
     }
 
     public BossManager getBossManager() {
         return bossManager;
     }
 
+    public static void loadNewLevel() {
+        resetAll();
+        LevelManager.toggleLevel();
+        loadAllEnemies();
+    }
+
+    public static void loadNewLevel(int levelIndex) {
+        resetAll();
+        LevelManager.setLevelIndex(levelIndex);
+        loadAllEnemies();
+    }
+
     public void unpauseGame() {
         paused = false;
         updateMouse(lastMouseEvent);
+    }
+
+    public static void playTransition() {
+        TransitionOverlay.drawing = true;
     }
 
     public void pauseGame() {
@@ -278,13 +317,4 @@ public class Playing extends State implements Statemethods {
         continueGame();
         State.setGamestate(Gamestate.MENU);
     }
-
-    public ObjectManager getObjectManager() {
-        return objectManager;
-    }
-
-    public EnemyManager getEnemyManager() {
-        return enemyManager;
-    }
-
 }

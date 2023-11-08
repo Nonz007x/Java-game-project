@@ -9,7 +9,6 @@ import utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import javax.swing.Timer;
 
 import static utils.Constants.BossConstants.*;
 
@@ -32,7 +31,7 @@ public class Slime extends Boss {
     }
 
     public Slime(int x, int y) {
-        super(x, y, SLIME_WIDTH_DEFAULT, SLIME_HEIGHT_DEFAULT, SLIME_HEALTH - 2000);
+        super(x, y, SLIME_WIDTH_DEFAULT, SLIME_HEIGHT_DEFAULT, SLIME_HEALTH);
         animations = images;
         setSpeed(DEFAULT_SPEED);
         initHitBox(90, 90, 140, 140);
@@ -64,7 +63,7 @@ public class Slime extends Boss {
         if (counter > 40 && counter <= 80) {
             performJump();
         } else if (counter > 80 && counter <= 200) {
-            chase(playing.getPlayer(), 10);
+            chase(Playing.getPlayer(), 10);
         } else if (counter > 200 && counter <= 240) {
             stopMoving();
         } else if (counter > 240) {
@@ -81,7 +80,7 @@ public class Slime extends Boss {
             if (counter > 0 && counter <= 10) {
                 performJump();
             } else if (counter == 11) {
-                moveTowardsPlayer(playing.getPlayer());
+                moveTowardsPlayer(Playing.getPlayer());
             } else if (counter > 20 && counter <= 30) {
                 stopMoving();
             } else if (counter == 31) {
@@ -94,11 +93,11 @@ public class Slime extends Boss {
 
     private void bounce(Playing playing) {
         if (counter == 60) {
-            chase(playing.getPlayer(), 20);
+            chase(Playing.getPlayer(), 20);
         }
 
-        if (checkPlayerHit(hitBox, playing.getPlayer())) {
-            playing.getPlayer().takeDamage(30);
+        if (checkPlayerHit(hitBox, Playing.getPlayer())) {
+            Playing.getPlayer().takeDamage(30);
         }
         if (collisionLeft) {
             velocityX = 10;
@@ -144,8 +143,8 @@ public class Slime extends Boss {
     private void executeSlam(Playing playing) {
         jumping = false;
         counter = 0;
-        if (checkPlayerHit(hitBox, playing.getPlayer())) {
-            playing.getPlayer().takeDamage(50);
+        if (checkPlayerHit(hitBox, Playing.getPlayer())) {
+            Playing.getPlayer().takeDamage(50);
         }
         shootBulletsInRange(0, 360, 10);
     }
@@ -153,9 +152,8 @@ public class Slime extends Boss {
     @Override
     public void draw(Graphics2D g2, int xOffset, int yOffset) {
         if (active) {
-            g2.setColor(new Color(0, 0, 0, 150));
+            g2.setColor(new Color(0, 0, 0, 100));
             g2.fillOval((int) hitBox.x + xOffset, (int) hitBox.y + 48 + yOffset, (int) getHitBoxWidth(), (int) getHitBoxHeight() - 48);
-            drawHitBox(g2, xOffset, yOffset);
             g2.drawImage(animations[state][aniIndex], worldX + xOffset + drawOffset + getflipX(),
                     worldY + yOffset + drawOffset + jumpOffset,
                     width * getflipW(), height,
@@ -177,13 +175,16 @@ public class Slime extends Boss {
         }
     }
 
+    @Override
+    public void takeDamage(int damage) {
+        currentHealth -= damage;
+    }
+
     private void dying() {
         if (alternate) {
             shootBulletsInRange(0, 360, 12);
-//            velocityX = 10;
         } else {
             shootBulletsInRange(5, 365, 12);
-//            velocityX = -10;
         }
         width -= 32;
         height -= 32;
@@ -195,7 +196,6 @@ public class Slime extends Boss {
 
         if (executionCount >= MAX_EXECUTIONS) {
             drawOffset = 0;
-            executionCount = 0;
             setActive(false);
         }
     }
@@ -207,5 +207,6 @@ public class Slime extends Boss {
         height = SLIME_HEIGHT_DEFAULT;
         jumpOffset = 0;
         drawOffset = 0;
+        executionCount = 0;
     }
 }

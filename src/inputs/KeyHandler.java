@@ -21,6 +21,7 @@ public class KeyHandler implements KeyListener {
         switch (Gamestate.state) {
             case MENU -> gamePanel.getGame().getMenu().keyPressed(e);
             case PLAYING -> gamePanel.getGame().getPlaying().keyPressed(e);
+            case ARENA -> gamePanel.getGame().getArena().keyPressed(e);
         }
     }
 
@@ -29,6 +30,7 @@ public class KeyHandler implements KeyListener {
         switch (Gamestate.state) {
             case MENU -> gamePanel.getGame().getMenu().keyReleased(e);
             case PLAYING -> gamePanel.getGame().getPlaying().keyReleased(e);
+            case ARENA -> gamePanel.getGame().getArena().keyReleased(e);
         }
     }
 }

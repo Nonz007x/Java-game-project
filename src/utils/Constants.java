@@ -3,6 +3,10 @@ package utils;
 import java.awt.*;
 
 public class Constants {
+    public static class GameObject {
+        public static int FRAGMENT = 0;
+        public static int GATE = 1;
+    }
 
     public static class UI {
         public static final Font F_DEFAULT = new Font("Dialog", Font.PLAIN, 12);
@@ -10,12 +14,6 @@ public class Constants {
     }
 
     public static class Menu {
-
-        public static final int PLAY = 0;
-        public static final int RESTART = 1;
-        public static final int OPTIONS = 2;
-        public static final int EXIT = 3;
-        public static final int MAX_CHOICE = 3;
 
         public static Color backgroundColor = new Color(0, 0, 0, 150);
         public static final Color textColor = Color.WHITE;
@@ -36,7 +34,7 @@ public class Constants {
         public static final int CRABULON_WIDTH_DEFAULT = 316;
         public static final int CRABULON_HEIGHT_DEFAULT = 196;
 
-        public static final int SLIME_HEALTH = 2000;
+        public static final int SLIME_HEALTH = 1500;
         public static final int SLIME_WIDTH_DEFAULT = 320;
         public static final int SLIME_HEIGHT_DEFAULT = 320;
     }

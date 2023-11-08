@@ -10,7 +10,7 @@ public class EnemyManager {
     private Playing playing;
     private Level currentLevel;
     private static ArrayList<Enemy> enemies = new ArrayList<>();
-    private static ArrayList<Enemy> tempEnemies = new ArrayList<>();
+    private static final ArrayList<Enemy> tempEnemies = new ArrayList<>();
 
     public EnemyManager(Playing playing) {
         this.playing = playing;
@@ -19,14 +19,10 @@ public class EnemyManager {
     public void loadEnemies(Level level) {
         this.currentLevel = level;
         enemies = currentLevel.getEnemies();
+        tempEnemies.addAll(enemies);
     }
 
     public void update(int[][] collisionTile) {
-        for (Enemy e : enemies) {
-            if (e.isActive()) {
-                e.update(collisionTile, playing);
-            }
-        }
         for (Enemy e : tempEnemies) {
             if (e.isActive()) {
                 e.update(collisionTile, playing);
@@ -42,11 +38,11 @@ public class EnemyManager {
         return tempEnemies;
     }
 
-    public void addEnemy(Enemy e) {
-        enemies.add(e);
-    }
-
     public void addTempEnemy(Enemy e) {
         tempEnemies.add(e);
+    }
+
+    public void reset() {
+        tempEnemies.clear();
     }
 }

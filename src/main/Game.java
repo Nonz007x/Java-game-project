@@ -1,5 +1,6 @@
 package main;
 
+import gamestates.Arena;
 import gamestates.Gamestate;
 import gamestates.Playing;
 import gamestates.Menu;
@@ -13,6 +14,7 @@ public class Game implements Runnable {
     private Thread gameThread, renderThread;
     private static Playing playing;
     private static Menu menu;
+    private static Arena arena;
 
     public static final int TILES_DEFAULT_SIZE = 16;
     public static final int SCALE = 3;
@@ -36,6 +38,7 @@ public class Game implements Runnable {
     private void initClasses() {
         menu = new Menu(this);
         playing = new Playing(this);
+        arena = new Arena(this);
     }
 
     private void startGameThread() {
@@ -96,7 +99,7 @@ public class Game implements Runnable {
         switch (Gamestate.state) {
             case MENU -> menu.update();
             case PLAYING -> playing.update();
-//            case OPTIONS -> gameOptions.update();
+            case ARENA -> arena.update();
 //            case CREDITS -> credits.update();
             case QUIT -> System.exit(0);
         }
@@ -106,6 +109,7 @@ public class Game implements Runnable {
         switch (Gamestate.state) {
             case MENU -> menu.draw(g);
             case PLAYING -> playing.draw(g);
+            case ARENA -> arena.draw(g);
 //            case OPTIONS -> gameOptions.draw(g);
 //            case CREDITS -> credits.draw(g);
         }
@@ -113,6 +117,10 @@ public class Game implements Runnable {
 
     public Playing getPlaying() {
         return playing;
+    }
+
+    public Arena getArena() {
+        return arena;
     }
 
     public Menu getMenu() {

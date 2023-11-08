@@ -1,8 +1,10 @@
 package ui;
 
+import gamestates.Arena;
 import gamestates.Gamestate;
 import gamestates.Playing;
 import gamestates.State;
+import level.LevelManager;
 import main.Game;
 
 import java.awt.*;
@@ -25,7 +27,11 @@ public class GameOverOverlay {
 
     private void submit() {
         switch (selectedChoice) {
-            case 0 -> playing.resetAll();
+            case 0 -> {
+                if (Gamestate.state == Gamestate.PLAYING)
+                    Playing.loadNewLevel(LevelManager.getLevelIndex());
+                else Arena.resetAll();
+            }
             case 1 -> playing.toMainMenu();
         }
     }
