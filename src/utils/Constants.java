@@ -6,6 +6,7 @@ public class Constants {
     public static class GameObject {
         public static int FRAGMENT = 0;
         public static int GATE = 1;
+        public static int Potion = 2;
     }
 
     public static class UI {
@@ -63,7 +64,7 @@ public class Constants {
                     return 6;
                 }
                 default -> {
-                    return -1;
+                    return 0;
                 }
             }
         }

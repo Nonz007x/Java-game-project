@@ -5,6 +5,7 @@ import gamestates.Playing;
 import level.LevelManager;
 import level.Level;
 import objects.gameobjects.Gate;
+import objects.gameobjects.Potion;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,7 +14,8 @@ public class ObjectManager {
     private Playing playing;
     private Level currentLevel;
 
-    private final ArrayList<Gate> gates = new ArrayList<>();
+    private static final ArrayList<Gate> gates = new ArrayList<>();
+    private static final ArrayList<Potion> potions = new ArrayList<>();
 
     public ObjectManager(Playing playing) {
         this.playing = playing;
@@ -22,23 +24,45 @@ public class ObjectManager {
     }
 
     public void update() {
-        checkGate(Playing.getPlayer());
+        checkCollide(Playing.getPlayer());
     }
 
-    public void checkGate(Player player) {
+    public void checkCollide(Player player) {
         for (Gate gate : gates) {
             if (gate.isActive)
                 if (gate.isCollidedWithPlayer(player)) {
                     gate.movePlayer();
                 }
         }
+
+        for (Potion potion : potions) {
+            if (potion.isActive) {
+                if (potion.isCollidedWithPlayer(player)) {
+                    player.setPotion(player.getPotionAmount() + 1);
+                    potion.setActive(false);
+                }
+            }
+        }
     }
 
     public void draw(Graphics2D g, int xOffset, int yOffset) {
-
+        for (Potion potion : potions) {
+            if (potion.isActive) {
+                potion.draw(g, xOffset, yOffset);
+            }
+        }
     }
 
-    public void addGate(Gate gate) {
+    public static void addGate(Gate gate) {
         gates.add(gate);
+    }
+
+    public static void addPotion(Potion potion) {
+        potions.add(potion);
+    }
+
+    public static void clearAll() {
+        gates.clear();
+        potions.clear();
     }
 }

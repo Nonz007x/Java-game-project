@@ -29,17 +29,12 @@ public class MonPiramid extends Enemy {
     @Override
     public void takeDamage(int damage) {
     }
-    @Override
-    public void update(int[][] collisionTile, Playing playing) {
-        updateAnimationTick();
-        updateBehavior(collisionTile, playing);
-    }
 
     @Override
     protected void updateBehavior(int[][] collisionTile, Playing playing) {
-        chase(playing.getPlayer(), DEFAULT_SPEED);
-        if (checkPlayerHit(hitBox, playing.getPlayer())) {
-            playing.getPlayer().takeDamage(Integer.MAX_VALUE);
+        chase(Playing.getPlayer(), DEFAULT_SPEED);
+        if (checkPlayerHit(hitBox, Playing.getPlayer())) {
+            Playing.getPlayer().takeDamage(Integer.MAX_VALUE);
         }
         checkMove(collisionTile);
         updateXPos(velocityX);

@@ -1,11 +1,10 @@
 package objects.gameobjects;
 
-import entities.Player;
 import gamestates.Playing;
+import main.Game;
 import objects.SuperObject;
 import ui.TransitionOverlay;
 
-import utils.Callback;
 
 import static utils.Constants.GameObject.GATE;
 
@@ -19,7 +18,7 @@ public class Gate extends SuperObject {
     }
 
     public Gate(int x, int y, int destX, int destY, int destLevel, boolean active) {
-        super(x, y, GATE);
+        super(x * Game.TILE_SIZE, y * Game.TILE_SIZE, GATE);
         this.isActive = active;
         initHitBox(0, 0, 48, 48);
         this.destX = destX;

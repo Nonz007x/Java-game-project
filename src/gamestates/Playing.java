@@ -1,14 +1,10 @@
 package gamestates;
 
+import entities.*;
 import level.LevelManager;
-import entities.BossManager;
-import entities.Enemy;
-import entities.Player;
-import entities.EnemyManager;
 import main.Game;
 import objects.ObjectManager;
 import objects.ProjectileManager;
-import objects.gameobjects.Gate;
 import ui.GameOverOverlay;
 import ui.Hud;
 import ui.PauseOverlay;
@@ -22,6 +18,8 @@ import java.util.List;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
+import static objects.ObjectPlacer.placeObject;
 
 
 public class Playing extends State implements Statemethods {
@@ -50,6 +48,7 @@ public class Playing extends State implements Statemethods {
         LevelManager.setLevelIndex(0);
         enemyManager.loadEnemies(LevelManager.getCurrentLevel());
         bossManager.loadBosses(LevelManager.getCurrentLevel());
+        placeObject();
     }
 
     private void initClasses() {
@@ -89,6 +88,8 @@ public class Playing extends State implements Statemethods {
         // Prepare drawable objects for rendering
         List<Drawable> drawableObjects = prepareDrawableObjects();
 
+        objectManager.draw(graphics2D, xOffset, yOffset);
+
         // Sort and draw the drawable objects
         drawSortedDrawableObjects(graphics2D, drawableObjects);
 
@@ -110,7 +111,6 @@ public class Playing extends State implements Statemethods {
     private List<Drawable> prepareDrawableObjects() {
         List<Drawable> drawableObjects = new ArrayList<>();
         drawableObjects.add(player);
-        drawableObjects.addAll(enemyManager.getEnemies());
         drawableObjects.addAll(enemyManager.getTempEnemies());
         drawableObjects.addAll(bossManager.getTempBosses());
         // drawableObjects.addAll(objectManager.getDrawables(xOffset, yOffset));
@@ -200,7 +200,6 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_A -> player.setLeft(true);
                 case KeyEvent.VK_S -> player.setDown(true);
                 case KeyEvent.VK_D -> player.setRight(true);
-                case KeyEvent.VK_F -> loadNewLevel();
                 case KeyEvent.VK_R -> loadNewLevel(LevelManager.getLevelIndex());
                 case KeyEvent.VK_Q -> player.drinkPotion();
                 case KeyEvent.VK_F1 -> Hud.toggleHud();
@@ -232,10 +231,6 @@ public class Playing extends State implements Statemethods {
         projectileManager.reset();
         enemyManager.reset();
         bossManager.reset();
-        for (Enemy enemy : getEnemiesAndBosses()) {
-            enemy.resetEnemy();
-        }
-
     }
 
     public static void loadAllEnemies() {
@@ -249,8 +244,6 @@ public class Playing extends State implements Statemethods {
     public static ArrayList<Enemy> getEnemiesAndBosses() {
         ArrayList<Enemy> enemies = new ArrayList<>();
         enemies.addAll(enemyManager.getTempEnemies());
-        enemies.addAll(enemyManager.getEnemies());
-        enemies.addAll(bossManager.getBosses());
         enemies.addAll(bossManager.getTempBosses());
         return enemies;
     }
@@ -271,16 +264,40 @@ public class Playing extends State implements Statemethods {
         return bossManager;
     }
 
+    public static void newGame() {
+        resetAll();
+        LevelManager.setLevelIndex(0);
+        placeObject();
+        loadAllEnemies();
+        for (Enemy enemy : enemyManager.getTempEnemies()) {
+            enemy.resetEnemy();
+        }
+        for (Boss boss : bossManager.getTempBosses()) {
+            boss.resetEnemy();
+        }
+    }
+
     public static void loadNewLevel() {
         resetAll();
         LevelManager.toggleLevel();
+        placeObject();
         loadAllEnemies();
+
     }
 
     public static void loadNewLevel(int levelIndex) {
-        resetAll();
+        projectileManager.reset();
+        enemyManager.reset();
+        bossManager.reset();
         LevelManager.setLevelIndex(levelIndex);
+        placeObject();
         loadAllEnemies();
+        for (Enemy enemy : enemyManager.getTempEnemies()) {
+            enemy.resetEnemy();
+        }
+        for (Boss boss : bossManager.getTempBosses()) {
+            boss.resetEnemy();
+        }
     }
 
     public void unpauseGame() {

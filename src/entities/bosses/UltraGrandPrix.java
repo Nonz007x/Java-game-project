@@ -94,7 +94,7 @@ public class UltraGrandPrix extends Boss {
             }
 
             if (counter % 30 == 0) {
-                shootAtPlayer(playing, 10, 15);
+                shootAtPlayer(10, 15);
             }
 
             if (counter % 240 == 0) {

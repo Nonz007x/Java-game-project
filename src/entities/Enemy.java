@@ -2,6 +2,7 @@ package entities;
 
 import gamestates.Playing;
 import main.Game;
+import objects.projectiles.BasicBullet;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -135,6 +136,23 @@ public abstract class Enemy extends Entity {
         } else if (velocityY > 0 && collisionDown) {
             velocityY = 0;
         }
+    }
+
+    protected void shootAtPlayer(int speed, int damage) {
+        int startX = getHitBoxCenterX();
+        int startY = getHitBoxCenterY();
+        int playerX = Playing.getPlayer().getHitBoxCenterX();
+        int playerY = Playing.getPlayer().getHitBoxCenterY();
+
+        int deltaX = playerX - startX;
+        int deltaY = playerY - startY;
+
+        double distance = Math.max(0.000000001, Math.sqrt(deltaX * deltaX + deltaY * deltaY));
+
+        double directionX = deltaX / distance;
+        double directionY = deltaY / distance;
+
+        shootProjectile(new BasicBullet(startX, startY, speed, directionX, directionY, damage));
     }
 
     public void draw(Graphics2D g2, int xOffset, int yOffset) {

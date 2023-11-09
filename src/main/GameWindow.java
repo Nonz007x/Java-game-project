@@ -14,7 +14,7 @@ public class GameWindow {
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(gamePanel);
 
-        jframe.setTitle("Quantum Boolets");
+        jframe.setTitle("Quantum Bullets");
 
         ImageIcon icon = new ImageIcon("src/res/boomstick.png");
         jframe.setIconImage(icon.getImage());

@@ -10,23 +10,6 @@ public abstract class Boss extends Enemy {
         super(x, y, width, height, health);
     }
 
-    protected void shootAtPlayer(Playing playing, int speed, int damage) {
-        int startX = getHitBoxCenterX();
-        int startY = getHitBoxCenterY();
-        int playerX = playing.getPlayer().getHitBoxCenterX();
-        int playerY = playing.getPlayer().getHitBoxCenterY();
-
-        int deltaX = playerX - startX;
-        int deltaY = playerY - startY;
-
-        double distance = Math.max(0.000000001, Math.sqrt(deltaX * deltaX + deltaY * deltaY));
-
-        double directionX = deltaX / distance;
-        double directionY = deltaY / distance;
-
-        shootProjectile(new BasicBullet(startX, startY, speed, directionX, directionY, damage));
-    }
-
     protected double[] aimAtPos(int startX, int startY, int targetX, int targetY) {;
 
         int deltaX = targetX - startX;

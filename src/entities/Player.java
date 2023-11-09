@@ -395,6 +395,10 @@ public class Player extends Entity {
        rightClicked = clicked;
     }
 
+    public void setPotion(int amount) {
+        potion = amount;
+    }
+
     public void resetPlayer() {
         velocityX = 0;
         velocityY = 0;
@@ -408,6 +412,7 @@ public class Player extends Entity {
         dodgeActive = false;
         gunFlashTick = 0;
         shooting = false;
+        potion = 1;
     }
 
     public int getPotionAmount() {

@@ -7,9 +7,11 @@ import entities.Enemy;
 import entities.bosses.Crabulon;
 import entities.bosses.Slime;
 import entities.bosses.UltraGrandPrix;
+import entities.enemies.Glitch;
 import entities.enemies.GrandPrix;
 import entities.enemies.MonPiramid;
 import main.Game;
+import objects.SuperObject;
 import objects.gameobjects.Gate;
 
 import java.io.*;
@@ -27,6 +29,7 @@ public class Level {
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<Boss> bosses = new ArrayList<>();
     private final ArrayList<Gate> gates = new ArrayList<>();
+
     private int worldRow, worldCol;
     private int spawnX, spawnY;
 
@@ -37,6 +40,9 @@ public class Level {
 
     private void loadLevel(String filePath) {
         try {
+            spawnX = Integer.parseInt(Objects.requireNonNull(loadProperty("x", "res/maps/level_" + lvlId + ".properties")));
+            spawnY = Integer.parseInt(Objects.requireNonNull(loadProperty("y", "res/maps/level_" + lvlId + ".properties")));
+
             InputStream is = getClass().getResourceAsStream(filePath);
 
             if (is == null) {
@@ -92,12 +98,10 @@ public class Level {
                     case 3 -> this.enemies.add(new MonPiramid(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                     case 4 -> this.bosses.add(new UltraGrandPrix(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                     case 5 -> this.bosses.add(new Slime(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                    case 6 ->  this.enemies.add(new Glitch(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                 }
             }
         }
-        // How to read from .properties extension
-        spawnX = Integer.parseInt(Objects.requireNonNull(loadProperty("x", "res/maps/level_" + lvlId + ".properties")));
-        spawnY = Integer.parseInt(Objects.requireNonNull(loadProperty("y", "res/maps/level_" + lvlId + ".properties")));
     }
 
     public ArrayList<Enemy> getEnemies() {

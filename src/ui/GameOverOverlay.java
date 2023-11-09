@@ -29,7 +29,7 @@ public class GameOverOverlay {
         switch (selectedChoice) {
             case 0 -> {
                 if (Gamestate.state == Gamestate.PLAYING)
-                    Playing.loadNewLevel(LevelManager.getLevelIndex());
+                    Playing.newGame();
                 else Arena.resetAll();
             }
             case 1 -> playing.toMainMenu();

@@ -26,7 +26,7 @@ public class PauseOverlay {
             case 0 -> playing.unpauseGame();
             case 1 -> {
                 if (Gamestate.state == Gamestate.PLAYING)
-                    Playing.loadNewLevel(LevelManager.getLevelIndex());
+                    Playing.newGame();
                 else Arena.resetAll();
             }
             case 2 -> {

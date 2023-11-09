@@ -3,12 +3,15 @@ package objects;
 import entities.Player;
 import gamestates.Playing;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 public abstract class SuperObject {
     protected int x, y, objType;
-    protected boolean isActive;
+    protected boolean isActive = true;
     protected Rectangle2D.Float hitBox;
+    protected BufferedImage image = null;
 
     public SuperObject(int x, int y, int objType) {
         this.x = x;
@@ -24,4 +27,14 @@ public abstract class SuperObject {
         return hitBox.intersects(player.getHitBox());
     }
 
+
+    public void draw(Graphics2D g, int xOffset, int yOffset) {
+        if (image != null) {
+            g.drawImage(image, x + xOffset, y + yOffset, (int) hitBox.width, (int) hitBox.height, null);
+        }
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
