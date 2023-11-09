@@ -37,7 +37,7 @@ public class BossManager implements Drawable {
         for (Boss boss : tempBosses) {
             if (boss != null) {
                 boss.draw(g, xOffset, yOffset);
-                boss.drawHitBox(g, xOffset, yOffset);
+//                boss.drawHitBox(g, xOffset, yOffset);
             }
         }
     }

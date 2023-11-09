@@ -13,14 +13,22 @@ public class ObjectPlacer {
                 for (int i = 30; i <= 36; i++) {
                     ObjectManager.addPotion(new Potion(i, 7));
                 }
-                ObjectManager.addGate(new Gate(12, 19, 0, 0, 1, true));
-                ObjectManager.addGate(new Gate(2, 44, 0, 0, 2, true));
-                ObjectManager.addGate(new Gate(60, 38, 0, 0, 1, true));
-                ObjectManager.addGate(new Gate(61, 38, 0, 0, 1, true));
-                ObjectManager.addGate(new Gate(62, 38, 0, 0, 1, true));
-                ObjectManager.addGate(new Gate(63, 38, 0, 0, 1, true));
-                ObjectManager.addGate(new Gate(64, 38, 0, 0, 1, true));
-                ObjectManager.addGate(new Gate(65, 38, 0, 0, 1, true));
+                ObjectManager.addGate(new Gate(12, 19, 3, 3, 3, true));
+                ObjectManager.addGate(new Gate(2, 44, 3, 3, 2, true));
+                ObjectManager.addGate(new Gate(60, 38, 3, 3, 1, true));
+                ObjectManager.addGate(new Gate(61, 38, 3, 3, 1, true));
+                ObjectManager.addGate(new Gate(62, 38, 3, 3, 1, true));
+                ObjectManager.addGate(new Gate(63, 38, 3, 3, 1, true));
+                ObjectManager.addGate(new Gate(64, 38, 3, 3, 1, true));
+                ObjectManager.addGate(new Gate(65, 38, 3, 3, 1, true));
+            }
+            case 1-> {
+                ObjectManager.addGate(new Gate(19, 21, 3, 3, 2, true));
+                ObjectManager.addGate(new Gate(20, 21, 3, 3, 2, true));
+            }
+            case 2 -> {
+                ObjectManager.addGate(new Gate(1, 19, 3, 3, 3, true));
+                ObjectManager.addGate(new Gate(1, 20, 3, 3, 3, true));
             }
         }
     }

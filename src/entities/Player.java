@@ -170,8 +170,8 @@ public class Player extends Entity {
     public void teleport(int x, int y) {
         worldX = x;
         worldY = y;
-        hitBox.x = x;
-        hitBox.y = y;
+        hitBox.x = x + hitBoxOffsetX;
+        hitBox.y = y + hitBoxOffsetY;
     }
 
     private void updatePos() {

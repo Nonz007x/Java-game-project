@@ -21,8 +21,8 @@ public class Gate extends SuperObject {
         super(x * Game.TILE_SIZE, y * Game.TILE_SIZE, GATE);
         this.isActive = active;
         initHitBox(0, 0, 48, 48);
-        this.destX = destX;
-        this.destY = destY;
+        this.destX = destX * Game.TILE_SIZE;
+        this.destY = destY * Game.TILE_SIZE;
         this.destLevel = destLevel;
     }
 

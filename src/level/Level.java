@@ -98,7 +98,7 @@ public class Level {
                     case 3 -> this.enemies.add(new MonPiramid(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                     case 4 -> this.bosses.add(new UltraGrandPrix(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                     case 5 -> this.bosses.add(new Slime(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
-                    case 6 ->  this.enemies.add(new Glitch(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                    case 6 -> this.enemies.add(new Glitch(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                 }
             }
         }

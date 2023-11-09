@@ -22,7 +22,7 @@ public class LoadSave {
 //                        .peek(fileName -> System.out.println("Found file: " + fileName))
 //                        .map(fileName -> "/maps/" + fileName)
 //                        .toArray(String[]::new);
-                return new String[]{"/maps/level_1.json", "/maps/level_2.json"};
+                return new String[]{"/maps/level_1.json", "/maps/level_2.json", "/maps/level_3.json", "/maps/level_4.json"};
             } catch (IOException e) {
                 e.printStackTrace();
             }

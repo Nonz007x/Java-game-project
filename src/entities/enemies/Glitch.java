@@ -31,7 +31,7 @@ public class Glitch extends Enemy {
         if (isPlayerInRange(Playing.getPlayer())) {
             counter++;
             if (counter >= 60) {
-                shootAtPlayer(20, 10);
+                shootAtPlayer(20, 15);
                 counter = 0;
             }
         } else {
