@@ -19,7 +19,7 @@ public class Hud {
     private final Font HP_TEXT = new Font("Arial", Font.BOLD, 20);
 
     static {
-        potionImage = LoadSave.GetSprite("40degree.png");
+        potionImage = LoadSave.getSprite("40degree.png");
     }
 
     private final Playing playing;
@@ -86,15 +86,15 @@ public class Hud {
     }
 
     private void drawPotionAmount(Graphics2D g2) {
-        int potionAmount = playing.getPlayer().getPotionAmount();
+        int potionAmount = Playing.getPlayer().getPotionAmount();
         g2.drawImage(potionImage, 10, 40, 64, 64, null);
         g2.setColor(Color.WHITE);
         g2.drawString(String.valueOf(potionAmount), 70, 90);
     }
 
     private void drawBulletAmount(Graphics2D g2) {
-        int bulletAmount = playing.getPlayer().getBulletAmount();
-        g2.drawString(String.valueOf(bulletAmount), playing.getPlayer().getPlayerScreenPosX() + 15,  playing.getPlayer().getPlayerScreenPosY() + 30);
+        int bulletAmount = Playing.getPlayer().getBulletAmount();
+        g2.drawString(String.valueOf(bulletAmount), Playing.getPlayer().getPlayerScreenPosX() + 20,  Playing.getPlayer().getPlayerScreenPosY());
     }
 
     public void draw(Graphics2D g2) {

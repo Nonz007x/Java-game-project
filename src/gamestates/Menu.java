@@ -26,7 +26,7 @@ public class Menu extends State implements Statemethods {
 
     static {
         for (int i = 0; i < 8; i++) {
-            backgroundImages[i] = LoadSave.GetSprite("title" + (i+1) + ".png");
+            backgroundImages[i] = LoadSave.getSprite("title" + (i+1) + ".png");
         }
     }
 

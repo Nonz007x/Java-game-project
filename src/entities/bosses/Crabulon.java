@@ -22,7 +22,7 @@ public class Crabulon extends Boss {
     private static final BufferedImage[][] CRABULON_IMAGES;
 
     static {
-        CRABULON_IMAGES = LoadSave.GetImagesFromSpriteSheet(CRABULON, 312, 196, 3, 6);
+        CRABULON_IMAGES = LoadSave.getImagesFromSpriteSheet(CRABULON, 312, 196, 3, 6);
     }
 
     public Crabulon(int x, int y) {

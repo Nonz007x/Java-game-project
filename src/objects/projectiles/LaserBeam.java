@@ -15,8 +15,8 @@ public class LaserBeam extends EnemyProjectile {
     private int startPointX, startPointY;
 
     static {
-//        LASER = LoadSave.GetSprite("laser.png");
-        LASER = LoadSave.GetImagesFromSpriteSheet("Laser_sheet.png", 300, 100,  15, true);
+//        LASER = LoadSave.getSprite("laser.png");
+        LASER = LoadSave.getImagesFromSpriteSheet("Laser_sheet.png", 300, 100,  15, true);
     }
 
     public LaserBeam(int startPointX, int startPointY, int endPointX, int endPointY, int damage) {

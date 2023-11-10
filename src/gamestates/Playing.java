@@ -203,6 +203,8 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_R -> loadNewLevel(LevelManager.getLevelIndex());
                 case KeyEvent.VK_Q -> player.drinkPotion();
                 case KeyEvent.VK_F1 -> Hud.toggleHud();
+                case KeyEvent.VK_F2 -> ObjectManager.setGateActive(true);
+                case KeyEvent.VK_F3 -> player.toggleInvincible();
             }
     }
 

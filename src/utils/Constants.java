@@ -42,8 +42,9 @@ public class Constants {
 
     public static class EnemyConstants {
 
-        public static final int GRANDPRIX = 0;
+        public static final int GRANDPRIX = 1;
         public static final int CRABULON = 50;
+        public static final int MON_CIRCLE = 2;
 
         public static final int IDLE = 0;
         public static final int RUNNING = 1;
@@ -54,7 +55,7 @@ public class Constants {
         public static final int GRANDPRIX_WIDTH_DEFAULT = 64;
         public static final int GRANDPRIX_HEIGHT_DEFAULT = 64;
 
-        public static int GetSpriteAmount(int enemy_action, int enemy_type) {
+        public static int getSpriteAmount(int enemy_action, int enemy_type) {
             switch (enemy_type) {
                 case GRANDPRIX -> {
                     return 3;
@@ -63,6 +64,11 @@ public class Constants {
                 case CRABULON -> {
                     return 6;
                 }
+
+                case MON_CIRCLE -> {
+                    return 2;
+                }
+
                 default -> {
                     return 0;
                 }
@@ -77,7 +83,7 @@ public class Constants {
         public static final int RUNNING = 1;
         public static final int DEAD = 2;
 
-        public static int GetSpriteAmount(int player_action) {
+        public static int getSpriteAmount(int player_action) {
             return switch (player_action) {
                 case IDLE, DEAD -> 1;
                 case RUNNING -> 3;

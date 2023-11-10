@@ -27,7 +27,7 @@ public class Slime extends Boss {
     private final int MAX_EXECUTIONS = 10;
 
     static {
-        images = LoadSave.GetImagesFromSpriteSheet("slime_blue.png", 32, 32, 4, 4);
+        images = LoadSave.getImagesFromSpriteSheet("slime_blue.png", 32, 32, 4, 4);
     }
 
     public Slime(int x, int y) {

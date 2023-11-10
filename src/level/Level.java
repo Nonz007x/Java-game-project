@@ -9,6 +9,7 @@ import entities.bosses.Slime;
 import entities.bosses.UltraGrandPrix;
 import entities.enemies.Glitch;
 import entities.enemies.GrandPrix;
+import entities.enemies.MonCircle;
 import entities.enemies.MonPiramid;
 import main.Game;
 import objects.SuperObject;
@@ -99,6 +100,7 @@ public class Level {
                     case 4 -> this.bosses.add(new UltraGrandPrix(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                     case 5 -> this.bosses.add(new Slime(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                     case 6 -> this.enemies.add(new Glitch(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                    case 7 -> this.enemies.add(new MonCircle(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
                 }
             }
         }

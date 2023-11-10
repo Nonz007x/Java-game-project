@@ -4,6 +4,7 @@ import entities.Player;
 import gamestates.Playing;
 import level.LevelManager;
 import level.Level;
+import objects.gameobjects.Fragment;
 import objects.gameobjects.Gate;
 import objects.gameobjects.Potion;
 
@@ -16,11 +17,11 @@ public class ObjectManager {
 
     private static final ArrayList<Gate> gates = new ArrayList<>();
     private static final ArrayList<Potion> potions = new ArrayList<>();
+    private static final Fragment fragment = new Fragment();
 
     public ObjectManager(Playing playing) {
         this.playing = playing;
         currentLevel = LevelManager.getCurrentLevel();
-//            loadImgs();
     }
 
     public void update() {
@@ -43,6 +44,12 @@ public class ObjectManager {
                 }
             }
         }
+
+        if (fragment.isActive) {
+            if (fragment.isCollidedWithPlayer(player)) {
+                fragment.setPosition();
+            }
+        }
     }
 
     public void draw(Graphics2D g, int xOffset, int yOffset) {
@@ -50,6 +57,21 @@ public class ObjectManager {
             if (potion.isActive) {
                 potion.draw(g, xOffset, yOffset);
             }
+        }
+
+        if (fragment.isActive) {
+            System.out.println("sd");
+            fragment.draw(g, xOffset, yOffset);
+        }
+    }
+
+    public static void setFragment() {
+        fragment.setActive(true);
+        fragment.setPosition();
+    }
+    public static void setGateActive(boolean active) {
+        for (Gate gate: gates) {
+            gate.setActive(true);
         }
     }
 
@@ -64,5 +86,6 @@ public class ObjectManager {
     public static void clearAll() {
         gates.clear();
         potions.clear();
+        fragment.setActive(false);
     }
 }

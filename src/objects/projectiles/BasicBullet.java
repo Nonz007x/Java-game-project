@@ -15,7 +15,7 @@ public class BasicBullet extends EnemyProjectile {
     private static final BufferedImage[] BASIC_BULLET;
 
     static {
-        BASIC_BULLET = LoadSave.GetImagesFromSpriteSheet("enemy_bullet.png", 10, 10, 1, false);
+        BASIC_BULLET = LoadSave.getImagesFromSpriteSheet("enemy_bullet.png", 10, 10, 1, false);
     }
 
     public BasicBullet(int x, int y, int speed, double directionX, double directionY, int damage) {

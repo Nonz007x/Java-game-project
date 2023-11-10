@@ -11,7 +11,7 @@ public class Glitch extends Enemy {
     private int counter = 0;
 
     static {
-        images = LoadSave.GetImagesFromSpriteSheet("glitch.png", 16, 16, 1, 1);
+        images = LoadSave.getImagesFromSpriteSheet("glitch.png", 16, 16, 1, 1);
     }
     public Glitch(int x, int y) {
         super(x, y, 48, 48, 30);

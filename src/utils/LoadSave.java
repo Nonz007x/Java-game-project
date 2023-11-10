@@ -33,7 +33,7 @@ public class LoadSave {
         return new String[0];
     }
 
-    public static BufferedImage GetSprite(String fileName) {
+    public static BufferedImage getSprite(String fileName) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/res/sprites/" + fileName);
         try {
@@ -61,8 +61,8 @@ public class LoadSave {
         return img;
     }
 
-    public static BufferedImage[][] GetImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int row, int col) {
-        BufferedImage sheet = LoadSave.GetSprite(fileName);
+    public static BufferedImage[][] getImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int row, int col) {
+        BufferedImage sheet = LoadSave.getSprite(fileName);
 
         BufferedImage[][] sprites = new BufferedImage[row][col];
 
@@ -73,8 +73,8 @@ public class LoadSave {
         return sprites;
     }
 
-    public static BufferedImage[] GetImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int size, boolean isColumn) {
-        BufferedImage sheet = LoadSave.GetSprite(fileName);
+    public static BufferedImage[] getImagesFromSpriteSheet(String fileName, int spriteWidth, int spriteHeight, int size, boolean isColumn) {
+        BufferedImage sheet = LoadSave.getSprite(fileName);
 
         BufferedImage[] sprites = new BufferedImage[size];
         if (isColumn) {

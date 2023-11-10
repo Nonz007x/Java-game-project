@@ -46,7 +46,7 @@ public class LevelManager {
     }
 
     private static void InitializeTileImage() {
-        BufferedImage imageSet = LoadSave.GetSprite(LoadSave.LEVEL_SPRITE);
+        BufferedImage imageSet = LoadSave.getSprite(LoadSave.LEVEL_SPRITE);
         int index = 1;
 
         for (int row = 0;  row < 2;  row++) {
@@ -62,7 +62,7 @@ public class LevelManager {
     private void createWaterfall() {
         torchSprite = new BufferedImage[8];
         waterfallSprite = new BufferedImage[8];
-        BufferedImage img = LoadSave.GetSprite(LoadSave.LEVEL_SPRITE);
+        BufferedImage img = LoadSave.getSprite(LoadSave.LEVEL_SPRITE);
         int index = 0;
         for (int row = 1; row <= 2; row++) {
             for (int col = 0; col < 4; col++) {

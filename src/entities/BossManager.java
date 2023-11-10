@@ -2,6 +2,7 @@ package entities;
 
 import level.Level;
 import gamestates.Playing;
+import objects.ObjectManager;
 import utils.Drawable;
 
 import java.awt.*;
@@ -24,11 +25,18 @@ public class BossManager implements Drawable {
     }
 
     public void update() {
+        boolean anyBossActive = false;
+
         for (Boss boss : tempBosses) {
             if (boss.isActive()) {
+                anyBossActive = true;
                 boss.updateAnimationTick();
                 boss.update(currentLevel.getCollisionTile(), playing);
             }
+        }
+
+        if (!anyBossActive) {
+            ObjectManager.setGateActive(false);
         }
     }
 

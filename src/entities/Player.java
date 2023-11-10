@@ -37,6 +37,7 @@ public class Player extends Entity {
     private boolean left, right, up, down;
     private boolean leftClicked, rightClicked;
     private boolean dodgeActive;
+    private boolean invincible = false;
 
     private Timer shootDelay;
     private boolean onShootDelay;
@@ -114,10 +115,10 @@ public class Player extends Entity {
     }
 
     public void loadAnimations() {
-        BufferedImage playerSprites = LoadSave.GetSprite(LoadSave.PLAYER_SPRITES);
-        BufferedImage shotgunFlashSprites = LoadSave.GetSprite("shotgun_flashes.png");
+        BufferedImage playerSprites = LoadSave.getSprite(LoadSave.PLAYER_SPRITES);
+        BufferedImage shotgunFlashSprites = LoadSave.getSprite("shotgun_flashes.png");
 
-        boomstick = LoadSave.GetSprite("boomstick.png");
+        boomstick = LoadSave.getSprite("boomstick.png");
         gunFlashes = loadImages(shotgunFlashSprites, 7, 1, 16, 16);
         animations = loadImages(playerSprites, 3, 3, 16, 16);
     }
@@ -227,7 +228,7 @@ public class Player extends Entity {
 
     @Override
     public void takeDamage(int damage) {
-        if (hit)
+        if (hit || invincible)
             return;
         hit = true;
         super.takeDamage(damage);
@@ -326,7 +327,7 @@ public class Player extends Entity {
                 }
             }
             aniTick = 0;
-            aniIndex = (aniIndex + 1) % GetSpriteAmount(state);
+            aniIndex = (aniIndex + 1) % getSpriteAmount(state);
         }
     }
 
@@ -363,7 +364,7 @@ public class Player extends Entity {
 
         g2.setColor(Color.RED);
         g2.fillRect(mouseLocation.x, mouseLocation.y, 4, 4);
-        drawHitBox(g2);
+//        drawHitBox(g2);
 
     }
 
@@ -397,6 +398,9 @@ public class Player extends Entity {
 
     public void setPotion(int amount) {
         potion = amount;
+    }
+    public void toggleInvincible() {
+        invincible = !invincible;
     }
 
     public void resetPlayer() {

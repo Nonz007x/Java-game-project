@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-import static utils.Constants.EnemyConstants.GetSpriteAmount;
+import static utils.Constants.EnemyConstants.getSpriteAmount;
 import static utils.Constants.EnemyConstants.*;
 
 
@@ -34,7 +34,7 @@ public abstract class Enemy extends Entity {
         if (aniTick >= aniSpeed) {
             aniTick = 0;
             aniIndex++;
-            if (aniIndex >= GetSpriteAmount(state, enemyType)) {
+            if (aniIndex >= getSpriteAmount(state, enemyType)) {
                 aniIndex = 0;
             }
         }

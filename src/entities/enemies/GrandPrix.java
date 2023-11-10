@@ -21,7 +21,7 @@ public class GrandPrix extends Enemy {
     private int currentChargeTick = 0;
 
     static {
-        grandPrixImages = loadImages(LoadSave.GetSprite(LoadSave.GRANDPRIX), 3, 3, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        grandPrixImages = loadImages(LoadSave.getSprite(LoadSave.GRANDPRIX), 3, 3, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
     // TODO Object pooling

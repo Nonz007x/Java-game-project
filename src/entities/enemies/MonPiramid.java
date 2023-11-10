@@ -14,7 +14,7 @@ public class MonPiramid extends Enemy {
     private static final int DEFAULT_DETECTION_RANGE = 10;
 
     static {
-        images = loadImages(LoadSave.GetSprite("cumspitter.png"), 4, 1, 32, 32);
+        images = loadImages(LoadSave.getSprite("cumspitter.png"), 4, 1, 32, 32);
     }
 
     public MonPiramid(int x, int y) {

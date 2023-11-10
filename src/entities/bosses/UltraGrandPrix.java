@@ -23,7 +23,7 @@ public class UltraGrandPrix extends Boss {
     private static final BufferedImage[][] IMAGES;
 
     static {
-        IMAGES = LoadSave.GetImagesFromSpriteSheet("ultra_grand_prix.png", 64, 64, 3, 3);
+        IMAGES = LoadSave.getImagesFromSpriteSheet("ultra_grand_prix.png", 64, 64, 3, 3);
     }
 
     public UltraGrandPrix(int x, int y) {

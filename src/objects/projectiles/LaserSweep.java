@@ -23,7 +23,7 @@ public class LaserSweep extends EnemyProjectile {
     private int height = 40;
 
     static {
-        LASER = LoadSave.GetSprite("laser.png");
+        LASER = LoadSave.getSprite("laser.png");
     }
 
     public LaserSweep(int startPointX, int startPointY, int damage) {
