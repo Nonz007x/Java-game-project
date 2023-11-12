@@ -11,9 +11,9 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
 
-public class HelpMethods {
+public class UtilMethods {
 
-    private HelpMethods() {
+    private UtilMethods() {
         throw new AssertionError("This class should not be instantiated.");
     }
 

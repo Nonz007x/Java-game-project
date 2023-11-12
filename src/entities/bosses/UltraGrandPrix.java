@@ -10,8 +10,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static utils.Constants.BossConstants.*;
-import static utils.HelpMethods.RandomDirection;
-import static utils.HelpMethods.RandomNumber;
+import static utils.UtilMethods.RandomDirection;
+import static utils.UtilMethods.RandomNumber;
 
 public class UltraGrandPrix extends Boss {
     private static final int CHARGE_TICK = 25;

@@ -12,14 +12,13 @@ import entities.enemies.GrandPrix;
 import entities.enemies.MonCircle;
 import entities.enemies.MonPiramid;
 import main.Game;
-import objects.SuperObject;
 import objects.gameobjects.Gate;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static utils.HelpMethods.loadProperty;
+import static utils.UtilMethods.loadProperty;
 
 
 public class Level {
@@ -86,7 +85,6 @@ public class Level {
     }
 
     private void loadEnemies(int[][] enemies) {
-        //TODO
         if (enemies == null)
             return;
 

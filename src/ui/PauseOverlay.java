@@ -9,6 +9,10 @@ import main.Game;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.font.TextAttribute;
+import java.util.Collections;
+
+import static utils.Constants.UI.F_DEFAULT;
 
 public class PauseOverlay {
     private final Playing playing;
@@ -53,12 +57,25 @@ public class PauseOverlay {
         g.setColor(backgroundColor);
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
         g.setColor(Color.WHITE);
-        g.drawString("Pause", 1, 25);
-        g.drawString("Resume", 1, 100);
-        g.drawString("RESTART", 1, 150);
-        g.drawString("Options", 1, 200);
-        g.drawString("Quit", 1, 250);
-        g.drawString(String.valueOf(selectedChoice), Game.GAME_WIDTH / 2, 125);
 
+        Font baseFont = new Font("Dialog", Font.PLAIN, 50);
+        g.setFont(baseFont);
+
+        g.drawString("Pause", 1, 50);
+
+        String[] options = {
+                "Resume",
+                "restart",
+                "Quit"};
+
+        for (int i = 0; i < options.length; i++) {
+            g.setColor(Color.WHITE);
+            Font optionFont = (i == selectedChoice) ?
+                    new Font("Dialog", Font.BOLD, 24).deriveFont(Collections.singletonMap(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON)) :
+                    F_DEFAULT;
+            g.setFont(optionFont);
+            int y = 100 + i * 50;
+            g.drawString(options[i], 1, y);
+        }
     }
 }

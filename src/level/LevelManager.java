@@ -1,6 +1,5 @@
 package level;
 
-import entities.Player;
 import gamestates.Playing;
 import main.Game;
 import utils.LoadSave;
@@ -10,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
 
-import static utils.HelpMethods.ScaleImage;
+import static utils.UtilMethods.ScaleImage;
 
 public class LevelManager {
     Playing playing;

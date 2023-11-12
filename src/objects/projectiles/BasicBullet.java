@@ -1,9 +1,8 @@
 package objects.projectiles;
 
 import gamestates.Playing;
-import main.Game;
 import objects.EnemyProjectile;
-import utils.HelpMethods;
+import utils.UtilMethods;
 import utils.LoadSave;
 
 import java.awt.geom.Rectangle2D;
@@ -27,11 +26,11 @@ public class BasicBullet extends EnemyProjectile {
     public void update(int[][] collisionTile, Playing playing) {
         current_tick++;
         updatePos();
-        if (HelpMethods.IsProjectileHittingLevel(this, collisionTile)) {
+        if (UtilMethods.IsProjectileHittingLevel(this, collisionTile)) {
             setActive(false);
         }
-        if (checkPlayerHit(hitBox, playing.getPlayer())) {
-            playing.getPlayer().takeDamage(damage);
+        if (checkPlayerHit(hitBox, Playing.getPlayer())) {
+            Playing.getPlayer().takeDamage(damage);
             setActive(false);
         }
     }

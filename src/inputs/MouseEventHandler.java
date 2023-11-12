@@ -39,15 +39,6 @@ public class MouseEventHandler implements MouseListener, MouseMotionListener {
         }
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -63,5 +54,13 @@ public class MouseEventHandler implements MouseListener, MouseMotionListener {
         gamePanel.getGame().getPlaying().mouseMoved(e);
     }
 
+    @Override
+    public void mouseEntered(MouseEvent e) {
 
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }

@@ -8,8 +8,8 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import static utils.HelpMethods.*;
-import static utils.HelpMethods.CheckCollisionRight;
+import static utils.UtilMethods.*;
+import static utils.UtilMethods.CheckCollisionRight;
 
 public abstract class Entity implements Drawable {
     protected int maxHealth;

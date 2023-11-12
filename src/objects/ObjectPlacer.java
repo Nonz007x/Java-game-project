@@ -13,7 +13,6 @@ public class ObjectPlacer {
                 for (int i = 30; i <= 36; i++) {
                     ObjectManager.addPotion(new Potion(i, 7));
                 }
-                ObjectManager.addGate(new Gate(12, 19, 3, 3, 3, true));
                 ObjectManager.addGate(new Gate(2, 44, 3, 3, 3, true));
                 ObjectManager.addGate(new Gate(60, 38, 3, 3, 1, true));
                 ObjectManager.addGate(new Gate(61, 38, 3, 3, 1, true));

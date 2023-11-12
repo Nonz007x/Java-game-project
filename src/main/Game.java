@@ -110,8 +110,6 @@ public class Game implements Runnable {
             case MENU -> menu.draw(g);
             case PLAYING -> playing.draw(g);
             case ARENA -> arena.draw(g);
-//            case OPTIONS -> gameOptions.draw(g);
-//            case CREDITS -> credits.draw(g);
         }
     }
 

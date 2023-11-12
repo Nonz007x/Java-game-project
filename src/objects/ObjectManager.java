@@ -60,7 +60,6 @@ public class ObjectManager {
         }
 
         if (fragment.isActive) {
-            System.out.println("sd");
             fragment.draw(g, xOffset, yOffset);
         }
     }

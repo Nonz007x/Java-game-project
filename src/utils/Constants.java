@@ -10,7 +10,7 @@ public class Constants {
     }
 
     public static class UI {
-        public static final Font F_DEFAULT = new Font("Dialog", Font.PLAIN, 12);
+        public static final Font F_DEFAULT = new Font("Dialog", Font.PLAIN, 16);
         public static final Color OVERLAY_BG_COLOR = new Color(0, 0, 0, 150);
     }
 

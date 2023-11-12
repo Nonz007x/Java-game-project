@@ -15,7 +15,7 @@ import java.util.Random;
 
 import static utils.Constants.PlayerConstants.*;
 import static utils.Constants.Projectile.BUCKSHOT_DAMAGE;
-import static utils.HelpMethods.*;
+import static utils.UtilMethods.*;
 
 public class Player extends Entity {
     private Playing playing;

@@ -1,7 +1,6 @@
 package gamestates;
 
 import main.Game;
-import ui.MenuButton;
 import utils.LoadSave;
 
 import java.awt.*;
@@ -17,7 +16,6 @@ public class Menu extends State implements Statemethods {
     Font font;
     FontMetrics fontMetrics;
     private int selectedChoice = 0;
-    private MenuButton[] menuButtons;
     private static int MAX_CHOICE = 3;
 
     private static final BufferedImage[] backgroundImages = new BufferedImage[8];
